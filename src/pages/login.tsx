@@ -108,7 +108,6 @@ const Label = styled.label`
   font-size: 16px;
   line-height: 24px;
   /* identical to box height, or 150% */
-
   color: rgba(0, 0, 0, 0.87);
 `;
 
