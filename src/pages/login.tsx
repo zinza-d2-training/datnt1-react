@@ -173,6 +173,7 @@ const SuggestTypography = styled(Typography)`
   letter-spacing: -0.04px;
   color: rgba(0, 0, 0, 0.87);
 `;
+
 const RegisterTypography = styled(Typography)`
   width: 376px;
   height: 24px;
@@ -221,6 +222,7 @@ const Login = () => {
   }, []);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    // login
     console.log(data);
   };
 
