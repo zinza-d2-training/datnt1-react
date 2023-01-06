@@ -8,42 +8,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import loginImg from 'assets/img/login.png';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 0px;
-
-  width: 100vw;
-  height: 1000px;
-`;
-
-const SideLeft = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-
-  width: 700px;
-  height: 1000px;
-`;
-const Image = styled.img`
-  width: 100%;
-  height: 1000px;
-`;
-
-const SideRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0px;
-
-  width: 700px;
-  height: 1000px;
-`;
-
 const SideRightContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -245,46 +209,39 @@ const ForgotPassword = () => {
   // },[])
 
   return (
-    <Container>
-      <SideLeft>
-        <Image src={loginImg} />
-      </SideLeft>
-      <SideRight>
-        <SideRightContainer>
-          <Header>
-            <HeaderTypography>
-              <Typography>
-                Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để
-                đăng ký (*)
-              </Typography>
-            </HeaderTypography>
-          </Header>
-          <Form>
-            <InputComponent>
-              <TextField
-                id="email"
-                variant="outlined"
-                placeholder="Email"
-                required
-                fullWidth
-                helperText={errors.email?.message && errors.email.message}
-                {...register('email')}
-              />
-            </InputComponent>
-          </Form>
-          <DialogActions>
-            <ButtonBack>
-              <Link to="/login" style={{ textDecoration: 'none' }}>
-                <ButtonBackTypography>QUAY LẠI</ButtonBackTypography>
-              </Link>
-            </ButtonBack>
-            <ButtonSend onClick={handleClick} disabled={!isValid || isRequest}>
-              <ButtonSendTypography>GỬI</ButtonSendTypography>
-            </ButtonSend>
-          </DialogActions>
-        </SideRightContainer>
-      </SideRight>
-    </Container>
+    <SideRightContainer>
+      <Header>
+        <HeaderTypography>
+          <Typography>
+            Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng
+            ký (*)
+          </Typography>
+        </HeaderTypography>
+      </Header>
+      <Form>
+        <InputComponent>
+          <TextField
+            id="email"
+            variant="outlined"
+            placeholder="Email"
+            required
+            fullWidth
+            helperText={errors.email?.message && errors.email.message}
+            {...register('email')}
+          />
+        </InputComponent>
+      </Form>
+      <DialogActions>
+        <ButtonBack>
+          <Link to="/login" style={{ textDecoration: 'none' }}>
+            <ButtonBackTypography>QUAY LẠI</ButtonBackTypography>
+          </Link>
+        </ButtonBack>
+        <ButtonSend onClick={handleClick} disabled={!isValid || isRequest}>
+          <ButtonSendTypography>GỬI</ButtonSendTypography>
+        </ButtonSend>
+      </DialogActions>
+    </SideRightContainer>
   );
 };
 

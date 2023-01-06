@@ -8,44 +8,6 @@ import * as yup from 'yup';
 import loginImg from 'assets/img/login.png';
 import { Link } from 'react-router-dom';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-
-  position: relative;
-  width: 1400px;
-  height: 1000px;
-
-  background: #ffffff;
-`;
-const SideLeft = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-
-  width: 700px;
-  height: 1000px;
-
-  flex: 1;
-`;
-const Image = styled.img`
-  width: 720px;
-  height: 1000px;
-`;
-const SideRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0px;
-
-  width: 700px;
-  height: 1000px;
-`;
-
 const SideRightContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -227,61 +189,54 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <SideLeft>
-        <Image src={loginImg} alt="img" />
-      </SideLeft>
-      <SideRight>
-        <SideRightContainer>
-          <Header>
-            <HeaderText>Đăng nhập vào tài khoản</HeaderText>
-          </Header>
-          <Form>
-            <InputComponent>
-              <Label htmlFor="email">Email</Label>
-              <TextField
-                id="email"
-                variant="outlined"
-                placeholder="user@gmail.com"
-                type="text"
-                required
-                fullWidth
-                helperText={errors.email?.message && errors.email.message}
-                {...register('email')}
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="password">Mật khẩu</Label>
-              <TextField
-                id="password"
-                variant="outlined"
-                type="password"
-                placeholder="**************"
-                fullWidth
-                helperText={errors.password?.message && errors.password.message}
-                {...register('password')}
-              />
-            </InputComponent>
-            <Links>
-              <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
-                <LinkTypography>Quên mật khẩu?</LinkTypography>
-              </Link>
-            </Links>
-            <LoginBtn onClick={handleSubmit(onSubmit)} disabled={disabled}>
-              Đăng nhập
-            </LoginBtn>
-          </Form>
-          <SuggestTypography>
-            Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !
-          </SuggestTypography>
-          <RegisterBtn>
-            <Link to="/register" style={{ textDecoration: 'none' }}>
-              <RegisterTypography>Đăng ký</RegisterTypography>
-            </Link>
-          </RegisterBtn>
-        </SideRightContainer>
-      </SideRight>
-    </Container>
+    <SideRightContainer>
+      <Header>
+        <HeaderText>Đăng nhập vào tài khoản</HeaderText>
+      </Header>
+      <Form>
+        <InputComponent>
+          <Label htmlFor="email">Email</Label>
+          <TextField
+            id="email"
+            variant="outlined"
+            placeholder="user@gmail.com"
+            type="text"
+            required
+            fullWidth
+            helperText={errors.email?.message && errors.email.message}
+            {...register('email')}
+          />
+        </InputComponent>
+        <InputComponent>
+          <Label htmlFor="password">Mật khẩu</Label>
+          <TextField
+            id="password"
+            variant="outlined"
+            type="password"
+            placeholder="**************"
+            fullWidth
+            helperText={errors.password?.message && errors.password.message}
+            {...register('password')}
+          />
+        </InputComponent>
+        <Links>
+          <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
+            <LinkTypography>Quên mật khẩu?</LinkTypography>
+          </Link>
+        </Links>
+        <LoginBtn onClick={handleSubmit(onSubmit)} disabled={disabled}>
+          Đăng nhập
+        </LoginBtn>
+      </Form>
+      <SuggestTypography>
+        Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !
+      </SuggestTypography>
+      <RegisterBtn>
+        <Link to="/register" style={{ textDecoration: 'none' }}>
+          <RegisterTypography>Đăng ký</RegisterTypography>
+        </Link>
+      </RegisterBtn>
+    </SideRightContainer>
   );
 };
 

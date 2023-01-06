@@ -7,7 +7,8 @@
       "features/*": ["features/*"],
       "page/*": ["page/*"],
       "router/*": ["router/*"],
-      "store/*": ["store/*"]
+      "store/*": ["store/*"],
+      "layout/*": ["layout/*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
