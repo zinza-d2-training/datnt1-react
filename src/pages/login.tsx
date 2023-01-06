@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import loginImg from '../assets/img/login.png';
+import loginImg from 'assets/img/login.png';
 import { Link } from 'react-router-dom';
 
 const Container = styled.div`
@@ -66,6 +66,17 @@ const Header = styled.div`
   height: 42px;
 `;
 
+const HeaderText = styled(Typography)`
+  width: 376px;
+  height: 42px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 33px;
+  line-height: 123.5%;
+  color: rgba(0, 0, 0, 0.87);
+`;
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -97,7 +108,6 @@ const Label = styled.label`
   font-size: 16px;
   line-height: 24px;
   /* identical to box height, or 150% */
-
   color: rgba(0, 0, 0, 0.87);
 `;
 
@@ -109,6 +119,18 @@ const Links = styled.div`
   width: 376px;
   height: 20px;
   background: #ffffff;
+`;
+
+const LinkTypography = styled(Typography)`
+  width: '101px';
+  height: '20px';
+  font-family: 'Roboto';
+  font-weight: '400';
+  font-size: '14px';
+  line-height: '143%';
+  text-align: 'right';
+  letter-spacing: '-0.04px';
+  color: '#3949AB';
 `;
 
 const LoginBtn = styled(Button)`
@@ -137,6 +159,30 @@ const RegisterBtn = styled(Button)`
   background: #ffffff;
   border: 1px solid #9ccc65;
   border-radius: 5px;
+`;
+
+const SuggestTypography = styled(Typography)`
+  width: 376px;
+  height: 24px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.04px;
+  color: rgba(0, 0, 0, 0.87);
+`;
+const RegisterTypography = styled(Typography)`
+  width: 376px;
+  height: 24px;
+  font-family: Roboto;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.04px;
+  color: #9ccc65;
 `;
 
 type FormValues = {
@@ -186,21 +232,7 @@ const Login = () => {
       <SideRight>
         <SideRightContainer>
           <Header>
-            <Typography
-              variant="h4"
-              align="center"
-              sx={{
-                width: '376px',
-                height: '42px',
-                fontFamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: '700',
-                fontSize: '33px',
-                lineHeight: '123.5%',
-                color: 'rgba(0, 0, 0, 0.87)'
-              }}>
-              Đăng nhập vào tài khoản
-            </Typography>
+            <HeaderText>Đăng nhập vào tài khoản</HeaderText>
           </Header>
           <Form>
             <InputComponent>
@@ -230,57 +262,19 @@ const Login = () => {
             </InputComponent>
             <Links>
               <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
-                <Typography
-                  sx={{
-                    width: '101px',
-                    height: '20px',
-                    fontFamily: 'Roboto',
-                    fontWeight: '400',
-                    fontSize: '14px',
-                    lineHeight: '143%',
-                    textAlign: 'right',
-                    letterSpacing: '-0.04px',
-                    color: '#3949AB'
-                  }}>
-                  Quên mật khẩu?
-                </Typography>
+                <LinkTypography>Quên mật khẩu?</LinkTypography>
               </Link>
             </Links>
             <LoginBtn onClick={handleSubmit(onSubmit)} disabled={disabled}>
               Đăng nhập
             </LoginBtn>
           </Form>
-          <Typography
-            sx={{
-              width: '376px',
-              height: '24px',
-              fontFamily: 'Roboto',
-              fontStyle: 'normal',
-              fontWeight: '400',
-              fontSize: '16px',
-              lineHeight: '150%',
-              textAlign: 'center',
-              letterSpacing: -'0.04px',
-              color: 'rgba(0, 0, 0, 0.87)'
-            }}>
+          <SuggestTypography>
             Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !
-          </Typography>
+          </SuggestTypography>
           <RegisterBtn>
             <Link to="/register" style={{ textDecoration: 'none' }}>
-              <Typography
-                sx={{
-                  width: '376px',
-                  height: '24px',
-                  fontFamily: 'Roboto',
-                  fontWeight: '700',
-                  fontSize: '16px',
-                  lineHeight: '150%',
-                  textAlign: 'center',
-                  letterSpacing: '-0.04px',
-                  color: '#9CCC65'
-                }}>
-                Đăng ký
-              </Typography>
+              <RegisterTypography>Đăng ký</RegisterTypography>
             </Link>
           </RegisterBtn>
         </SideRightContainer>

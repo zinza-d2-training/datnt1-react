@@ -11,7 +11,7 @@ import {
 
 import './Counter.css';
 
-import { useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from 'store';
 
 export function Counter() {
   const count = useAppSelector(selectCount);
