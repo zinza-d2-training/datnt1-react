@@ -108,6 +108,7 @@ const LoginBtn = styled(Button)`
   &:hover {
     background: #66bb6a;
   }
+  text-transform: none;
 `;
 
 const RegisterBtn = styled(Button)`
@@ -117,6 +118,7 @@ const RegisterBtn = styled(Button)`
   background: #ffffff;
   border: 1px solid #9ccc65;
   border-radius: 5px;
+  text-transform: none;
 `;
 
 const SuggestTypography = styled(Typography)`
@@ -201,6 +203,9 @@ const Login = () => {
             fullWidth
             helperText={errors.email?.message && errors.email.message}
             {...register('email')}
+            FormHelperTextProps={{
+              sx: { color: '#d32f2f', margin: '0px' }
+            }}
           />
         </InputComponent>
         <InputComponent>
@@ -213,6 +218,9 @@ const Login = () => {
             fullWidth
             helperText={errors.password?.message && errors.password.message}
             {...register('password')}
+            FormHelperTextProps={{
+              sx: { color: '#d32f2f', margin: '0px' }
+            }}
           />
         </InputComponent>
         <Links>
