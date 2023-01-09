@@ -194,9 +194,9 @@ export interface registerFormInputs {
 const registerSchema = yup.object().shape({
   identity: yup
     .string()
-    .matches(/^[0-9]+$/, 'Must be only digits')
-    .min(12, 'Số CMND không hợp lệ')
-    .required('Số CMND không được bỏ trống'),
+    .required('Số CMND không được bỏ trống')
+    .matches(/^[0-9]+$/, 'Số CMND chỉ được chứa số ')
+    .min(12, 'Số CMND không hợp lệ'),
   email: yup
     .string()
     .email('Email không hợp lệ')
