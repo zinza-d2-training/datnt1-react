@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { Typography, Button, TextField, setRef } from '@mui/material';
+import { Typography, Button, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 
-import loginImg from 'assets/img/login.png';
-
 const SideRightContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   padding: 0px;
   gap: 24px;
 
-  width: 479px;
-  height: 206px;
+  max-width: 68.4%;
+  min-height: 100vh;
 `;
 
 const Header = styled.div`
@@ -26,15 +25,13 @@ const Header = styled.div`
   justify-content: center;
   padding: 0px;
 
-  width: 479px;
-  height: 48px;
+  /* max-width: 479px; */
+  /* min-height: 48px; */
 `;
 
 const HeaderTypography = styled(Typography)`
-  /* Typography (body1) */
-
-  width: 399px;
-  height: 48px;
+  max-width: 399px;
+  min-height: 48px;
 
   font-family: 'Roboto';
   font-style: normal;
@@ -58,8 +55,7 @@ const Form = styled.form`
   padding: 0px;
   gap: 16px;
 
-  width: 479px;
-  height: 50px;
+  width: 100%;
 `;
 
 const InputComponent = styled.div`
@@ -69,8 +65,7 @@ const InputComponent = styled.div`
   padding: 0px;
   gap: 5px;
 
-  width: 479px;
-  height: 50px;
+  width: 100%;
 `;
 
 const Field = styled(TextField)`
@@ -79,9 +74,6 @@ const Field = styled(TextField)`
   align-items: flex-start;
   padding: 0px;
   gap: 3px;
-
-  width: 100%;
-  height: 50px;
 `;
 
 const DialogActions = styled.div`
@@ -92,15 +84,12 @@ const DialogActions = styled.div`
   padding: 12px 0px;
   gap: 16px;
 
-  width: 479px;
+  width: 100%;
+  /* max-width: 479px; */
   height: 60px;
 `;
 
 const ButtonBack = styled(Button)`
-  box-sizing: border-box;
-
-  /* Auto layout */
-
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -108,10 +97,8 @@ const ButtonBack = styled(Button)`
   padding: 6px 16px;
   gap: 4px;
 
-  width: 101px;
+  max-width: 101px;
   height: 36px;
-
-  /* Indigo / 700 */
 
   border: 1px solid #303f9f;
   border-radius: 8px 8px 8px 0px;
@@ -141,7 +128,7 @@ const ButtonSend = styled(Button)`
   padding: 6px 32px;
   gap: 4px;
 
-  width: 91px;
+  max-width: 91px;
   height: 36px;
 
   /* Indigo / 700 */
@@ -163,8 +150,6 @@ const ButtonSendTypography = styled(Typography)`
 
   letter-spacing: -0.04px;
   text-transform: uppercase;
-
-  /* White */
 
   color: #ffffff;
 `;
@@ -189,8 +174,6 @@ const ForgotPassword = () => {
     resolver: yupResolver(emailSchema)
   });
 
-  // const emailInput = watch('email');
-
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -202,25 +185,19 @@ const ForgotPassword = () => {
     }, 2000);
   };
 
-  // useEffect(() => {
-  //   const timer = setTimeOut(() => {
-
-  //   },300)
-  // },[])
-
   return (
     <SideRightContainer>
       <Header>
         <HeaderTypography>
           <Typography>
             Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng
-            ký (*)
+            ký <span style={{ color: '#cf3430' }}>(*)</span>
           </Typography>
         </HeaderTypography>
       </Header>
       <Form>
         <InputComponent>
-          <TextField
+          <Field
             id="email"
             variant="outlined"
             placeholder="Email"

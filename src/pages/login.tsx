@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Typography, Button, TextField } from '@mui/material';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-
-import loginImg from 'assets/img/login.png';
 import { Link } from 'react-router-dom';
 
 const SideRightContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   padding: 0px;
   gap: 24px;
-
-  width: 376px;
-  height: 526px;
+  max-width: 53.7%;
+  min-height: 100vh;
 `;
 const Header = styled.div`
   display: flex;
@@ -24,14 +22,12 @@ const Header = styled.div`
   align-items: flex-start;
   padding: 0px;
 
-  width: 376px;
-  height: 42px;
+  width: 100%;
 `;
 
 const HeaderText = styled(Typography)`
-  width: 376px;
-  height: 42px;
-  font-family: Roboto;
+  max-width: 376px;
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
   font-size: 33px;
@@ -45,7 +41,7 @@ const Form = styled.form`
   align-items: flex-start;
   padding: 0px;
   gap: 16px;
-  width: 376px;
+  width: 100%;
 `;
 
 const InputComponent = styled.div`
@@ -55,14 +51,14 @@ const InputComponent = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 5px;
-  width: 376px;
-  /* height: 102px; */
+
+  width: 100%;
   background: #ffffff;
 `;
 
 const Label = styled.label`
-  width: 376px;
-  height: 24px;
+  max-width: 376px;
+  min-height: 24px;
 
   font-family: 'Roboto';
   font-style: normal;
@@ -78,31 +74,31 @@ const Links = styled.div`
   justify-content: flex-end;
   align-items: center;
   padding: 0px;
-  width: 376px;
-  height: 20px;
+  min-height: 20px;
   background: #ffffff;
+  width: 100%;
 `;
 
 const LinkTypography = styled(Typography)`
-  width: '101px';
-  height: '20px';
+  max-width: 101px;
+  min-height: 20px;
   font-family: 'Roboto';
-  font-weight: '400';
-  font-size: '14px';
-  line-height: '143%';
-  text-align: 'right';
-  letter-spacing: '-0.04px';
-  color: '#3949AB';
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 143%;
+  text-align: right;
+  letter-spacing: -0.04px;
+  color: #3949ab;
 `;
 
 const LoginBtn = styled(Button)`
-  width: 376px;
-  height: 50px;
+  max-width: 376px;
+  min-height: 50px;
   outline: none;
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  font-family: Roboto;
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
@@ -115,8 +111,8 @@ const LoginBtn = styled(Button)`
 `;
 
 const RegisterBtn = styled(Button)`
-  width: 376px;
-  height: 50px;
+  max-width: 376px;
+  min-height: 50px;
   box-sizing: border-box;
   background: #ffffff;
   border: 1px solid #9ccc65;
@@ -124,9 +120,9 @@ const RegisterBtn = styled(Button)`
 `;
 
 const SuggestTypography = styled(Typography)`
-  width: 376px;
-  height: 24px;
-  font-family: Roboto;
+  width: 100%;
+  min-height: 24px;
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -137,9 +133,9 @@ const SuggestTypography = styled(Typography)`
 `;
 
 const RegisterTypography = styled(Typography)`
-  width: 376px;
-  height: 24px;
-  font-family: Roboto;
+  max-width: 376px;
+  min-height: 24px;
+  font-family: 'Roboto';
   font-weight: 700;
   font-size: 16px;
   line-height: 150%;
@@ -148,12 +144,12 @@ const RegisterTypography = styled(Typography)`
   color: #9ccc65;
 `;
 
-type FormValues = {
+interface LoginFormInputs {
   email: string;
   password: string;
-};
+}
 
-const schema = yup.object().shape({
+const loginSchema = yup.object().shape({
   email: yup.string().email().required('Email không được bỏ trống'),
   password: yup
     .string()
@@ -170,8 +166,8 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors, isValid }
-  } = useForm<FormValues>({
-    resolver: yupResolver(schema)
+  } = useForm<LoginFormInputs>({
+    resolver: yupResolver(loginSchema)
   });
 
   useEffect(() => {
@@ -183,7 +179,7 @@ const Login = () => {
     setDisabled(false);
   }, []);
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
     // login
     console.log(data);
   };
@@ -224,14 +220,17 @@ const Login = () => {
             <LinkTypography>Quên mật khẩu?</LinkTypography>
           </Link>
         </Links>
-        <LoginBtn onClick={handleSubmit(onSubmit)} disabled={disabled}>
+        <LoginBtn
+          fullWidth
+          onClick={handleSubmit(onSubmit)}
+          disabled={disabled}>
           Đăng nhập
         </LoginBtn>
       </Form>
       <SuggestTypography>
         Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !
       </SuggestTypography>
-      <RegisterBtn>
+      <RegisterBtn fullWidth>
         <Link to="/register" style={{ textDecoration: 'none' }}>
           <RegisterTypography>Đăng ký</RegisterTypography>
         </Link>

@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Outlet } from 'react-router-dom';
 import loginImg from 'assets/img/login.png';
-import ForgotPassword from 'pages/forgotPassword';
+import { Outlet } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -12,37 +10,38 @@ const Container = styled.div`
 
   position: relative;
   width: 100vw;
-  /* height: 1000px; */
+  height: 100vh;
 
   background: #ffffff;
+
+  overflow-x: hidden;
 `;
 
 const SideLeft = styled.div`
-  flex: 1;
+  width: 50vw;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   padding: 0px;
-
-  width: 100%;
-  height: 500px;
-
-  flex: 1;
+  height: 100vh;
 `;
+
 const Image = styled.img`
-  width: 100%;
+  width: 50vw;
+  height: 100vh;
+  position: fixed;
   object-fit: cover;
+  z-index: 100;
 `;
 const SideRight = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 0px;
 
-  width: 700px;
-  height: 1000px;
+  width: 50vw;
+  min-height: 100vh;
 `;
 
 const LoginLayout = () => {
