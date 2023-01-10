@@ -17,7 +17,7 @@ const Home = () => {
       <Header />
       <AggregateInfo />
       <LineChart />
-      {/* <InjectionPoint /> */}
+      <InjectionPoint />
       <Footer />
     </HomeContainer>
   );
