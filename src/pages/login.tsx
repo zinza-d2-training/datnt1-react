@@ -3,8 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { Link } from 'react-router-dom';
+import * as yup from 'yup';
 
 const SideRightContainer = styled.div`
   display: flex;
