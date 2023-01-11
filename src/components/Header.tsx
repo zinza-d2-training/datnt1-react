@@ -84,7 +84,7 @@ const MenuItem = styled.div`
   min-height: 50px;
 `;
 
-const MenuItemTypography = styled(Typography)`
+const MenuItemLink = styled(Typography)`
   min-width: 51px;
   min-height: 24px;
 
