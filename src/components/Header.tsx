@@ -66,6 +66,7 @@ const Menu = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   padding: 0px;
   gap: 24px;
 

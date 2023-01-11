@@ -5,6 +5,7 @@ import AggregateInfo from 'components/AggregateInfo';
 import LineChart from 'components/LineChart';
 import InjectionPoint from 'components/InjectionPoint';
 import styled from '@emotion/styled';
+import MenuItemContent from 'components/MenuItemContent';
 
 const HomeContainer = styled.div`
   display: flex;

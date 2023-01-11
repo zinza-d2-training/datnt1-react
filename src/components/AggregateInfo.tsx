@@ -12,9 +12,7 @@ const InfoContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 16px 36px;
-
   margin-top: 24px;
-
   flex-wrap: wrap;
 
   width: 100vw;
@@ -24,7 +22,7 @@ const InfoContainer = styled.div`
   /* margin-top: 80px; */
 `;
 
-const Frame = styled.div`
+const InfoItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -87,7 +85,7 @@ const InfoValue = styled(Typography)`
   align-items: center;
 
   color: #000000;
-  & .smallText {
+  & .MuiTypography-root {
     margin-top: 5px;
     margin-left: 3px;
     font-size: 15px;
@@ -105,35 +103,35 @@ const Divider = styled.div`
 const AggregateInfo = () => {
   return (
     <InfoContainer>
-      <Frame>
+      <InfoItem>
         <Icon src={ic_register_people} />
         <InfoFrame>
           <InfoKey>Đối tượng đăng ký tiêm</InfoKey>
           <InfoValue>
-            11,203,873 <i className="smallText">(lượt)</i>
+            11,203,873 <Typography component="i">(lượt)</Typography>
           </InfoValue>
         </InfoFrame>
-      </Frame>
+      </InfoItem>
       <Divider></Divider>
-      <Frame>
+      <InfoItem>
         <Icon src={ic_injection} />
         <InfoFrame>
           <InfoKey>Số mũi tiêm hôm qua</InfoKey>
           <InfoValue>
-            1,762,119 <i className="smallText">(mũi)</i>
+            1,762,119 <Typography component="i">(mũi)</Typography>
           </InfoValue>
         </InfoFrame>
-      </Frame>
+      </InfoItem>
       <Divider></Divider>
-      <Frame>
+      <InfoItem>
         <Icon src={ic_injected_people} />
         <InfoFrame>
           <InfoKey>Số mũi đã tiêm toàn quốc</InfoKey>
           <InfoValue>
-            69,523,654 <i className="smallText">(mũi)</i>
+            69,523,654 <Typography component="i">(mũi)</Typography>
           </InfoValue>
         </InfoFrame>
-      </Frame>
+      </InfoItem>
     </InfoContainer>
   );
 };

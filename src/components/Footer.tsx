@@ -43,9 +43,8 @@ const CopyRightTypo = styled(Typography)`
 `;
 
 const DevByTypo = styled(Typography)`
-  max-width: 129px;
+  max-width: 135px;
   min-height: 20px;
-
   font-family: 'Roboto';
   font-weight: 400;
   font-size: 14px;
@@ -53,6 +52,11 @@ const DevByTypo = styled(Typography)`
   letter-spacing: -0.04px;
 
   color: #ffffff;
+`;
+
+const RedDevByTypo = styled(Typography)`
+  color: #d32f2f;
+  display: inline;
 `;
 
 const LogoContainer = styled.div``;
@@ -136,7 +140,7 @@ const Footer = () => {
           GIA
         </CopyRightTypo>
         <DevByTypo>
-          Phát triển bởi <span style={{ color: '#d32f2f' }}>Viettel</span>
+          Phát triển bởi <RedDevByTypo>Viettel</RedDevByTypo>
         </DevByTypo>
         <LogoContainer>
           <Logo src={Logo2in1} />

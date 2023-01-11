@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Button, Typography, TextField, MenuItem, Select } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import TablePaginationActions from 'components/TablePaginationActions';
-
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import {
   Table,
   TableBody,
@@ -15,7 +16,17 @@ import {
   TableFooter,
   TablePagination
 } from '@mui/material';
-import { districts, provinces, rows, wards } from 'dummyData';
+
+import {
+  District,
+  districts,
+  Province,
+  provinces,
+  rows,
+  Ward,
+  wards
+} from 'dummyData';
+import TablePaginationActions from 'components/TablePaginationActions';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -82,6 +93,12 @@ const SearchRow = styled.div`
 
   max-width: 1344px;
   min-height: 56px;
+
+  & .MuiButton-root:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 const InputComnponent = styled.div`
@@ -94,7 +111,16 @@ const InputComnponent = styled.div`
   height: 40px;
 
   background: #ffffff;
-  & .select {
+
+  & .MuiInputBase-root {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+  }
+
+  & .MuiSelect-select {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -124,11 +150,6 @@ const SearchButton = styled(Button)`
   line-height: 23px;
 
   color: #ffffff;
-  /* & :hover {
-    background-color: #1e2f97 !important;
-    border-color: #1e2f97 !important;
-    color: #ffffff;
-  } */
 `;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -141,9 +162,33 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   }
 }));
 
+interface SearchInputs {
+  province: string;
+  district?: string;
+  ward?: string;
+}
+
+const searchSchema = yup.object().shape({
+  province: yup.string().required('Tên thành phố không được bỏ trống')
+});
+
 const InjectionPoint = () => {
+  const [provincesData, setProvincesData] = React.useState(provinces);
+  const [districtsData, setDistrictsData] = React.useState(districts);
+  const [wardsData, setWardsData] = React.useState(wards);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    resetField,
+    formState: { errors, isValid }
+  } = useForm<SearchInputs>({
+    resolver: yupResolver(searchSchema)
+  });
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -163,6 +208,38 @@ const InjectionPoint = () => {
     setPage(0);
   };
 
+  useEffect(() => {
+    resetField('district');
+    resetField('ward');
+    // Lấy provinceId hiện tại đang chọn
+    const province: Province[] = provinces.filter((province) => {
+      return province.name == watch('province');
+    });
+
+    //Lấy ra các quận thuộc province đang chọn
+    const districtArr: District[] = districts.filter((district) => {
+      return district.provinceId == province[0]?.id;
+    });
+    setDistrictsData(districtArr);
+  }, [watch('province')]);
+
+  useEffect(() => {
+    resetField('ward');
+    // Lấy districtId hiện tại đang chọn
+    const district: District[] = districts.filter((district) => {
+      return district.name == watch('district');
+    });
+
+    //Lấy ra các quận thuộc district đang chọn
+    const wardArr: Ward[] = wards.filter((ward) => {
+      return ward.districtId == district[0]?.id;
+    });
+
+    setWardsData(wardArr);
+  }, [watch('district')]);
+
+  console.log('what district', watch('district'));
+
   return (
     <Wrapper>
       <InjectionPointContainer>
@@ -172,11 +249,11 @@ const InjectionPoint = () => {
         <SearchRow>
           <InputComnponent>
             <Select
-              className="select"
+              {...register('province')}
               fullWidth
               displayEmpty={true}
               id="province"
-              renderValue={(selected: any) => {
+              renderValue={(selected: string) => {
                 if (!selected) {
                   return (
                     <span style={{ color: '#c5c5c5' }}>Tỉnh/Thành phố</span>
@@ -184,7 +261,7 @@ const InjectionPoint = () => {
                 }
                 return selected;
               }}>
-              {provinces.map((province) => (
+              {provincesData.map((province) => (
                 <MenuItem key={province.id} value={province.name}>
                   {province.name}
                 </MenuItem>
@@ -193,17 +270,19 @@ const InjectionPoint = () => {
           </InputComnponent>
           <InputComnponent>
             <Select
-              className="select"
+              disabled={watch('province') ? false : true}
+              {...register('district')}
               fullWidth
               displayEmpty={true}
-              id="province"
-              renderValue={(selected: any) => {
-                if (!selected) {
+              id="district"
+              renderValue={(selected: string) => {
+                if (!watch('district')) {
                   return <span style={{ color: '#c5c5c5' }}>Quận/Huyện</span>;
+                } else {
+                  return selected;
                 }
-                return selected;
               }}>
-              {districts.map((district) => (
+              {districtsData.map((district) => (
                 <MenuItem key={district.id} value={district.name}>
                   {district.name}
                 </MenuItem>
@@ -212,17 +291,19 @@ const InjectionPoint = () => {
           </InputComnponent>
           <InputComnponent>
             <Select
-              className="select"
+              disabled={watch('district') ? false : true}
+              {...register('ward')}
               fullWidth
               displayEmpty={true}
-              id="province"
-              renderValue={(selected: any) => {
-                if (!selected) {
+              id="ward"
+              renderValue={(selected: string) => {
+                if (!watch('ward')) {
                   return <span style={{ color: '#c5c5c5' }}>Xã/Phường</span>;
+                } else {
+                  return selected;
                 }
-                return selected;
               }}>
-              {wards.map((ward) => (
+              {wardsData.map((ward) => (
                 <MenuItem key={ward.id} value={ward.name}>
                   {ward.name}
                 </MenuItem>
@@ -290,12 +371,7 @@ const InjectionPoint = () => {
                   count={rows.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
-                  SelectProps={{
-                    inputProps: {
-                      'aria-label': 'Số bản ghi'
-                    },
-                    native: false
-                  }}
+                  labelRowsPerPage="Số bản ghi:"
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   ActionsComponent={TablePaginationActions}
