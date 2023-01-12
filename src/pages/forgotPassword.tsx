@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
+import StyledLink from 'components/StyledLink';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -210,9 +211,9 @@ const ForgotPassword = () => {
       </Form>
       <DialogActions>
         <ButtonBack>
-          <Link to="/login" style={{ textDecoration: 'none' }}>
+          <StyledLink to="/login">
             <ButtonBackTypography>QUAY LẠI</ButtonBackTypography>
-          </Link>
+          </StyledLink>
         </ButtonBack>
         <ButtonSend onClick={handleClick} disabled={!isValid || isRequest}>
           <ButtonSendTypography>GỬI</ButtonSendTypography>

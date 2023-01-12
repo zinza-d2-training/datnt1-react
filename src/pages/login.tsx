@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
+import StyledLink from 'components/StyledLink';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -224,9 +225,9 @@ const Login = () => {
           />
         </InputComponent>
         <Links>
-          <Link to="/forgot-password" style={{ textDecoration: 'none' }}>
+          <StyledLink to="/forgot-password">
             <LinkTypography>Quên mật khẩu?</LinkTypography>
-          </Link>
+          </StyledLink>
         </Links>
         <LoginBtn
           fullWidth
@@ -239,9 +240,9 @@ const Login = () => {
         Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !
       </SuggestTypography>
       <RegisterBtn fullWidth>
-        <Link to="/register" style={{ textDecoration: 'none' }}>
+        <StyledLink to="/register">
           <RegisterTypography>Đăng ký</RegisterTypography>
-        </Link>
+        </StyledLink>
       </RegisterBtn>
     </SideRightContainer>
   );

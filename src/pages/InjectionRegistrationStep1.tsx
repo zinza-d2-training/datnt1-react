@@ -16,6 +16,7 @@ import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import { injectionSession, priorityGroup } from 'dummyData';
+import StyledLink from 'components/StyledLink';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -110,6 +111,17 @@ const InputComponent = styled.div`
     padding: 0px 8px;
     height: 40px;
   }
+`;
+
+const PlaceholderTypo = styled(Typography)`
+  height: 23px;
+
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 23px;
+
+  color: rgba(0, 0, 0, 0.6);
 `;
 
 const Label = styled.label`
@@ -299,11 +311,7 @@ const InjectionRegistrationStep1 = () => {
                   id="priorityGroup"
                   renderValue={(selected: string) => {
                     if (!selected) {
-                      return (
-                        <Typography sx={{ color: '#c5c5c5' }}>
-                          Nhóm ưu tiên
-                        </Typography>
-                      );
+                      return <PlaceholderTypo>Nhóm ưu tiên</PlaceholderTypo>;
                     }
                     return selected;
                   }}
@@ -412,9 +420,7 @@ const InjectionRegistrationStep1 = () => {
                   renderValue={(selected: string) => {
                     if (!selected) {
                       return (
-                        <Typography sx={{ color: '#c5c5c5' }}>
-                          Buổi tiêm mong muốn
-                        </Typography>
+                        <PlaceholderTypo>Buổi tiêm mong muốn</PlaceholderTypo>
                       );
                     }
                     return selected;
@@ -468,12 +474,12 @@ const InjectionRegistrationStep1 = () => {
           </Form>
         </Result>
         <SubmitContainer>
-          <Link to="/" style={{ textDecoration: 'none' }}>
+          <StyledLink to="/">
             <CancelSubmitButton>
               <ArrowBackIcon />
               Hủy bỏ
             </CancelSubmitButton>
-          </Link>
+          </StyledLink>
           <ContinueSubmitButton
             onClick={handleSubmit(onSubmit)}
             // disabled={!isValid}

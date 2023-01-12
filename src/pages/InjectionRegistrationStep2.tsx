@@ -11,6 +11,7 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
+import StyledLink from 'components/StyledLink';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -201,22 +202,18 @@ const InjectionRegistrationStep2 = () => {
         </ResultConfirm>
       </ResultContainer>
       <SubmitContainer>
-        <Link
-          to="/injection-registration/step1"
-          style={{ textDecoration: 'none' }}>
+        <StyledLink to="/injection-registration/step1">
           <BackSubmitButton>
             <ArrowBackIcon />
             Quay lại
           </BackSubmitButton>
-        </Link>
-        <Link
-          to="/injection-registration/step3"
-          style={{ textDecoration: 'none' }}>
+        </StyledLink>
+        <StyledLink to="/injection-registration/step3">
           <ContinueSubmitButton>
             Tiếp tục
             <ArrowForwardIcon />
           </ContinueSubmitButton>
-        </Link>
+        </StyledLink>
       </SubmitContainer>
 
       <Footer />

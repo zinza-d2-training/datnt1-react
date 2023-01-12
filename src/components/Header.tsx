@@ -4,6 +4,7 @@ import { Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import LogoIcon from 'assets/img/Logo.png';
+import StyledLink from 'components/StyledLink';
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -137,37 +138,35 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Brand>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <StyledLink to="/">
           <Logo src={LogoIcon} alt="Logo" />
-        </Link>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        </StyledLink>
+        <StyledLink to="/">
           <BrandTypography>CỔNG THÔNG TIN TIÊM CHỦNG COVID-19</BrandTypography>
-        </Link>
+        </StyledLink>
       </Brand>
       <Menu>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <StyledLink to="/">
           <MenuItem>
             <MenuItemTypography>Trang chủ</MenuItemTypography>
           </MenuItem>
-        </Link>
-        <Link
-          to="/injection-registration/step1"
-          style={{ textDecoration: 'none' }}>
+        </StyledLink>
+        <StyledLink to="/injection-registration/step1">
           <MenuItem>
             <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
           </MenuItem>
-        </Link>
+        </StyledLink>
         <MenuItem>
           <MenuItemTypography>Tra cứu</MenuItemTypography>
         </MenuItem>
         <MenuItem>
           <MenuItemTypography>Tài liệu</MenuItemTypography>
         </MenuItem>
-        <Link to="/login" style={{ textDecoration: 'none' }}>
+        <StyledLink to="/login">
           <MenuItem>
             <MenuItemButton>Đăng nhập</MenuItemButton>
           </MenuItem>
-        </Link>
+        </StyledLink>
       </Menu>
     </HeaderContainer>
   );

@@ -8,6 +8,7 @@ import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
+import StyledLink from 'components/StyledLink';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -273,18 +274,18 @@ const InjectionRegistrationStep2 = () => {
         </ResultFrame>
       </ResultContainer>
       <SubmitContainer>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <StyledLink to="/">
           <BackSubmitButton>
             <ArrowBackIcon />
             Trang Chủ
           </BackSubmitButton>
-        </Link>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        </StyledLink>
+        <StyledLink to="/">
           <ContinueSubmitButton>
             Xuất thông tin
             <ArrowForwardIcon />
           </ContinueSubmitButton>
-        </Link>
+        </StyledLink>
       </SubmitContainer>
 
       <Footer />
