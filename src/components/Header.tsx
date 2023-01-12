@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Button, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 import LogoIcon from 'assets/img/Logo.png';
 
 const HeaderContainer = styled.div`
@@ -135,25 +137,37 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Brand>
-        <Logo src={LogoIcon} alt="Logo" />
-        <BrandTypography>CỔNG THÔNG TIN TIÊM CHỦNG COVID-19</BrandTypography>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <Logo src={LogoIcon} alt="Logo" />
+        </Link>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <BrandTypography>CỔNG THÔNG TIN TIÊM CHỦNG COVID-19</BrandTypography>
+        </Link>
       </Brand>
       <Menu>
-        <MenuItem>
-          <MenuItemTypography>Trang chủ</MenuItemTypography>
-        </MenuItem>
-        <MenuItem>
-          <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
-        </MenuItem>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <MenuItem>
+            <MenuItemTypography>Trang chủ</MenuItemTypography>
+          </MenuItem>
+        </Link>
+        <Link
+          to="/injection-registration/step1"
+          style={{ textDecoration: 'none' }}>
+          <MenuItem>
+            <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
+          </MenuItem>
+        </Link>
         <MenuItem>
           <MenuItemTypography>Tra cứu</MenuItemTypography>
         </MenuItem>
         <MenuItem>
           <MenuItemTypography>Tài liệu</MenuItemTypography>
         </MenuItem>
-        <MenuItem>
-          <MenuItemButton>Đăng nhập</MenuItemButton>
-        </MenuItem>
+        <Link to="/login" style={{ textDecoration: 'none' }}>
+          <MenuItem>
+            <MenuItemButton>Đăng nhập</MenuItemButton>
+          </MenuItem>
+        </Link>
       </Menu>
     </HeaderContainer>
   );

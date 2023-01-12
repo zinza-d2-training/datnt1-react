@@ -204,7 +204,7 @@ const Login = () => {
             helperText={errors.email?.message && errors.email.message}
             {...register('email')}
             FormHelperTextProps={{
-              sx: { color: '#d32f2f', margin: '0px' }
+              sx: { color: '#d32f2f', margin: '3px 0px 0px' }
             }}
           />
         </InputComponent>
@@ -219,7 +219,7 @@ const Login = () => {
             helperText={errors.password?.message && errors.password.message}
             {...register('password')}
             FormHelperTextProps={{
-              sx: { color: '#d32f2f', margin: '0px' }
+              sx: { color: '#d32f2f', margin: '3px 0px 0px' }
             }}
           />
         </InputComponent>
