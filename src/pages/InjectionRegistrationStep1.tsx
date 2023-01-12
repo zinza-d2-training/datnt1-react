@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -273,8 +273,11 @@ const InjectionRegistrationStep1 = () => {
     resolver: yupResolver(InjectionRegisterSchema)
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = (data: InjectionRegisterFormInputs) => {
-    console.log(data);
+    // console.log(data);
+    navigate('/injection-registration/step2');
   };
 
   return (
@@ -471,14 +474,13 @@ const InjectionRegistrationStep1 = () => {
               Hủy bỏ
             </CancelSubmitButton>
           </Link>
-          <Link to="injection-registration/step2">
-            <ContinueSubmitButton
-              onClick={handleSubmit(onSubmit)}
-              disabled={!isValid}>
-              Tiếp tục
-              <ArrowForwardIcon />
-            </ContinueSubmitButton>
-          </Link>
+          <ContinueSubmitButton
+            onClick={handleSubmit(onSubmit)}
+            // disabled={!isValid}
+          >
+            Tiếp tục
+            <ArrowForwardIcon />
+          </ContinueSubmitButton>
         </SubmitContainer>
       </ResultContainer>
       <Footer />

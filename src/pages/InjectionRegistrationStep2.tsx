@@ -209,7 +209,9 @@ const InjectionRegistrationStep2 = () => {
             Quay lại
           </BackSubmitButton>
         </Link>
-        <Link to="/injection-registration/step3">
+        <Link
+          to="/injection-registration/step3"
+          style={{ textDecoration: 'none' }}>
           <ContinueSubmitButton>
             Tiếp tục
             <ArrowForwardIcon />
