@@ -1,22 +1,21 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Typography, Button, TextField, Select, MenuItem } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, Controller } from 'react-hook-form';
-import * as yup from 'yup';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Link, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
-import { injectionSession, priorityGroup } from 'dummyData';
 import StyledLink from 'components/StyledLink';
+import { injectionSession, priorityGroup } from 'dummyData';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;

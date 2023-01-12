@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import EastIcon from '@mui/icons-material/East';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -12,13 +11,20 @@ const ListContainer = styled.ul`
   justify-content: center;
   align-items: center;
   padding: 16px 0px;
-
+  margin: 0;
   width: 361px;
   height: 180px;
 
   background: #ffffff;
   box-shadow: 0px 10px 70px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
+  & .MuiTooltip-popper {
+    display: none;
+  }
+  /* position: absolute;
+  top: 54px;
+  left: 0;
+  transform: translate(-50%, 0%); */
 `;
 
 const ListItemContainer = styled.li`
@@ -111,17 +117,17 @@ const MenuItemContent = () => {
             Cập nhật nhanh và chính xác nhất
           </ListItemTypoSmall>
         </ListItem>
-        <EastIcon style={{ color: '#5E35B1' }} />
+        <EastIcon sx={{ color: '#5E35B1' }} />
       </ListItemContainer>
       <ListItemContainer>
         <PeopleAltIcon className="blueIcon" />
         <ListItem>
-          <ListItemTypo>Tra cứu chứng nhận tiêm</ListItemTypo>
+          <ListItemTypo>Tra cứu kết quả đăng ký</ListItemTypo>
           <ListItemTypoSmall>
             Cập nhật nhanh và chính xác nhất
           </ListItemTypoSmall>
         </ListItem>
-        <EastIcon style={{ color: '#1E88E5' }} />
+        <EastIcon sx={{ color: '#1E88E5' }} />
       </ListItemContainer>
     </ListContainer>
   );

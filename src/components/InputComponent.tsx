@@ -94,7 +94,10 @@ const InputComponent = ({
     <InputContainer>
       <Label htmlFor={id}>
         {label}
-        <span style={{ color: '#D32F2F' }}> (*)</span>
+        <Typography component="span" sx={{ color: '#D32F2F' }}>
+          {' '}
+          (*)
+        </Typography>
       </Label>
       <Field
         id={id}

@@ -4,7 +4,7 @@ import { Button, TextField, Typography } from '@mui/material';
 import StyledLink from 'components/StyledLink';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
 const SideRightContainer = styled.div`
@@ -192,7 +192,10 @@ const ForgotPassword = () => {
         <HeaderTypography>
           <Typography>
             Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng
-            ký <span style={{ color: '#cf3430' }}>(*)</span>
+            ký{' '}
+            <Typography component="span" sx={{ color: '#cf3430' }}>
+              (*)
+            </Typography>
           </Typography>
         </HeaderTypography>
       </Header>

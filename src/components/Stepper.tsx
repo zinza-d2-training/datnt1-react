@@ -98,11 +98,11 @@ const Stepper = () => {
         </Circle>
         <Line />
         <Circle>
-          3 <span>Phiếu đồng ý tiêm</span>
+          2 <span>Phiếu đồng ý tiêm</span>
         </Circle>
         <Line />
         <Circle>
-          4 <span>Hoàn thành</span>
+          3 <span>Hoàn thành</span>
         </Circle>
       </Content>
     </StepperContainer>
