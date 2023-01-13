@@ -12,6 +12,8 @@ import VaccinationCertificate from 'pages/VaccinationCertificate';
 import RegistrationResult from 'pages/RegistrationResult';
 import Account from 'pages/Account';
 
+console.log('fix vercel');
+
 const router = createBrowserRouter([
   {
     path: '/',
