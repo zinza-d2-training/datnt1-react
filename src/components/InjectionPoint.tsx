@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography, TextField, MenuItem, Select } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import SearchIcon from '@mui/icons-material/Search';
 import {
+  Button,
+  MenuItem,
+  Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   TableFooter,
-  TablePagination
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
 } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
+import TablePaginationActions from 'components/TablePaginationActions';
 import {
   District,
   districts,
@@ -26,7 +30,6 @@ import {
   Ward,
   wards
 } from 'dummyData';
-import TablePaginationActions from 'components/TablePaginationActions';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -130,6 +133,17 @@ const InputComnponent = styled.div`
   }
 `;
 
+const PlaceholderTypo = styled(Typography)`
+  height: 23px;
+
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 23px;
+
+  color: rgba(0, 0, 0, 0.6);
+`;
+
 const SearchButton = styled(Button)`
   display: flex;
   flex-direction: row;
@@ -150,6 +164,12 @@ const SearchButton = styled(Button)`
   line-height: 23px;
 
   color: #ffffff;
+
+  & .MuiButton-startIcon {
+    /* width: 24px;
+    font-size: 20px;
+    height: 24px; */
+  }
 `;
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -255,9 +275,7 @@ const InjectionPoint = () => {
               id="province"
               renderValue={(selected: string) => {
                 if (!selected) {
-                  return (
-                    <span style={{ color: '#c5c5c5' }}>Tỉnh/Thành phố</span>
-                  );
+                  return <PlaceholderTypo>Tỉnh/Thành phố</PlaceholderTypo>;
                 }
                 return selected;
               }}>
@@ -277,7 +295,7 @@ const InjectionPoint = () => {
               id="district"
               renderValue={(selected: string) => {
                 if (!watch('district')) {
-                  return <span style={{ color: '#c5c5c5' }}>Quận/Huyện</span>;
+                  return <PlaceholderTypo>Quận/Huyện</PlaceholderTypo>;
                 } else {
                   return selected;
                 }
@@ -298,7 +316,7 @@ const InjectionPoint = () => {
               id="ward"
               renderValue={(selected: string) => {
                 if (!watch('ward')) {
-                  return <span style={{ color: '#c5c5c5' }}>Xã/Phường</span>;
+                  return <PlaceholderTypo>Xã/Phường</PlaceholderTypo>;
                 } else {
                   return selected;
                 }
@@ -310,10 +328,8 @@ const InjectionPoint = () => {
               ))}
             </Select>
           </InputComnponent>
-          <SearchButton
-            startIcon={
-              <SearchIcon style={{ width: '24px', height: '24px' }} />
-            }>
+          <SearchButton>
+            <SearchIcon />
             Tìm kiếm
           </SearchButton>
         </SearchRow>
@@ -358,7 +374,7 @@ const InjectionPoint = () => {
                 </StyledTableRow>
               ))}
               {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
+                <TableRow sx={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}

@@ -94,7 +94,10 @@ const InputComponent = ({
     <InputContainer>
       <Label htmlFor={id}>
         {label}
-        <span style={{ color: '#D32F2F' }}> (*)</span>
+        <Typography component="span" sx={{ color: '#D32F2F' }}>
+          {' '}
+          (*)
+        </Typography>
       </Label>
       <Field
         id={id}
@@ -105,7 +108,7 @@ const InputComponent = ({
         helperText={helperText}
         {...register(id as registerInput)}
         FormHelperTextProps={{
-          sx: { color: '#d32f2f', margin: '0px' }
+          sx: { color: '#d32f2f', margin: '3px 0px 0px' }
         }}
       />
     </InputContainer>

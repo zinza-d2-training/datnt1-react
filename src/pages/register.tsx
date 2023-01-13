@@ -1,24 +1,18 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import {
   Button,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography
 } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { Link } from 'react-router-dom';
-import InputComponent from 'components/InputComponent';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import InputComponent from 'components/InputComponent';
 import {
   District,
   districts,
@@ -27,6 +21,8 @@ import {
   Ward,
   wards
 } from 'dummyData';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 const RegisterContainer = styled.div`
   display: flex;
@@ -231,7 +227,10 @@ const Register = () => {
           render={({ field: { value, ...fieldProps } }) => (
             <>
               <Label htmlFor="birthday">
-                Ngày sinh <span style={{ color: '#D32F2F' }}>(*)</span>
+                Ngày sinh{' '}
+                <Typography component="span" sx={{ color: '#D32F2F' }}>
+                  (*)
+                </Typography>
               </Label>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
@@ -245,14 +244,21 @@ const Register = () => {
         />
         <FormControl fullWidth>
           <Label htmlFor="gender">
-            Giới tính <span style={{ color: '#D32F2F' }}>(*)</span>
+            Giới tính{' '}
+            <Typography component="span" sx={{ color: '#D32F2F' }}>
+              (*)
+            </Typography>
           </Label>
           <Select
             displayEmpty={true}
             id="gender"
             renderValue={(selected: any) => {
               if (!selected) {
-                return <span style={{ color: '#c5c5c5' }}>Giới Tính</span>;
+                return (
+                  <Typography component="span" sx={{ color: '#c5c5c5' }}>
+                    Giới Tính
+                  </Typography>
+                );
               }
               return selected;
             }}
@@ -267,14 +273,21 @@ const Register = () => {
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="province">
-            Tỉnh/Thành phố <span style={{ color: '#D32F2F' }}>(*)</span>
+            Tỉnh/Thành phố{' '}
+            <Typography component="span" sx={{ color: '#D32F2F' }}>
+              (*)
+            </Typography>
           </Label>
           <Select
             displayEmpty={true}
             id="province"
             renderValue={(selected: any) => {
               if (!selected) {
-                return <span style={{ color: '#c5c5c5' }}>Tỉnh/Thành phố</span>;
+                return (
+                  <Typography component="span" sx={{ color: '#c5c5c5' }}>
+                    Tỉnh/Thành phố
+                  </Typography>
+                );
               }
               return selected;
             }}
@@ -288,14 +301,21 @@ const Register = () => {
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="district">
-            Quận/Huyện <span style={{ color: '#D32F2F' }}>(*)</span>
+            Quận/Huyện{' '}
+            <Typography component="span" sx={{ color: '#D32F2F' }}>
+              (*)
+            </Typography>
           </Label>
           <Select
             displayEmpty={true}
             id="district"
             renderValue={(selected: any) => {
               if (!selected) {
-                return <span style={{ color: '#c5c5c5' }}>Quận/Huyện</span>;
+                return (
+                  <Typography component="span" sx={{ color: '#c5c5c5' }}>
+                    Quận/Huyện
+                  </Typography>
+                );
               }
               return selected;
             }}
@@ -309,14 +329,21 @@ const Register = () => {
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="ward">
-            Xã/Phường <span style={{ color: '#D32F2F' }}>(*)</span>
+            Xã/Phường{' '}
+            <Typography component="span" sx={{ color: '#D32F2F' }}>
+              (*)
+            </Typography>
           </Label>
           <Select
             displayEmpty={true}
             id="ward"
             renderValue={(selected: any) => {
               if (!selected) {
-                return <span style={{ color: '#c5c5c5' }}>Xã/Phường</span>;
+                return (
+                  <Typography component="span" sx={{ color: '#c5c5c5' }}>
+                    Xã/Phường
+                  </Typography>
+                );
               }
               return selected;
             }}
@@ -332,7 +359,7 @@ const Register = () => {
       <DialogActions>
         <ButtonContinue type="submit" onClick={handleSubmit(onSubmit)}>
           <ButtonContinueTypo>TIẾP TỤC</ButtonContinueTypo>
-          <ArrowForwardIcon style={{ color: '#3F51B5' }} />
+          <ArrowForwardIcon sx={{ color: '#3F51B5' }} />
         </ButtonContinue>
       </DialogActions>
     </RegisterContainer>

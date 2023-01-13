@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Tooltip, Menu, MenuItem } from '@mui/material';
+import { Link } from 'react-router-dom';
+
 import LogoIcon from 'assets/img/Logo.png';
+import StyledLink from 'components/StyledLink';
+import MenuItemContent from './MenuItemContent';
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -61,7 +65,7 @@ const BrandTypography = styled(Typography)`
   color: #ffffff;
 `;
 
-const Menu = styled.div`
+const MenuRight = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -72,9 +76,13 @@ const Menu = styled.div`
 
   min-width: 524px;
   min-height: 50px;
+
+  & .MuiList-root {
+    padding: 0px;
+  }
 `;
 
-const MenuItem = styled.div`
+const MenuRightItem = styled(Button)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -132,29 +140,60 @@ const MenuItemButton = styled(Button)`
 `;
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <HeaderContainer>
       <Brand>
-        <Logo src={LogoIcon} alt="Logo" />
-        <BrandTypography>CỔNG THÔNG TIN TIÊM CHỦNG COVID-19</BrandTypography>
+        <StyledLink to="/">
+          <Logo src={LogoIcon} alt="Logo" />
+        </StyledLink>
+        <StyledLink to="/">
+          <BrandTypography>CỔNG THÔNG TIN TIÊM CHỦNG COVID-19</BrandTypography>
+        </StyledLink>
       </Brand>
-      <Menu>
-        <MenuItem>
-          <MenuItemTypography>Trang chủ</MenuItemTypography>
-        </MenuItem>
-        <MenuItem>
-          <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
-        </MenuItem>
-        <MenuItem>
+      <MenuRight>
+        <StyledLink to="/">
+          <MenuRightItem>
+            <MenuItemTypography>Trang chủ</MenuItemTypography>
+          </MenuRightItem>
+        </StyledLink>
+        <StyledLink to="/injection-registration/step1">
+          <MenuRightItem>
+            <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
+          </MenuRightItem>
+        </StyledLink>
+        <MenuRightItem onClick={handleClick}>
           <MenuItemTypography>Tra cứu</MenuItemTypography>
-        </MenuItem>
-        <MenuItem>
+        </MenuRightItem>
+        <Menu
+          MenuListProps={{ disablePadding: true }}
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: -150
+          }}>
+          <MenuItemContent />
+        </Menu>
+        <MenuRightItem>
           <MenuItemTypography>Tài liệu</MenuItemTypography>
-        </MenuItem>
-        <MenuItem>
-          <MenuItemButton>Đăng nhập</MenuItemButton>
-        </MenuItem>
-      </Menu>
+        </MenuRightItem>
+        <StyledLink to="/login">
+          <MenuRightItem>
+            <MenuItemButton>Đăng nhập</MenuItemButton>
+          </MenuRightItem>
+        </StyledLink>
+      </MenuRight>
     </HeaderContainer>
   );
 };
