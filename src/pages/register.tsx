@@ -19,6 +19,14 @@ import InputComponent from 'components/InputComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {
+  District,
+  districts,
+  Province,
+  provinces,
+  Ward,
+  wards
+} from 'dummyData';
 
 const RegisterContainer = styled.div`
   display: flex;
@@ -130,54 +138,6 @@ const ButtonContinueTypo = styled(Button)`
 
   color: #3f51b5;
 `;
-
-interface Province {
-  id: number;
-  name: string;
-}
-interface District {
-  id: number;
-  name: string;
-  provinceId: number;
-}
-interface Ward {
-  id: number;
-  name: string;
-  districtId: number;
-}
-
-const provinces: Province[] = [
-  {
-    id: 1,
-    name: 'Hà Nội'
-  },
-  {
-    id: 2,
-    name: 'Hồ Chí Minh'
-  },
-  {
-    id: 3,
-    name: 'Đà Nẵng'
-  }
-];
-
-const districts: District[] = [
-  { id: 1, name: 'Quận Đống Đa', provinceId: 1 },
-  { id: 2, name: 'Quận Cầu Giấy', provinceId: 1 },
-  { id: 3, name: 'Quận 1', provinceId: 2 },
-  { id: 4, name: 'Quận 2', provinceId: 2 }
-];
-
-const wards: Ward[] = [
-  { id: 1, name: 'Phường Văn Chương', districtId: 1 },
-  { id: 2, name: 'Phường Văn Miếu', districtId: 1 },
-  { id: 3, name: 'Phường Dịch Vọng', districtId: 2 },
-  { id: 4, name: 'Phường Dịch Vọng Hậu', districtId: 2 },
-  { id: 5, name: 'Phường Bến Nghé', districtId: 3 },
-  { id: 6, name: 'Phường An Phú', districtId: 4 },
-  { id: 7, name: 'Phường Bến Thành', districtId: 3 },
-  { id: 8, name: 'Phường Bình An', districtId: 4 }
-];
 
 export interface registerFormInputs {
   identity: string;
@@ -340,7 +300,7 @@ const Register = () => {
               return selected;
             }}
             {...register('district')}>
-            {districts.map((district: Province) => (
+            {districts.map((district: District) => (
               <MenuItem key={district.id} value={district.name}>
                 {district.name}
               </MenuItem>
@@ -361,7 +321,7 @@ const Register = () => {
               return selected;
             }}
             {...register('ward')}>
-            {wards.map((ward: Province) => (
+            {wards.map((ward: Ward) => (
               <MenuItem key={ward.id} value={ward.name}>
                 {ward.name}
               </MenuItem>

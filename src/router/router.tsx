@@ -5,6 +5,7 @@ import Home from 'pages/home';
 import Login from 'pages/login';
 import Register from 'pages/register';
 import LoginLayout from 'layout/LoginLayout';
+import InjectionRegistrationStep1 from 'pages/InjectionRegistrationStep1';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
         element: <Register />
       }
     ]
+  },
+  {
+    path: '/injection-registration/step1',
+    element: <InjectionRegistrationStep1 />
   }
 ]);
 
