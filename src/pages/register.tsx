@@ -20,7 +20,7 @@ import {
   provinces,
   Ward,
   wards
-} from 'dummyData';
+} from 'dummy-data';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 

@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography, Tooltip, Menu, MenuItem } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Button, Menu, Typography } from '@mui/material';
+import React from 'react';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
@@ -15,7 +14,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   padding: 15px 36px;
 
-  width: 100vw;
+  width: 100%;
   min-height: 80px;
   background: linear-gradient(
     90deg,
@@ -25,7 +24,6 @@ const HeaderContainer = styled.div`
     #253494 100%
   );
 
-  /* position: fixed; */
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 0;
@@ -56,11 +54,7 @@ const BrandTypography = styled(Typography)`
   font-weight: 400;
   font-size: 20px;
   line-height: 160%;
-  /* identical to box height, or 32px */
-
   letter-spacing: -0.05px;
-
-  /* White */
 
   color: #ffffff;
 `;
@@ -74,7 +68,7 @@ const MenuRight = styled.div`
   padding: 0px;
   gap: 24px;
 
-  min-width: 524px;
+  max-width: 600px;
   min-height: 50px;
 
   & .MuiList-root {

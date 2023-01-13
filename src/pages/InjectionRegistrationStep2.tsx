@@ -21,7 +21,7 @@ const ResultContainer = styled.div`
   gap: 16px;
   padding: 0px 36px;
   margin-top: 80px;
-  width: 100vw;
+  width: 100%;
   min-height: 288px;
 `;
 

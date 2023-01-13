@@ -15,7 +15,7 @@ import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
-import { injectionSession, priorityGroup } from 'dummyData';
+import { injectionSession, priorityGroup } from 'dummy-data';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -26,7 +26,7 @@ const ResultContainer = styled.div`
   padding: 0px 36px;
   margin: 80px 0px 675px;
 
-  max-width: 100vw;
+  max-width: 100%;
   min-height: 531px;
 `;
 
@@ -238,6 +238,12 @@ const ContinueSubmitButton = styled(Button)`
   text-transform: uppercase;
 
   color: #fff;
+
+  &:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 const MenuProps = {
@@ -391,7 +397,6 @@ const InjectionRegistrationStep1 = () => {
                 <Label htmlFor="estimatedDateInjection">
                   Ngày muốn được tiêm (dự kiến)
                 </Label>
-                {/* <TextField></TextField> */}
                 <Controller
                   control={control}
                   {...register('estimatedDateInjection')}

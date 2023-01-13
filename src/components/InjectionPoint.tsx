@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Button,
@@ -17,6 +16,7 @@ import {
   Typography
 } from '@mui/material';
 import React, { useEffect } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -29,30 +29,24 @@ import {
   rows,
   Ward,
   wards
-} from 'dummyData';
+} from 'dummy-data';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 0px 36px;
-  /* width: 100vw; */
+  width: 100%;
 `;
 
 const InjectionPointContainer = styled.div`
-  /* Auto layout */
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 0px 12px;
-
   width: 100%;
-  /* min-height: 637px; */
-
   background: #ffffff;
 
   border: 1px solid rgba(38, 56, 150, 0.14);
@@ -164,15 +158,9 @@ const SearchButton = styled(Button)`
   line-height: 23px;
 
   color: #ffffff;
-
-  & .MuiButton-startIcon {
-    /* width: 24px;
-    font-size: 20px;
-    height: 24px; */
-  }
 `;
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(() => ({
   '&:nth-of-type(odd)': {
     backgroundColor: '#f8f8f8'
   },
@@ -258,8 +246,6 @@ const InjectionPoint = () => {
     setWardsData(wardArr);
   }, [watch('district')]);
 
-  console.log('what district', watch('district'));
-
   return (
     <Wrapper>
       <InjectionPointContainer>
@@ -334,7 +320,9 @@ const InjectionPoint = () => {
           </SearchButton>
         </SearchRow>
 
-        <TableContainer component={Paper} sx={{ border: 'none' }}>
+        <TableContainer
+          component={Paper}
+          sx={{ border: 'none', boxShadow: 'none' }}>
           <Table aria-label="simple table" sx={{ border: 'none' }}>
             <TableHead>
               <TableRow>

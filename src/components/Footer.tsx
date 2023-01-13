@@ -12,7 +12,7 @@ const FooterContainer = styled.div`
   align-items: center;
   padding: 32px 16px;
   margin-top: 37px;
-  width: 100vw;
+  width: 100%;
   min-height: 256px;
 
   background: #2d2188;
@@ -25,7 +25,6 @@ const LeftSide = styled.div`
   padding: 0px;
   gap: 4px;
 
-  max-width: 50vw;
   min-height: 137px;
 `;
 
@@ -76,7 +75,6 @@ const RightSide = styled.div`
   padding: 0px;
   gap: 16px;
 
-  width: 50vw;
   min-height: 192px;
 `;
 

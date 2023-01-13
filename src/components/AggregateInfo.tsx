@@ -15,7 +15,7 @@ const InfoContainer = styled.div`
   margin-top: 24px;
   flex-wrap: wrap;
 
-  width: 100vw;
+  width: 100%;
   min-height: 92px;
   background: #f7fbfe;
 

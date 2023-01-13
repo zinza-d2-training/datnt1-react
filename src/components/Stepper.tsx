@@ -12,7 +12,7 @@ const StepperContainer = styled.div`
   padding: 8px;
   gap: 8px;
 
-  width: 100vw;
+  width: 100%;
   height: 40px;
 `;
 

@@ -14,13 +14,13 @@ const HomeContainer = styled.div`
 
 const Home = () => {
   return (
-    <HomeContainer>
+    <>
       <Header />
       <AggregateInfo />
       <LineChart />
       <InjectionPoint />
       <Footer />
-    </HomeContainer>
+    </>
   );
 };
 

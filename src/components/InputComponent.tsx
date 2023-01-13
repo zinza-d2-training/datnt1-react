@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 import * as yup from 'yup';
 import { Link } from 'react-router-dom';
-import { registerFormInputs } from 'pages/register';
+import { registerFormInputs } from 'pages/Register';
 
 const InputContainer = styled.div`
   display: flex;

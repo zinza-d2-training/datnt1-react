@@ -13,7 +13,7 @@ import { Line } from 'react-chartjs-2';
 import { faker } from '@faker-js/faker';
 import { Typography } from '@mui/material';
 import styled from '@emotion/styled';
-import { labels } from 'dummyData';
+import { labels } from 'dummy-data';
 
 const ChartContainer = styled.div`
   box-sizing: border-box;
@@ -22,7 +22,7 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0px 36px;
-  width: 100vw;
+  width: 100%;
   margin: 84px 0px 39px;
   /* min-height: 594px; ; */
 `;

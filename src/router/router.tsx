@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import ForgotPassword from 'pages/forgotPassword';
-import Home from 'pages/home';
-import Login from 'pages/login';
-import Register from 'pages/register';
+import ForgotPassword from 'pages/ForgotPassword';
+import Home from 'pages/Home';
+import Login from 'pages/Login';
+import Register from 'pages/Register';
 import LoginLayout from 'layout/LoginLayout';
 import InjectionRegistrationStep1 from 'pages/InjectionRegistrationStep1';
 import InjectionRegistrationStep2 from 'pages/InjectionRegistrationStep2';

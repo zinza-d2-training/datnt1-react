@@ -21,10 +21,9 @@ const ListContainer = styled.ul`
   & .MuiTooltip-popper {
     display: none;
   }
-  /* position: absolute;
-  top: 54px;
-  left: 0;
-  transform: translate(-50%, 0%); */
+  & li:hover {
+    color: #281ba4;
+  }
 `;
 
 const ListItemContainer = styled.li`
