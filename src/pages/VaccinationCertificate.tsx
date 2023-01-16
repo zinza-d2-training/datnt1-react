@@ -17,7 +17,7 @@ import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
 
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import MenuUser, { UserTabs } from 'components/MenuUser';
+import MenuUser from 'components/MenuUser';
 import { injectionInforRows } from 'dummy-data';
 import InjectionPoint from 'components/InjectionPoint';
 import LogoCard from 'assets/img/Logo.png';

@@ -118,6 +118,7 @@ const AppButton = styled(Button)`
   letter-spacing: -0.04px;
 
   color: #ffffff;
+  text-transform: none;
 `;
 
 const CertImg = styled.img`

@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import MenuUser, { UserTabs } from 'components/MenuUser';
+import MenuUser from 'components/MenuUser';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Divider from 'components/Divider';

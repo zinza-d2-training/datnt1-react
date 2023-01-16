@@ -118,6 +118,7 @@ const SearchButton = styled(Button)`
   line-height: 23px;
 
   color: #ffffff;
+  text-transform: none;
 `;
 
 const StyledTableRow = styled(TableRow)(() => ({

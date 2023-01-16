@@ -46,46 +46,30 @@ const PresentItemTypo = styled(MenuAdminItemTypo)`
 `;
 
 interface MenuAdminProps {
-  adminTab: AdminTabs;
+  adminTab: string;
 }
 
-export type AdminTabs = 'injection-point' | 'registration' | 'doccument';
+const adminTabs = [
+  { tab: 'injection-point', content: 'Điểm tiêm' },
+  { tab: 'registration', content: 'Đăng ký' },
+  { tab: 'document', content: 'Tài liệu' }
+];
 
 const MenuAdmin = ({ adminTab }: MenuAdminProps) => {
   return (
     <MenuAdminContainer>
-      {adminTab === 'injection-point' ? (
-        <PresentItem>
-          <PresentItemTypo>Điểm tiêm</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/admin/injection-point">
-          <MenuAdminItem>
-            <MenuAdminItemTypo>Điểm tiêm</MenuAdminItemTypo>
-          </MenuAdminItem>
-        </StyledLink>
-      )}
-      {adminTab === 'registration' ? (
-        <PresentItem>
-          <PresentItemTypo>Đăng ký</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/admin/registration">
-          <MenuAdminItem>
-            <MenuAdminItemTypo>Đăng ký</MenuAdminItemTypo>
-          </MenuAdminItem>
-        </StyledLink>
-      )}
-      {adminTab === 'doccument' ? (
-        <PresentItem>
-          <PresentItemTypo>Tài liệu</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/admin/doccument">
-          <MenuAdminItem>
-            <MenuAdminItemTypo>Tài liệu</MenuAdminItemTypo>
-          </MenuAdminItem>
-        </StyledLink>
+      {adminTabs.map((tab) =>
+        tab.tab === adminTab ? (
+          <PresentItem>
+            <PresentItemTypo>{tab.content}</PresentItemTypo>
+          </PresentItem>
+        ) : (
+          <StyledLink to={`/admin/${tab.tab}`}>
+            <MenuAdminItem>
+              <MenuAdminItemTypo>{tab.content}</MenuAdminItemTypo>
+            </MenuAdminItem>
+          </StyledLink>
+        )
       )}
     </MenuAdminContainer>
   );

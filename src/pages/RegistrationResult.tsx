@@ -10,7 +10,7 @@ import styled from '@emotion/styled';
 
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import MenuUser, { UserTabs } from 'components/MenuUser';
+import MenuUser from 'components/MenuUser';
 import { registerResult } from 'dummy-data';
 import Divider from 'components/Divider';
 

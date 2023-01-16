@@ -46,49 +46,30 @@ const PresentItemTypo = styled(MenuUserItemTypo)`
 `;
 
 interface MenuUserProps {
-  userTab: UserTabs;
+  userTab: string;
 }
 
-export type UserTabs =
-  | 'vaccination-certificate'
-  | 'registration-result'
-  | 'account';
+const userTabs = [
+  { tab: 'vaccination-certificate', content: 'Chứng nhận tiêm chủng' },
+  { tab: 'registration-result', content: 'Kết quả đăng ký' },
+  { tab: 'account', content: 'Tài khoản' }
+];
 
 const MenuUser = ({ userTab }: MenuUserProps) => {
   return (
     <MenuUserContainer>
-      {userTab === 'vaccination-certificate' ? (
-        <PresentItem>
-          <PresentItemTypo>Chứng nhận tiêm chủng</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/user/vaccination-certificate">
-          <MenuUserItem>
-            <MenuUserItemTypo>Chứng nhận tiêm chủng</MenuUserItemTypo>
-          </MenuUserItem>
-        </StyledLink>
-      )}
-      {userTab === 'registration-result' ? (
-        <PresentItem>
-          <PresentItemTypo>Kết quả đăng ký</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/user/registration-result">
-          <MenuUserItem>
-            <MenuUserItemTypo>Kết quả đăng ký</MenuUserItemTypo>
-          </MenuUserItem>
-        </StyledLink>
-      )}
-      {userTab === 'account' ? (
-        <PresentItem>
-          <PresentItemTypo>Tài khoản</PresentItemTypo>
-        </PresentItem>
-      ) : (
-        <StyledLink to="/user/account">
-          <MenuUserItem>
-            <MenuUserItemTypo>Tài khoản</MenuUserItemTypo>
-          </MenuUserItem>
-        </StyledLink>
+      {userTabs.map((tab) =>
+        tab.tab === userTab ? (
+          <PresentItem>
+            <PresentItemTypo>{tab.content}</PresentItemTypo>
+          </PresentItem>
+        ) : (
+          <StyledLink to={`/user/${tab.tab}`}>
+            <MenuUserItem>
+              <MenuUserItemTypo>{tab.content}</MenuUserItemTypo>
+            </MenuUserItem>
+          </StyledLink>
+        )
       )}
     </MenuUserContainer>
   );
