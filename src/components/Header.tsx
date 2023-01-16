@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Button, Menu, Typography } from '@mui/material';
 import React from 'react';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
@@ -37,14 +38,13 @@ const Brand = styled.div`
   align-items: center;
   padding: 0px;
   gap: 16px;
-
-  max-width: 435px;
+  /* max-width: 435px; */
   min-height: 50px;
 `;
 
 const Logo = styled.img`
   width: 42px;
-  min-height: 50px;
+  height: 46px;
 `;
 
 const BrandTypography = styled(Typography)`
@@ -76,7 +76,7 @@ const MenuRight = styled.div`
   }
 `;
 
-const MenuRightItem = styled(Button)`
+const MenuRightButton = styled(Button)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -85,6 +85,9 @@ const MenuRightItem = styled(Button)`
 
   min-width: 51px;
   min-height: 50px;
+  text-transform: none;
+
+  color: #fff;
 `;
 
 const MenuItemTypography = styled(Typography)`
@@ -95,11 +98,8 @@ const MenuItemTypography = styled(Typography)`
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
-  /* identical to box height, or 24px */
-
   letter-spacing: -0.04px;
 
-  /* White */
   color: #ffffff;
 `;
 
@@ -155,18 +155,19 @@ const Header = () => {
       </Brand>
       <MenuRight>
         <StyledLink to="/">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemTypography>Trang chủ</MenuItemTypography>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
         <StyledLink to="/injection-registration/step1">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
-        <MenuRightItem onClick={handleClick}>
+        <MenuRightButton onClick={handleClick}>
           <MenuItemTypography>Tra cứu</MenuItemTypography>
-        </MenuRightItem>
+          <KeyboardArrowDownIcon />
+        </MenuRightButton>
         <Menu
           MenuListProps={{ disablePadding: true }}
           id="basic-menu"
@@ -177,15 +178,15 @@ const Header = () => {
             vertical: 'bottom',
             horizontal: -150
           }}>
-          <MenuItemContent />
+          <MenuItemContent handleClose={handleClose} />
         </Menu>
-        <MenuRightItem>
+        <MenuRightButton>
           <MenuItemTypography>Tài liệu</MenuItemTypography>
-        </MenuRightItem>
+        </MenuRightButton>
         <StyledLink to="/login">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemButton>Đăng nhập</MenuItemButton>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
       </MenuRight>
     </HeaderContainer>

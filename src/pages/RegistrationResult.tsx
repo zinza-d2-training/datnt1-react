@@ -10,7 +10,7 @@ import styled from '@emotion/styled';
 
 import Footer from 'components/Footer';
 import Header from 'components/Header';
-import MenuUser from 'components/MenuUser';
+import MenuUser, { UserTabs } from 'components/MenuUser';
 import { registerResult } from 'dummy-data';
 import Divider from 'components/Divider';
 
@@ -56,8 +56,7 @@ const FrameTableCell = styled.div`
 const RegistrationResult = () => {
   return (
     <div>
-      <Header />
-      <MenuUser presentPage={2} />
+      <MenuUser userTab={'registration-result'} />
       <Divider />
       <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
         <StyledTable sx={{ minWidth: 700 }} aria-label="customized table">
@@ -89,7 +88,6 @@ const RegistrationResult = () => {
           </TableBody>
         </StyledTable>
       </TableContainer>
-      <Footer />
     </div>
   );
 };

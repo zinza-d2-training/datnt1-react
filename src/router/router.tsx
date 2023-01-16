@@ -11,8 +11,8 @@ import InjectionRegistrationStep3 from 'pages/InjectionRegistrationStep3';
 import VaccinationCertificate from 'pages/VaccinationCertificate';
 import RegistrationResult from 'pages/RegistrationResult';
 import Account from 'pages/Account';
-
-console.log('fix vercel');
+import MainLayout from 'layout/MainLayout';
+import AdminPlace from 'pages/AdminPlace';
 
 const router = createBrowserRouter([
   {
@@ -38,28 +38,46 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/injection-registration/step1',
-    element: <InjectionRegistrationStep1 />
-  },
-  {
-    path: '/injection-registration/step2',
-    element: <InjectionRegistrationStep2 />
-  },
-  {
-    path: '/injection-registration/step3',
-    element: <InjectionRegistrationStep3 />
-  },
-  {
-    path: '/vaccination-certificate',
-    element: <VaccinationCertificate />
-  },
-  {
-    path: '/registration-result',
-    element: <RegistrationResult />
-  },
-  {
-    path: '/account',
-    element: <Account />
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/injection-registration/step1',
+        element: <InjectionRegistrationStep1 />
+      },
+      {
+        path: '/injection-registration/step2',
+        element: <InjectionRegistrationStep2 />
+      },
+      {
+        path: '/injection-registration/step3',
+        element: <InjectionRegistrationStep3 />
+      },
+      {
+        path: '/user/vaccination-certificate',
+        element: <VaccinationCertificate />
+      },
+      {
+        path: '/user/registration-result',
+        element: <RegistrationResult />
+      },
+      {
+        path: '/user/account',
+        element: <Account />
+      },
+      {
+        path: '/admin/injection-point',
+        element: <AdminPlace />
+      },
+      {
+        path: '/admin/registration',
+        element: <AdminPlace />
+      },
+      {
+        path: '/admin/doccument',
+        element: <AdminPlace />
+      }
+    ]
   }
 ]);
 

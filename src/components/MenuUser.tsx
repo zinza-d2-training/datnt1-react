@@ -46,40 +46,45 @@ const PresentItemTypo = styled(MenuUserItemTypo)`
 `;
 
 interface MenuUserProps {
-  presentPage: number;
+  userTab: UserTabs;
 }
 
-const MenuUser = ({ presentPage }: MenuUserProps) => {
+export type UserTabs =
+  | 'vaccination-certificate'
+  | 'registration-result'
+  | 'account';
+
+const MenuUser = ({ userTab }: MenuUserProps) => {
   return (
     <MenuUserContainer>
-      {presentPage === 1 ? (
+      {userTab === 'vaccination-certificate' ? (
         <PresentItem>
           <PresentItemTypo>Chứng nhận tiêm chủng</PresentItemTypo>
         </PresentItem>
       ) : (
-        <StyledLink to="/vaccination-certificate">
+        <StyledLink to="/user/vaccination-certificate">
           <MenuUserItem>
             <MenuUserItemTypo>Chứng nhận tiêm chủng</MenuUserItemTypo>
           </MenuUserItem>
         </StyledLink>
       )}
-      {presentPage === 2 ? (
+      {userTab === 'registration-result' ? (
         <PresentItem>
           <PresentItemTypo>Kết quả đăng ký</PresentItemTypo>
         </PresentItem>
       ) : (
-        <StyledLink to="/registration-result">
+        <StyledLink to="/user/registration-result">
           <MenuUserItem>
             <MenuUserItemTypo>Kết quả đăng ký</MenuUserItemTypo>
           </MenuUserItem>
         </StyledLink>
       )}
-      {presentPage === 3 ? (
+      {userTab === 'account' ? (
         <PresentItem>
           <PresentItemTypo>Tài khoản</PresentItemTypo>
         </PresentItem>
       ) : (
-        <StyledLink to="/account">
+        <StyledLink to="/user/account">
           <MenuUserItem>
             <MenuUserItemTypo>Tài khoản</MenuUserItemTypo>
           </MenuUserItem>

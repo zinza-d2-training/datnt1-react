@@ -66,8 +66,6 @@ const Logo = styled.img`
 `;
 
 const RightSide = styled.div`
-  /* Auto layout */
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -110,8 +108,6 @@ const AppButton = styled(Button)`
   align-items: center;
   padding: 8px 22px;
   gap: 4px;
-
-  /* min-width: fit-content; */
 
   border: 1px solid #ffffff;
   border-radius: 8px 8px 8px 0px;

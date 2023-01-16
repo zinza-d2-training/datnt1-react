@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import MenuUser from 'components/MenuUser';
+import MenuUser, { UserTabs } from 'components/MenuUser';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Divider from 'components/Divider';
@@ -207,17 +207,15 @@ const Account = () => {
     register,
     handleSubmit,
     watch,
-    resetField,
     control,
     formState: { errors, isValid }
   } = useForm<UserInfoInputs>({
-    // resolver: yupResolver(searchSchema)
+    resolver: yupResolver(UserInfoSchema)
   });
 
   return (
     <div>
-      <Header />
-      <MenuUser presentPage={3} />
+      <MenuUser userTab={'account'} />
       <Divider />
 
       <ResultContainer>
@@ -426,8 +424,6 @@ const Account = () => {
           </SectionContentRow>
         </SectionInfo>
       </ResultContainer>
-
-      <Footer />
     </div>
   );
 };

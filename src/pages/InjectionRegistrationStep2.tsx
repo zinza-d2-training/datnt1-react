@@ -158,7 +158,6 @@ const ContinueSubmitButton = styled(Button)`
 const InjectionRegistrationStep2 = () => {
   return (
     <div>
-      <Header />
       <Heading />
       <Stepper />
 
@@ -215,8 +214,6 @@ const InjectionRegistrationStep2 = () => {
           </ContinueSubmitButton>
         </StyledLink>
       </SubmitContainer>
-
-      <Footer />
     </div>
   );
 };

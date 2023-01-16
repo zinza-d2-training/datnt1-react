@@ -299,8 +299,6 @@ const InjectionRegistrationStep1 = () => {
 
   return (
     <div>
-      <Header />
-      <Heading />
       <Stepper />
       <ResultContainer>
         <Result>
@@ -493,7 +491,6 @@ const InjectionRegistrationStep1 = () => {
           </ContinueSubmitButton>
         </SubmitContainer>
       </ResultContainer>
-      <Footer />
     </div>
   );
 };
