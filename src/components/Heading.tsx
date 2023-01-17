@@ -6,7 +6,7 @@ const HeadingContainer = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 0px 36px;
-  margin: 34px 0px 46px;
+  margin: 0px 0px 46px;
   height: 64px;
 
   background: #f5f5f5;

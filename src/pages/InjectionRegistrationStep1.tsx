@@ -21,7 +21,9 @@ import * as yup from 'yup';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
+import { Dayjs } from 'dayjs';
 import { injectionSession, priorityGroup } from 'dummy-data';
+import React from 'react';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -267,7 +269,7 @@ interface InjectionRegisterFormInputs {
   ocupation: string;
   workUnit: string;
   address: string;
-  estimatedDateInjection: Date;
+  estimatedDateInjection: Dayjs | null;
   injectionSession: string;
 }
 
@@ -281,16 +283,21 @@ const InjectionRegisterSchema = yup.object().shape({
   workUnit: yup.string().required('Đơn vị công tác không được bỏ trống'),
   address: yup.string().required('Địa chỉ hiện tại không được bỏ trống'),
   estimatedDateInjection: yup
-    .date()
+    .string()
     .required('Ngày tiêm dự kiến không được bỏ trống'),
   injectionSession: yup.string().required('Buổi tiêm không được bỏ trống')
 });
 
 const InjectionRegistrationStep1 = () => {
+  const [value, setValues] = React.useState<Dayjs | null>(null);
+
   const {
     register,
     handleSubmit,
+    watch,
     control,
+    setValue,
+    getValues,
     formState: { errors, isValid }
   } = useForm<InjectionRegisterFormInputs>({
     resolver: yupResolver(InjectionRegisterSchema)
@@ -316,7 +323,6 @@ const InjectionRegistrationStep1 = () => {
                 <FormControl fullWidth>
                   <Select
                     {...register('priorityGroup')}
-                    fullWidth
                     displayEmpty={true}
                     id="priorityGroup"
                     renderValue={(selected: string) => {
@@ -409,33 +415,37 @@ const InjectionRegistrationStep1 = () => {
                 <Label htmlFor="estimatedDateInjection">
                   Ngày muốn được tiêm (dự kiến)
                 </Label>
-                <Controller
+                {/* <Controller
                   control={control}
                   {...register('estimatedDateInjection')}
                   name="estimatedDateInjection"
-                  render={({ field: { value, ...fieldProps } }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        {...fieldProps}
-                        value={value}
-                        renderInput={(params) => (
-                          <TextField
-                            fullWidth
-                            {...params}
-                            helperText={errors.estimatedDateInjection?.message}
-                            inputProps={{
-                              ...params.inputProps,
-                              placeholder: 'Ngày/Tháng/Năm'
-                            }}
-                            FormHelperTextProps={{
-                              sx: { color: '#d32f2f', margin: '3px 0px 0px' }
-                            }}
-                          />
-                        )}
+                  render={({ field: { value, ...fieldProps } }) => ( */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={value}
+                    {...register('estimatedDateInjection')}
+                    onChange={(newValue) => {
+                      setValues(newValue);
+                      setValue('estimatedDateInjection', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        fullWidth
+                        {...params}
+                        helperText={errors.estimatedDateInjection?.message}
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: 'Ngày/Tháng/Năm'
+                        }}
+                        FormHelperTextProps={{
+                          sx: { color: '#d32f2f', margin: '3px 0px 0px' }
+                        }}
                       />
-                    </LocalizationProvider>
-                  )}
-                />
+                    )}
+                  />
+                </LocalizationProvider>
+                {/* )}
+                /> */}
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="injectionSession">Buổi tiêm mong muốn</Label>
