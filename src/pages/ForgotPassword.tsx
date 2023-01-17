@@ -178,7 +178,6 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log('come to login ');
     seIsRequest(true);
     setTimeout(() => {
       navigate('/login');

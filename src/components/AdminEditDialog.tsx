@@ -1,12 +1,10 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import SearchIcon from '@mui/icons-material/Search';
-import * as yup from 'yup';
-import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
+import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { injectionInforRows } from 'dummy-data';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 const DialogContainer = styled.div`
   display: flex;
@@ -204,7 +202,6 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
   });
 
   const onSubmit = () => {
-    console.log('update successfully');
     handleClose();
   };
 

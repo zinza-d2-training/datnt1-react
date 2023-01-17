@@ -203,7 +203,7 @@ const InjectionRegistrationStep2 = () => {
   return (
     <div>
       <Heading />
-      <Stepper />
+      <Stepper step={3} />
 
       <ResultContainer>
         <ResultTypo>
@@ -286,7 +286,6 @@ const InjectionRegistrationStep2 = () => {
           </ContinueSubmitButton>
         </StyledLink>
       </SubmitContainer>
-
     </div>
   );
 };

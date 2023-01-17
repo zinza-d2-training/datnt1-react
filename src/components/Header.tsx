@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Menu, Typography } from '@mui/material';
 import React from 'react';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
@@ -180,9 +180,11 @@ const Header = () => {
           }}>
           <MenuItemContent handleClose={handleClose} />
         </Menu>
-        <MenuRightButton>
-          <MenuItemTypography>Tài liệu</MenuItemTypography>
-        </MenuRightButton>
+        <StyledLink to="/admin/injection-point">
+          <MenuRightButton>
+            <MenuItemTypography>Tài liệu</MenuItemTypography>
+          </MenuRightButton>
+        </StyledLink>
         <StyledLink to="/login">
           <MenuRightButton>
             <MenuItemButton>Đăng nhập</MenuItemButton>

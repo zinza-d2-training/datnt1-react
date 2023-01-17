@@ -2,7 +2,15 @@ import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,8 +18,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
@@ -293,13 +299,13 @@ const InjectionRegistrationStep1 = () => {
   const navigate = useNavigate();
 
   const onSubmit = (data: InjectionRegisterFormInputs) => {
-    // console.log(data);
     navigate('/injection-registration/step2');
   };
 
   return (
     <div>
-      <Stepper />
+      <Heading />
+      <Stepper step={1} />
       <ResultContainer>
         <Result>
           <Form>
@@ -307,24 +313,32 @@ const InjectionRegistrationStep1 = () => {
             <FormFrame>
               <InputComponent>
                 <Label htmlFor="priorityGroup">Nhóm ưu tiên (*)</Label>
-                <Select
-                  {...register('priorityGroup')}
-                  fullWidth
-                  displayEmpty={true}
-                  id="priorityGroup"
-                  renderValue={(selected: string) => {
-                    if (!selected) {
-                      return <PlaceholderTypo>Nhóm ưu tiên</PlaceholderTypo>;
-                    }
-                    return selected;
-                  }}
-                  MenuProps={MenuProps}>
-                  {priorityGroup.map((group) => (
-                    <MenuItem key={group.id} value={group.name}>
-                      {group.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select
+                    {...register('priorityGroup')}
+                    fullWidth
+                    displayEmpty={true}
+                    id="priorityGroup"
+                    renderValue={(selected: string) => {
+                      if (!selected) {
+                        return <PlaceholderTypo>Nhóm ưu tiên</PlaceholderTypo>;
+                      }
+                      return selected;
+                    }}
+                    MenuProps={MenuProps}>
+                    {priorityGroup.map((group) => (
+                      <MenuItem key={group.id} value={group.name}>
+                        {group.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.injectionSession && (
+                    <FormHelperText
+                      sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                      {errors.injectionSession.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="healthInsuranceNumber">Số thẻ BHYT</Label>
@@ -405,7 +419,18 @@ const InjectionRegistrationStep1 = () => {
                         {...fieldProps}
                         value={value}
                         renderInput={(params) => (
-                          <TextField fullWidth {...params} />
+                          <TextField
+                            fullWidth
+                            {...params}
+                            helperText={errors.estimatedDateInjection?.message}
+                            inputProps={{
+                              ...params.inputProps,
+                              placeholder: 'Ngày/Tháng/Năm'
+                            }}
+                            FormHelperTextProps={{
+                              sx: { color: '#d32f2f', margin: '3px 0px 0px' }
+                            }}
+                          />
                         )}
                       />
                     </LocalizationProvider>
@@ -414,26 +439,34 @@ const InjectionRegistrationStep1 = () => {
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="injectionSession">Buổi tiêm mong muốn</Label>
-                <Select
-                  {...register('injectionSession')}
-                  fullWidth
-                  displayEmpty={true}
-                  id="injectionSession"
-                  renderValue={(selected: string) => {
-                    if (!selected) {
-                      return (
-                        <PlaceholderTypo>Buổi tiêm mong muốn</PlaceholderTypo>
-                      );
-                    }
-                    return selected;
-                  }}
-                  MenuProps={MenuProps}>
-                  {injectionSession.map((session) => (
-                    <MenuItem key={session.id} value={session.name}>
-                      {session.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select
+                    {...register('injectionSession')}
+                    fullWidth
+                    displayEmpty={true}
+                    id="injectionSession"
+                    renderValue={(selected: string) => {
+                      if (!selected) {
+                        return (
+                          <PlaceholderTypo>Buổi tiêm mong muốn</PlaceholderTypo>
+                        );
+                      }
+                      return selected;
+                    }}
+                    MenuProps={MenuProps}>
+                    {injectionSession.map((session) => (
+                      <MenuItem key={session.id} value={session.name}>
+                        {session.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.injectionSession && (
+                    <FormHelperText
+                      sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                      {errors.injectionSession.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </InputComponent>
             </FormFrame>
             <NoteTypo>Lưu ý:</NoteTypo>

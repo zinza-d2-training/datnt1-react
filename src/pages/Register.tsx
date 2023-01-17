@@ -181,7 +181,6 @@ const Register = () => {
 
   const onSubmit: SubmitHandler<registerFormInputs> = (data) => {
     // register
-    console.log(data);
   };
 
   return (

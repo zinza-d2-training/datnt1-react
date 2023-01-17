@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Typography } from '@mui/material';
 
 const StepperContainer = styled.div`
   box-sizing: border-box;
@@ -63,11 +62,10 @@ const Circle = styled.div`
     font-size: 24px;
     border-radius: 20px;
     background: #ffffff;
-    /* color: #ffffff; */
     color: #1976d2;
   }
 
-  & span {
+  & .MuiTypography-root {
     margin: 0;
     position: absolute;
     top: 32px;
@@ -88,22 +86,48 @@ const Circle = styled.div`
   }
 `;
 
-const Stepper = () => {
+const registerSteps = [
+  {
+    step: 1,
+    content: 'Thông tin cá nhân'
+  },
+  {
+    step: 2,
+    content: 'Phiếu đồng ý tiêm'
+  },
+  {
+    step: 3,
+    content: 'Hoàn thành'
+  }
+];
+
+interface StepperProps {
+  step: number;
+}
+
+const Stepper = ({ step }: StepperProps) => {
   return (
     <StepperContainer>
       <Content>
-        <Circle>
-          <CheckCircleIcon className="circleIcon" />
-          <span>Thông tin cá nhân</span>
-        </Circle>
-        <Line />
-        <Circle>
-          2 <span>Phiếu đồng ý tiêm</span>
-        </Circle>
-        <Line />
-        <Circle>
-          3 <span>Hoàn thành</span>
-        </Circle>
+        {registerSteps.map((registerStep) => {
+          return registerStep.step === step ? (
+            <>
+              <Circle>
+                <CheckCircleIcon className="circleIcon" />
+                <Typography>{registerStep.content}</Typography>
+              </Circle>
+              {registerStep.step !== registerSteps.length ? <Line /> : null}
+            </>
+          ) : (
+            <>
+              <Circle>
+                {registerStep.step}
+                <Typography>{registerStep.content}</Typography>
+              </Circle>
+              {registerStep.step !== registerSteps.length ? <Line /> : null}
+            </>
+          );
+        })}
       </Content>
     </StepperContainer>
   );
