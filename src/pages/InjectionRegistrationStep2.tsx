@@ -119,8 +119,6 @@ const BackSubmitButton = styled(Button)`
   max-width: 140px;
   height: 36px;
 
-  /* Indigo / 700 */
-
   border: 1px solid #303f9f;
   border-radius: 8px 8px 8px 0px;
 
@@ -145,8 +143,6 @@ const ContinueSubmitButton = styled(Button)`
 
   max-width: 170px;
   height: 36px;
-
-  /* Indigo / 700 */
 
   background: #303f9f;
   border-radius: 8px 8px 8px 0px;
@@ -180,7 +176,6 @@ const InjectionRegistrationStep2 = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid }
   } = useForm<PolicyInputs>({
     resolver: yupResolver(PolicySchema)

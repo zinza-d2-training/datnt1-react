@@ -25,9 +25,6 @@ const Header = styled.div`
   align-items: center;
   justify-content: center;
   padding: 0px;
-
-  /* max-width: 479px; */
-  /* min-height: 48px; */
 `;
 
 const HeaderTypography = styled(Typography)`
@@ -39,13 +36,8 @@ const HeaderTypography = styled(Typography)`
   font-weight: 400;
   font-size: 16px;
   line-height: 150%;
-  /* or 24px */
-
   text-align: center;
   letter-spacing: -0.04px;
-
-  /* Text/Primary */
-
   color: rgba(0, 0, 0, 0.87);
 `;
 
@@ -86,7 +78,6 @@ const DialogActions = styled.div`
   gap: 16px;
 
   width: 100%;
-  /* max-width: 479px; */
   height: 60px;
 `;
 
@@ -110,14 +101,11 @@ const ButtonBackTypography = styled(Typography)`
   height: 24px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
-  /* identical to box height, or 24px */
   letter-spacing: -0.04px;
   text-transform: uppercase;
-  /* Indigo / 700 */
   color: #303f9f;
 `;
 
@@ -132,8 +120,6 @@ const ButtonSend = styled(Button)`
   max-width: 91px;
   height: 36px;
 
-  /* Indigo / 700 */
-
   background: #303f9f;
   border-radius: 8px 8px 8px 0px;
 `;
@@ -147,11 +133,8 @@ const ButtonSendTypography = styled(Typography)`
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
-  /* identical to box height, or 24px */
-
   letter-spacing: -0.04px;
   text-transform: uppercase;
-
   color: #ffffff;
 `;
 

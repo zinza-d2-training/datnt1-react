@@ -23,7 +23,6 @@ const Content = styled.div`
   padding: 0px;
   gap: 8px;
 
-  /* max-width: 604px; */
   height: 24px;
 `;
 

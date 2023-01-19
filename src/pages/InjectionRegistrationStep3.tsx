@@ -2,10 +2,7 @@ import styled from '@emotion/styled';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Button, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
@@ -164,7 +161,6 @@ const BackSubmitButton = styled(Button)`
   border-radius: 8px 8px 8px 0px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
@@ -189,7 +185,6 @@ const ContinueSubmitButton = styled(Button)`
   border-radius: 8px 8px 8px 0px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
@@ -210,7 +205,6 @@ const InjectionRegistrationStep2 = () => {
     <div>
       <Heading />
       <Stepper step={3} />
-
       <ResultContainer>
         <ResultTypo>
           Đăng ký tiêm chủng COVID-19 thành công. Mã đặt tiêm của bạn là{' '}

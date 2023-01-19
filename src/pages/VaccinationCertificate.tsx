@@ -1,28 +1,21 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Typography, Button, TextField, Select, MenuItem } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
+import PersonIcon from '@mui/icons-material/Person';
+import { Button, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import PersonIcon from '@mui/icons-material/Person';
-import DateRangeIcon from '@mui/icons-material/DateRange';
-import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
 
-import Footer from 'components/Footer';
-import Header from 'components/Header';
-import MenuUser from 'components/MenuUser';
-import { injectionInforRows } from 'dummy-data';
-import InjectionPoint from 'components/InjectionPoint';
 import LogoCard from 'assets/img/Logo.png';
 import QRCodeImg from 'assets/img/qr-code.png';
 import Divider from 'components/Divider';
+import MenuUser from 'components/MenuUser';
+import { injectionInforRows } from 'dummy-data';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -40,7 +33,6 @@ const CertificateContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0px 8px;
-  /* width: 100%; */
 `;
 
 const Typo1 = styled(Typography)`
@@ -71,7 +63,6 @@ const Typo2 = styled(Typography)`
 
 const Typo3 = styled(Typography)`
   padding: 24px 0px 0px;
-
   min-height: 56px;
 
   font-family: 'Roboto';
@@ -194,7 +185,6 @@ const CardTypo = styled(Typography)`
   max-width: 270px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 24px;
   line-height: 133.4%;
@@ -320,7 +310,6 @@ const VaccinationCertificate = () => {
               </CertificateItemValue>
             </CertificateItem>
           </CertificateFrame>
-
           <TableContainer
             component={Paper}
             sx={{ boxShadow: 'none', marginTop: '16px' }}>

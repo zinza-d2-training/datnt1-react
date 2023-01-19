@@ -1,19 +1,18 @@
-import React from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import styled from '@emotion/styled';
 import { faker } from '@faker-js/faker';
 import { Typography } from '@mui/material';
-import styled from '@emotion/styled';
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip
+} from 'chart.js';
 import { labels } from 'dummy-data';
+import { Line } from 'react-chartjs-2';
 
 const ChartContainer = styled.div`
   box-sizing: border-box;
@@ -24,7 +23,6 @@ const ChartContainer = styled.div`
   padding: 0px 36px;
   width: 100%;
   margin: 84px 0px 39px;
-  /* min-height: 594px; ; */
 `;
 
 const LineChartContainer = styled.div`
@@ -38,7 +36,6 @@ const LineChartContainer = styled.div`
   gap: 10px;
 
   width: 100%;
-  /* min-height: 594px; */
 
   background: #ffffff;
   border: 1px solid rgba(38, 56, 150, 0.14);
@@ -50,7 +47,6 @@ const LineChartContainer = styled.div`
     gap: 10px;
 
     width: 100%;
-    /* min-height: 510px; */
   }
 `;
 

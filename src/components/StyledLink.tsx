@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 type StyledLinkProps = {
   children: JSX.Element;

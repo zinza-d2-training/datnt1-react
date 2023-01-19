@@ -50,13 +50,9 @@ const HeaderTypography = styled(Typography)`
   min-height: 42px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 700;
   font-size: 34px;
   line-height: 123.5%;
-  /* identical to box height, or 42px */
-
-  /* Text/Primary */
 
   color: rgba(0, 0, 0, 0.87);
 `;
@@ -69,8 +65,6 @@ const Form = styled.form`
   padding: 16px 0px 0px;
   gap: 16px;
   width: 100%;
-  /* max-width: 400px; */
-  /* min-height: 934px; */
 `;
 
 const Label = styled.label`
@@ -82,8 +76,6 @@ const Label = styled.label`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height, or 150% */
-
   color: rgba(0, 0, 0, 0.87);
 `;
 
@@ -118,19 +110,15 @@ const ButtonContinueTypo = styled(Button)`
   min-height: 24px;
   text-align: center;
   padding: 0px;
-  /* Components/Button Medium */
 
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   line-height: 24px;
-  /* identical to box height, or 171% */
 
   letter-spacing: 0.46px;
   text-transform: uppercase;
-
-  /* Primary/Main */
 
   color: #3f51b5;
 `;
@@ -174,7 +162,6 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors, isValid }
   } = useForm<registerFormInputs>({ resolver: yupResolver(registerSchema) });

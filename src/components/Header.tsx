@@ -38,7 +38,6 @@ const Brand = styled.div`
   align-items: center;
   padding: 0px;
   gap: 16px;
-  /* max-width: 435px; */
   min-height: 50px;
 `;
 

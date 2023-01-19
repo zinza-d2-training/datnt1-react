@@ -35,7 +35,6 @@ const ListItemContainer = styled.li`
   padding: 16px 40px;
   gap: 16px;
 
-  /* width: 313px; */
   min-height: 74px;
   & .purpleIcon {
     display: flex;

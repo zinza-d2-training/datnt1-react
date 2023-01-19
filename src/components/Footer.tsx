@@ -1,8 +1,7 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Button, Typography } from '@mui/material';
-import Logo2in1 from 'assets/img/logo2in1.png';
 import Cert from 'assets/img/cert.png';
+import Logo2in1 from 'assets/img/logo2in1.png';
 
 const FooterContainer = styled.div`
   box-sizing: border-box;
