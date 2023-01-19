@@ -376,17 +376,3 @@ const VaccinationCertificate = () => {
 };
 
 export default VaccinationCertificate;
-function rgba(
-  arg0: number,
-  arg1: number,
-  arg2: number,
-  arg3: number
-):
-  | import('csstype').Property.Background<string | number>
-  | NonNullable<
-      import('csstype').Property.Background<string | number> | undefined
-    >[]
-  | (string | (string & {}))[]
-  | undefined {
-  throw new Error('Function not implemented.');
-}
