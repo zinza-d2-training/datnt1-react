@@ -160,6 +160,12 @@ const ContinueSubmitButton = styled(Button)`
   text-transform: uppercase;
 
   color: #fff;
+
+  &:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 interface PolicyInputs {
