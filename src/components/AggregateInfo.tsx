@@ -15,11 +15,9 @@ const InfoContainer = styled.div`
   margin-top: 24px;
   flex-wrap: wrap;
 
-  width: 100vw;
+  width: 100%;
   min-height: 92px;
   background: #f7fbfe;
-
-  /* margin-top: 80px; */
 `;
 
 const InfoItem = styled.div`
@@ -49,7 +47,6 @@ const InfoFrame = styled.div`
   padding: 0px;
   gap: 8px;
 
-  width: 100%;
   min-height: 60px;
 `;
 
@@ -62,8 +59,6 @@ const InfoKey = styled(Typography)`
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
-  /* identical to box height */
-
   display: flex;
   align-items: center;
 
@@ -79,17 +74,22 @@ const InfoValue = styled(Typography)`
   font-weight: 500;
   font-size: 28px;
   line-height: 33px;
-  /* identical to box height */
-
   display: flex;
   align-items: center;
 
   color: #000000;
   & .MuiTypography-root {
-    margin-top: 5px;
-    margin-left: 3px;
-    font-size: 15px;
-    font-weight: 700;
+    max-width: 176px;
+    height: 33px;
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    display: flex;
+    align-items: flex-end;
+
+    color: #000000;
   }
 `;
 
@@ -108,7 +108,7 @@ const AggregateInfo = () => {
         <InfoFrame>
           <InfoKey>Đối tượng đăng ký tiêm</InfoKey>
           <InfoValue>
-            11,203,873 <Typography component="i">(lượt)</Typography>
+            11,203,873 <Typography>(lượt)</Typography>
           </InfoValue>
         </InfoFrame>
       </InfoItem>
@@ -118,7 +118,7 @@ const AggregateInfo = () => {
         <InfoFrame>
           <InfoKey>Số mũi tiêm hôm qua</InfoKey>
           <InfoValue>
-            1,762,119 <Typography component="i">(mũi)</Typography>
+            1,762,119 <Typography>(mũi)</Typography>
           </InfoValue>
         </InfoFrame>
       </InfoItem>
@@ -128,7 +128,7 @@ const AggregateInfo = () => {
         <InfoFrame>
           <InfoKey>Số mũi đã tiêm toàn quốc</InfoKey>
           <InfoValue>
-            69,523,654 <Typography component="i">(mũi)</Typography>
+            69,523,654 <Typography>(mũi)</Typography>
           </InfoValue>
         </InfoFrame>
       </InfoItem>

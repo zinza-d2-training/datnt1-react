@@ -1,7 +1,7 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography, Tooltip, Menu, MenuItem } from '@mui/material';
-import { Link } from 'react-router-dom';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Button, Menu, Typography } from '@mui/material';
+import React from 'react';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
@@ -15,7 +15,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   padding: 15px 36px;
 
-  width: 100vw;
+  width: 100%;
   min-height: 80px;
   background: linear-gradient(
     90deg,
@@ -25,7 +25,6 @@ const HeaderContainer = styled.div`
     #253494 100%
   );
 
-  /* position: fixed; */
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 0;
@@ -39,14 +38,13 @@ const Brand = styled.div`
   align-items: center;
   padding: 0px;
   gap: 16px;
-
-  max-width: 435px;
+  /* max-width: 435px; */
   min-height: 50px;
 `;
 
 const Logo = styled.img`
   width: 42px;
-  min-height: 50px;
+  height: 46px;
 `;
 
 const BrandTypography = styled(Typography)`
@@ -56,11 +54,7 @@ const BrandTypography = styled(Typography)`
   font-weight: 400;
   font-size: 20px;
   line-height: 160%;
-  /* identical to box height, or 32px */
-
   letter-spacing: -0.05px;
-
-  /* White */
 
   color: #ffffff;
 `;
@@ -74,7 +68,7 @@ const MenuRight = styled.div`
   padding: 0px;
   gap: 24px;
 
-  min-width: 524px;
+  max-width: 600px;
   min-height: 50px;
 
   & .MuiList-root {
@@ -82,7 +76,7 @@ const MenuRight = styled.div`
   }
 `;
 
-const MenuRightItem = styled(Button)`
+const MenuRightButton = styled(Button)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -91,6 +85,9 @@ const MenuRightItem = styled(Button)`
 
   min-width: 51px;
   min-height: 50px;
+  text-transform: none;
+
+  color: #fff;
 `;
 
 const MenuItemTypography = styled(Typography)`
@@ -101,11 +98,8 @@ const MenuItemTypography = styled(Typography)`
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
-  /* identical to box height, or 24px */
-
   letter-spacing: -0.04px;
 
-  /* White */
   color: #ffffff;
 `;
 
@@ -161,18 +155,19 @@ const Header = () => {
       </Brand>
       <MenuRight>
         <StyledLink to="/">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemTypography>Trang chủ</MenuItemTypography>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
         <StyledLink to="/injection-registration/step1">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemTypography>Đăng ký tiêm</MenuItemTypography>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
-        <MenuRightItem onClick={handleClick}>
+        <MenuRightButton onClick={handleClick}>
           <MenuItemTypography>Tra cứu</MenuItemTypography>
-        </MenuRightItem>
+          <KeyboardArrowDownIcon />
+        </MenuRightButton>
         <Menu
           MenuListProps={{ disablePadding: true }}
           id="basic-menu"
@@ -183,15 +178,17 @@ const Header = () => {
             vertical: 'bottom',
             horizontal: -150
           }}>
-          <MenuItemContent />
+          <MenuItemContent handleClose={handleClose} />
         </Menu>
-        <MenuRightItem>
-          <MenuItemTypography>Tài liệu</MenuItemTypography>
-        </MenuRightItem>
+        <StyledLink to="/admin/injection-point">
+          <MenuRightButton>
+            <MenuItemTypography>Tài liệu</MenuItemTypography>
+          </MenuRightButton>
+        </StyledLink>
         <StyledLink to="/login">
-          <MenuRightItem>
+          <MenuRightButton>
             <MenuItemButton>Đăng nhập</MenuItemButton>
-          </MenuRightItem>
+          </MenuRightButton>
         </StyledLink>
       </MenuRight>
     </HeaderContainer>

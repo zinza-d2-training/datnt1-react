@@ -4,7 +4,7 @@ import { Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import StyledLink from './StyledLink';
 
-const MenuUserContainer = styled.div`
+const MenuAdminContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -15,7 +15,7 @@ const MenuUserContainer = styled.div`
   height: 64px;
 `;
 
-const MenuUserItem = styled.div`
+const MenuAdminItem = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +25,7 @@ const MenuUserItem = styled.div`
   background: #ffffff;
 `;
 
-const MenuUserItemTypo = styled(Typography)`
+const MenuAdminItemTypo = styled(Typography)`
   min-height: 24px;
 
   font-family: 'Roboto';
@@ -37,42 +37,42 @@ const MenuUserItemTypo = styled(Typography)`
   color: #6e6d7a;
 `;
 
-const PresentItem = styled(MenuUserItem)`
+const PresentItem = styled(MenuAdminItem)`
   box-shadow: inset 0px -2px 0px rgba(0, 0, 0, 0.87);
 `;
 
-const PresentItemTypo = styled(MenuUserItemTypo)`
+const PresentItemTypo = styled(MenuAdminItemTypo)`
   color: rgba(0, 0, 0, 0.87);
 `;
 
-interface MenuUserProps {
-  userTab: string;
+interface MenuAdminProps {
+  adminTab: string;
 }
 
-const userTabs = [
-  { tab: 'vaccination-certificate', content: 'Chứng nhận tiêm chủng' },
-  { tab: 'registration-result', content: 'Kết quả đăng ký' },
-  { tab: 'account', content: 'Tài khoản' }
+const adminTabs = [
+  { tab: 'injection-point', content: 'Điểm tiêm' },
+  { tab: 'registration', content: 'Đăng ký' },
+  { tab: 'document', content: 'Tài liệu' }
 ];
 
-const MenuUser = ({ userTab }: MenuUserProps) => {
+const MenuAdmin = ({ adminTab }: MenuAdminProps) => {
   return (
-    <MenuUserContainer>
-      {userTabs.map((tab) =>
-        tab.tab === userTab ? (
+    <MenuAdminContainer>
+      {adminTabs.map((tab) =>
+        tab.tab === adminTab ? (
           <PresentItem>
             <PresentItemTypo>{tab.content}</PresentItemTypo>
           </PresentItem>
         ) : (
-          <StyledLink to={`/user/${tab.tab}`}>
-            <MenuUserItem>
-              <MenuUserItemTypo>{tab.content}</MenuUserItemTypo>
-            </MenuUserItem>
+          <StyledLink to={`/admin/${tab.tab}`}>
+            <MenuAdminItem>
+              <MenuAdminItemTypo>{tab.content}</MenuAdminItemTypo>
+            </MenuAdminItem>
           </StyledLink>
         )
       )}
-    </MenuUserContainer>
+    </MenuAdminContainer>
   );
 };
 
-export default MenuUser;
+export default MenuAdmin;

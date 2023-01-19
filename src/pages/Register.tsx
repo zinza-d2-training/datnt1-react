@@ -20,7 +20,7 @@ import {
   provinces,
   Ward,
   wards
-} from 'dummyData';
+} from 'dummy-data';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -181,7 +181,6 @@ const Register = () => {
 
   const onSubmit: SubmitHandler<registerFormInputs> = (data) => {
     // register
-    console.log(data);
   };
 
   return (

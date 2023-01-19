@@ -2,7 +2,15 @@ import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,12 +18,12 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
-import { injectionSession, priorityGroup } from 'dummyData';
+import { Dayjs } from 'dayjs';
+import { injectionSession, priorityGroup } from 'dummy-data';
+import React from 'react';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -26,7 +34,7 @@ const ResultContainer = styled.div`
   padding: 0px 36px;
   margin: 80px 0px 675px;
 
-  max-width: 100vw;
+  max-width: 100%;
   min-height: 531px;
 `;
 
@@ -238,6 +246,12 @@ const ContinueSubmitButton = styled(Button)`
   text-transform: uppercase;
 
   color: #fff;
+
+  &:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 const MenuProps = {
@@ -255,7 +269,7 @@ interface InjectionRegisterFormInputs {
   ocupation: string;
   workUnit: string;
   address: string;
-  estimatedDateInjection: Date;
+  estimatedDateInjection: Dayjs | null;
   injectionSession: string;
 }
 
@@ -269,16 +283,21 @@ const InjectionRegisterSchema = yup.object().shape({
   workUnit: yup.string().required('Đơn vị công tác không được bỏ trống'),
   address: yup.string().required('Địa chỉ hiện tại không được bỏ trống'),
   estimatedDateInjection: yup
-    .date()
+    .string()
     .required('Ngày tiêm dự kiến không được bỏ trống'),
   injectionSession: yup.string().required('Buổi tiêm không được bỏ trống')
 });
 
 const InjectionRegistrationStep1 = () => {
+  const [value, setValues] = React.useState<Dayjs | null>(null);
+
   const {
     register,
     handleSubmit,
+    watch,
     control,
+    setValue,
+    getValues,
     formState: { errors, isValid }
   } = useForm<InjectionRegisterFormInputs>({
     resolver: yupResolver(InjectionRegisterSchema)
@@ -287,15 +306,13 @@ const InjectionRegistrationStep1 = () => {
   const navigate = useNavigate();
 
   const onSubmit = (data: InjectionRegisterFormInputs) => {
-    // console.log(data);
     navigate('/injection-registration/step2');
   };
 
   return (
     <div>
-      <Header />
       <Heading />
-      <Stepper />
+      <Stepper step={1} />
       <ResultContainer>
         <Result>
           <Form>
@@ -303,24 +320,31 @@ const InjectionRegistrationStep1 = () => {
             <FormFrame>
               <InputComponent>
                 <Label htmlFor="priorityGroup">Nhóm ưu tiên (*)</Label>
-                <Select
-                  {...register('priorityGroup')}
-                  fullWidth
-                  displayEmpty={true}
-                  id="priorityGroup"
-                  renderValue={(selected: string) => {
-                    if (!selected) {
-                      return <PlaceholderTypo>Nhóm ưu tiên</PlaceholderTypo>;
-                    }
-                    return selected;
-                  }}
-                  MenuProps={MenuProps}>
-                  {priorityGroup.map((group) => (
-                    <MenuItem key={group.id} value={group.name}>
-                      {group.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select
+                    {...register('priorityGroup')}
+                    displayEmpty={true}
+                    id="priorityGroup"
+                    renderValue={(selected: string) => {
+                      if (!selected) {
+                        return <PlaceholderTypo>Nhóm ưu tiên</PlaceholderTypo>;
+                      }
+                      return selected;
+                    }}
+                    MenuProps={MenuProps}>
+                    {priorityGroup.map((group) => (
+                      <MenuItem key={group.id} value={group.name}>
+                        {group.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.injectionSession && (
+                    <FormHelperText
+                      sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                      {errors.injectionSession.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="healthInsuranceNumber">Số thẻ BHYT</Label>
@@ -391,46 +415,68 @@ const InjectionRegistrationStep1 = () => {
                 <Label htmlFor="estimatedDateInjection">
                   Ngày muốn được tiêm (dự kiến)
                 </Label>
-                {/* <TextField></TextField> */}
-                <Controller
+                {/* <Controller
                   control={control}
                   {...register('estimatedDateInjection')}
                   name="estimatedDateInjection"
-                  render={({ field: { value, ...fieldProps } }) => (
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        {...fieldProps}
-                        value={value}
-                        renderInput={(params) => (
-                          <TextField fullWidth {...params} />
-                        )}
+                  render={({ field: { value, ...fieldProps } }) => ( */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={value}
+                    {...register('estimatedDateInjection')}
+                    onChange={(newValue) => {
+                      setValues(newValue);
+                      setValue('estimatedDateInjection', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        fullWidth
+                        {...params}
+                        helperText={errors.estimatedDateInjection?.message}
+                        inputProps={{
+                          ...params.inputProps,
+                          placeholder: 'Ngày/Tháng/Năm'
+                        }}
+                        FormHelperTextProps={{
+                          sx: { color: '#d32f2f', margin: '3px 0px 0px' }
+                        }}
                       />
-                    </LocalizationProvider>
-                  )}
-                />
+                    )}
+                  />
+                </LocalizationProvider>
+                {/* )}
+                /> */}
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="injectionSession">Buổi tiêm mong muốn</Label>
-                <Select
-                  {...register('injectionSession')}
-                  fullWidth
-                  displayEmpty={true}
-                  id="injectionSession"
-                  renderValue={(selected: string) => {
-                    if (!selected) {
-                      return (
-                        <PlaceholderTypo>Buổi tiêm mong muốn</PlaceholderTypo>
-                      );
-                    }
-                    return selected;
-                  }}
-                  MenuProps={MenuProps}>
-                  {injectionSession.map((session) => (
-                    <MenuItem key={session.id} value={session.name}>
-                      {session.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select
+                    {...register('injectionSession')}
+                    fullWidth
+                    displayEmpty={true}
+                    id="injectionSession"
+                    renderValue={(selected: string) => {
+                      if (!selected) {
+                        return (
+                          <PlaceholderTypo>Buổi tiêm mong muốn</PlaceholderTypo>
+                        );
+                      }
+                      return selected;
+                    }}
+                    MenuProps={MenuProps}>
+                    {injectionSession.map((session) => (
+                      <MenuItem key={session.id} value={session.name}>
+                        {session.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.injectionSession && (
+                    <FormHelperText
+                      sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                      {errors.injectionSession.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </InputComponent>
             </FormFrame>
             <NoteTypo>Lưu ý:</NoteTypo>
@@ -488,7 +534,6 @@ const InjectionRegistrationStep1 = () => {
           </ContinueSubmitButton>
         </SubmitContainer>
       </ResultContainer>
-      <Footer />
     </div>
   );
 };

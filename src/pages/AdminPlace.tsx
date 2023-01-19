@@ -1,10 +1,10 @@
+import React from 'react';
 import styled from '@emotion/styled';
 import SearchIcon from '@mui/icons-material/Search';
+import * as yup from 'yup';
 import {
   Button,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -13,71 +13,31 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  TextField,
+  Typography,
+  Dialog
 } from '@mui/material';
-import React, { useEffect } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
+import { rows } from 'dummy-data';
 import TablePaginationActions from 'components/TablePaginationActions';
-import {
-  District,
-  districts,
-  Province,
-  provinces,
-  rows,
-  Ward,
-  wards
-} from 'dummy-data';
+import MenuAdmin from 'components/MenuAdmin';
+import Divider from 'components/Divider';
+import AdminEditDialog from 'components/AdminEditDialog';
 
-const Wrapper = styled.div`
+const SearchContainer = styled.div`
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0px 36px;
-  width: 100%;
-`;
 
-const InjectionPointContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0px 12px;
+  padding: 12px 12px 0px;
+  margin-top: 42px;
   width: 100%;
   background: #ffffff;
 
   border: 1px solid rgba(38, 56, 150, 0.14);
-  box-shadow: 0px 4px 12px rgba(34, 41, 47, 0.12);
-  border-radius: 10px;
-`;
-
-const Title = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 16px 10px;
-  gap: 10px;
-
-  max-width: 1344px;
-  height: 55px;
-`;
-
-const TitleTypo = styled(Typography)`
-  max-width: 300px;
-  height: 23px;
-
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 23px;
-  display: flex;
-  align-items: center;
-
-  color: #000000;
 `;
 
 const SearchRow = styled.div`
@@ -88,9 +48,9 @@ const SearchRow = styled.div`
   padding: 0px 0px 16px;
   gap: 16px;
 
-  max-width: 1344px;
+  width: 100%;
   min-height: 56px;
-
+  border-bottom: 1px solid #eeeeee;
   & .MuiButton-root:hover {
     background-color: #1e2f97 !important;
     border-color: #1e2f97 !important;
@@ -168,32 +128,40 @@ const StyledTableRow = styled(TableRow)(() => ({
   // hide last border
   '&:last-child td, &:last-child th': {
     border: 0
+  },
+  '&:hover': {
+    cursor: 'pointer'
   }
 }));
 
 interface SearchInputs {
-  province: string;
-  district?: string;
-  ward?: string;
+  injectionPoint?: string;
+  address?: string;
 }
 
 const searchSchema = yup.object().shape({
-  province: yup.string().required('Tên thành phố không được bỏ trống')
+  injectionPoint: yup.string(),
+  address: yup.string()
 });
 
-const InjectionPoint = () => {
-  const [provincesData, setProvincesData] = React.useState(provinces);
-  const [districtsData, setDistrictsData] = React.useState(districts);
-  const [wardsData, setWardsData] = React.useState(wards);
-
+const AdminPlace = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const {
     register,
     handleSubmit,
     watch,
-    resetField,
     formState: { errors, isValid }
   } = useForm<SearchInputs>({
     resolver: yupResolver(searchSchema)
@@ -217,122 +185,46 @@ const InjectionPoint = () => {
     setPage(0);
   };
 
-  useEffect(() => {
-    resetField('district');
-    resetField('ward');
-    // Lấy provinceId hiện tại đang chọn
-    const province: Province[] = provinces.filter((province) => {
-      return province.name == watch('province');
-    });
-
-    //Lấy ra các quận thuộc province đang chọn
-    const districtArr: District[] = districts.filter((district) => {
-      return district.provinceId == province[0]?.id;
-    });
-    setDistrictsData(districtArr);
-  }, [watch('province')]);
-
-  useEffect(() => {
-    resetField('ward');
-    // Lấy districtId hiện tại đang chọn
-    const district: District[] = districts.filter((district) => {
-      return district.name == watch('district');
-    });
-
-    //Lấy ra các quận thuộc district đang chọn
-    const wardArr: Ward[] = wards.filter((ward) => {
-      return ward.districtId == district[0]?.id;
-    });
-
-    setWardsData(wardArr);
-  }, [watch('district')]);
-
   return (
-    <Wrapper>
-      <InjectionPointContainer>
-        <Title>
-          <TitleTypo>Tra cứu điểm tiêm theo địa bàn</TitleTypo>
-        </Title>
+    <div>
+      <MenuAdmin adminTab={'injection-point'} />
+      <Divider />
+      <SearchContainer>
         <SearchRow>
           <InputComnponent>
-            <Select
-              {...register('province')}
+            <TextField
+              {...register('injectionPoint')}
+              type="text"
+              id="injectionoPoint"
+              placeholder="Điểm tiêm"
               fullWidth
-              displayEmpty={true}
-              id="province"
-              renderValue={(selected: string) => {
-                if (!selected) {
-                  return <PlaceholderTypo>Tỉnh/Thành phố</PlaceholderTypo>;
-                }
-                return selected;
-              }}>
-              {provincesData.map((province) => (
-                <MenuItem key={province.id} value={province.name}>
-                  {province.name}
-                </MenuItem>
-              ))}
-            </Select>
+              required
+            />
           </InputComnponent>
           <InputComnponent>
-            <Select
-              disabled={watch('province') ? false : true}
-              {...register('district')}
+            <TextField
+              {...register('address')}
+              type="text"
+              id="address"
+              placeholder="Địa chỉ"
               fullWidth
-              displayEmpty={true}
-              id="district"
-              renderValue={(selected: string) => {
-                if (!watch('district')) {
-                  return <PlaceholderTypo>Quận/Huyện</PlaceholderTypo>;
-                } else {
-                  return selected;
-                }
-              }}>
-              {districtsData.map((district) => (
-                <MenuItem key={district.id} value={district.name}>
-                  {district.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </InputComnponent>
-          <InputComnponent>
-            <Select
-              disabled={watch('district') ? false : true}
-              {...register('ward')}
-              fullWidth
-              displayEmpty={true}
-              id="ward"
-              renderValue={(selected: string) => {
-                if (!watch('ward')) {
-                  return <PlaceholderTypo>Xã/Phường</PlaceholderTypo>;
-                } else {
-                  return selected;
-                }
-              }}>
-              {wardsData.map((ward) => (
-                <MenuItem key={ward.id} value={ward.name}>
-                  {ward.name}
-                </MenuItem>
-              ))}
-            </Select>
+              required
+            />
           </InputComnponent>
           <SearchButton>
             <SearchIcon />
             Tìm kiếm
           </SearchButton>
         </SearchRow>
-
         <TableContainer
           component={Paper}
           sx={{ border: 'none', boxShadow: 'none' }}>
           <Table aria-label="simple table" sx={{ border: 'none' }}>
             <TableHead>
               <TableRow>
-                <TableCell>STT</TableCell>
+                <TableCell align="center">STT</TableCell>
                 <TableCell align="center">Tên điểm tiêm</TableCell>
-                <TableCell align="center">Số nhà, tên đường</TableCell>
-                <TableCell align="center">Xã/Phường</TableCell>
-                <TableCell align="center">Quận/Huyện</TableCell>
-                <TableCell align="center">Tỉnh/Thành phố</TableCell>
+                <TableCell align="center">Địa chỉ</TableCell>
                 <TableCell align="center">
                   Người đứng đầu cơ sở tiêm chủng
                 </TableCell>
@@ -348,14 +240,12 @@ const InjectionPoint = () => {
                 : rows
               ).map((row) => (
                 <StyledTableRow
+                  onClick={handleClickOpen}
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell align="center">{row.id}</TableCell>
                   <TableCell align="center">{row.name}</TableCell>
                   <TableCell align="center">{row.detailAddress}</TableCell>
-                  <TableCell align="center">{row.ward[0].name}</TableCell>
-                  <TableCell align="center">{row.district[0].name}</TableCell>
-                  <TableCell align="center">{row.province[0].name}</TableCell>
                   <TableCell align="center">{row.leader}</TableCell>
                   <TableCell align="center">
                     {row.numberOfInjectionTables}
@@ -367,6 +257,9 @@ const InjectionPoint = () => {
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
+              <Dialog open={open} onClose={handleClose}>
+                <AdminEditDialog handleClose={handleClose} />
+              </Dialog>
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -385,9 +278,9 @@ const InjectionPoint = () => {
             </TableFooter>
           </Table>
         </TableContainer>
-      </InjectionPointContainer>
-    </Wrapper>
+      </SearchContainer>
+    </div>
   );
 };
 
-export default InjectionPoint;
+export default AdminPlace;

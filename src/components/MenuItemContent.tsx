@@ -3,6 +3,7 @@ import { Typography } from '@mui/material';
 
 import EastIcon from '@mui/icons-material/East';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import StyledLink from './StyledLink';
 
 const ListContainer = styled.ul`
   box-sizing: border-box;
@@ -21,10 +22,9 @@ const ListContainer = styled.ul`
   & .MuiTooltip-popper {
     display: none;
   }
-  /* position: absolute;
-  top: 54px;
-  left: 0;
-  transform: translate(-50%, 0%); */
+  & li:hover {
+    color: #281ba4;
+  }
 `;
 
 const ListItemContainer = styled.li`
@@ -48,7 +48,7 @@ const ListItemContainer = styled.li`
 
     background: #ede7f6;
     border-radius: 6px;
-
+    font-size: 24px;
     color: #5e35b1;
   }
 
@@ -106,29 +106,37 @@ const ListItemTypoSmall = styled(Typography)`
   color: rgba(0, 0, 0, 0.87);
 `;
 
-const MenuItemContent = () => {
+interface MenuItemContentProps {
+  handleClose: () => void;
+}
+
+const MenuItemContent = ({ handleClose }: MenuItemContentProps) => {
   return (
     <ListContainer>
-      <ListItemContainer>
-        <PeopleAltIcon className="purpleIcon" />
-        <ListItem>
-          <ListItemTypo>Tra cứu chứng nhận tiêm</ListItemTypo>
-          <ListItemTypoSmall>
-            Cập nhật nhanh và chính xác nhất
-          </ListItemTypoSmall>
-        </ListItem>
-        <EastIcon sx={{ color: '#5E35B1' }} />
-      </ListItemContainer>
-      <ListItemContainer>
-        <PeopleAltIcon className="blueIcon" />
-        <ListItem>
-          <ListItemTypo>Tra cứu kết quả đăng ký</ListItemTypo>
-          <ListItemTypoSmall>
-            Cập nhật nhanh và chính xác nhất
-          </ListItemTypoSmall>
-        </ListItem>
-        <EastIcon sx={{ color: '#1E88E5' }} />
-      </ListItemContainer>
+      <StyledLink to={'/user/vaccination-certificate'}>
+        <ListItemContainer onClick={handleClose}>
+          <PeopleAltIcon className="purpleIcon" />
+          <ListItem>
+            <ListItemTypo>Tra cứu chứng nhận tiêm</ListItemTypo>
+            <ListItemTypoSmall>
+              Cập nhật nhanh và chính xác nhất
+            </ListItemTypoSmall>
+          </ListItem>
+          <EastIcon sx={{ color: '#5E35B1' }} />
+        </ListItemContainer>
+      </StyledLink>
+      <StyledLink to={'/user/registration-result'}>
+        <ListItemContainer onClick={handleClose}>
+          <PeopleAltIcon className="blueIcon" />
+          <ListItem>
+            <ListItemTypo>Tra cứu kết quả đăng ký</ListItemTypo>
+            <ListItemTypoSmall>
+              Cập nhật nhanh và chính xác nhất
+            </ListItemTypoSmall>
+          </ListItem>
+          <EastIcon sx={{ color: '#1E88E5' }} />
+        </ListItemContainer>
+      </StyledLink>
     </ListContainer>
   );
 };

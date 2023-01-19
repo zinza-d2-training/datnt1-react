@@ -247,3 +247,57 @@ export const injectionSession = [
   { id: 2, name: 'Buổi chiều' },
   { id: 3, name: 'Cả ngày' }
 ];
+
+interface InjectionInfo {
+  injectionNumber: number;
+  injectionTime: string;
+  vaccineName: string;
+  lotNumber: string;
+  injectionPointId: number;
+}
+
+export const injectionInfo: InjectionInfo[] = [
+  {
+    injectionNumber: 1,
+    injectionTime: '08/09/2021 - 16:56',
+    vaccineName: 'COVID-19 Vaccine AstraZeneca',
+    lotNumber: 'NJ0342',
+    injectionPointId: 1
+  },
+  {
+    injectionNumber: 2,
+    injectionTime: '08/09/2021 - 16:56',
+    vaccineName: 'COVID-19 Vaccine AstraZeneca',
+    lotNumber: 'NJ0342',
+    injectionPointId: 2
+  }
+];
+
+export const injectionInforRows = injectionInfo.map(
+  (injection: InjectionInfo) => {
+    const injectionPoint = InjectionPoints.filter(
+      (injectionPoint: InjectionPoint) => {
+        return injection.injectionPointId == injectionPoint.id;
+      }
+    );
+
+    return {
+      injectionNumber: injection.injectionNumber,
+      injectionTime: injection.injectionTime,
+      vaccineName: injection.vaccineName,
+      lotNumber: injection.lotNumber,
+      injectionPointName: injectionPoint[0].name
+    };
+  }
+);
+
+export const registerResult = [
+  {
+    numericalOder: 1,
+    fullname: 'Nguyễn Văn A',
+    birthday: '6/10/1994',
+    gender: 'Nam',
+    identificationCode: '030012345678',
+    status: 'Đăng ký thành công'
+  }
+];

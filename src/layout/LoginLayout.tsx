@@ -9,16 +9,16 @@ const Container = styled.div`
   padding: 0px;
 
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 
   background: #ffffff;
-
-  overflow-x: hidden;
 `;
 
 const SideLeft = styled.div`
-  width: 50vw;
+  flex: 1;
+  width: 50%;
+
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -27,20 +27,22 @@ const SideLeft = styled.div`
 `;
 
 const Image = styled.img`
-  width: 50vw;
+  width: 50%;
   height: 100vh;
   position: fixed;
   object-fit: cover;
   z-index: 100;
 `;
 const SideRight = styled.div`
+  flex: 1;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 0px;
 
-  width: 50vw;
+  width: 50%;
   min-height: 100vh;
 `;
 
@@ -52,7 +54,6 @@ const LoginLayout = () => {
       </SideLeft>
       <SideRight>
         <Outlet />
-        {/* <ForgotPassword /> */}
       </SideRight>
     </Container>
   );

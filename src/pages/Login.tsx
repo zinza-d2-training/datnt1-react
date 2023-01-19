@@ -184,7 +184,6 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
     // login
-    console.log(data);
   };
 
   return (

@@ -1,14 +1,21 @@
 import styled from '@emotion/styled';
+import { yupResolver } from '@hookform/resolvers/yup';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
+  Typography
+} from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 import Hospital from 'assets/img/hospital.png';
 import Shield from 'assets/img/shield.png';
 import Vaccine from 'assets/img/vaccine2.png';
-import Footer from 'components/Footer';
-import Header from 'components/Header';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
@@ -21,7 +28,7 @@ const ResultContainer = styled.div`
   gap: 16px;
   padding: 0px 36px;
   margin-top: 80px;
-  width: 100vw;
+  width: 100%;
   min-height: 288px;
 `;
 
@@ -155,12 +162,36 @@ const ContinueSubmitButton = styled(Button)`
   color: #fff;
 `;
 
+interface PolicyInputs {
+  policy: boolean;
+}
+
+const PolicySchema = yup.object().shape({
+  policy: yup.boolean().oneOf([true], '(Tích vào ô để tiếp tục)')
+});
+
 const InjectionRegistrationStep2 = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid }
+  } = useForm<PolicyInputs>({
+    resolver: yupResolver(PolicySchema)
+  });
+
+  const navigate = useNavigate();
+
+  const onSubmit = () => {
+    if (isValid) {
+      navigate('/injection-registration/step3');
+    }
+  };
+
   return (
     <div>
-      <Header />
       <Heading />
-      <Stepper />
+      <Stepper step={2} />
 
       <ResultContainer>
         <ResultItem>
@@ -198,7 +229,15 @@ const InjectionRegistrationStep2 = () => {
             Sau khi đã đọc các thông tin nêu trên, tôi đã hiểu về các nguy cơ
             và:{' '}
           </ResultConfirmTypo>
-          <FormControlLabel control={<Checkbox />} label="Đồng ý tiêm chủng" />
+          <FormControlLabel
+            control={<Checkbox {...register('policy')} />}
+            label="Đồng ý tiêm chủng"
+          />
+          {errors.policy && (
+            <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+              {errors.policy.message}
+            </FormHelperText>
+          )}
         </ResultConfirm>
       </ResultContainer>
       <SubmitContainer>
@@ -208,15 +247,11 @@ const InjectionRegistrationStep2 = () => {
             Quay lại
           </BackSubmitButton>
         </StyledLink>
-        <StyledLink to="/injection-registration/step3">
-          <ContinueSubmitButton>
-            Tiếp tục
-            <ArrowForwardIcon />
-          </ContinueSubmitButton>
-        </StyledLink>
+        <ContinueSubmitButton onClick={handleSubmit(onSubmit)}>
+          Tiếp tục
+          <ArrowForwardIcon />
+        </ContinueSubmitButton>
       </SubmitContainer>
-
-      <Footer />
     </div>
   );
 };

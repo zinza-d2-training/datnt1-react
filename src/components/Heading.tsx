@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Typography } from '@mui/material';
 
@@ -7,12 +6,8 @@ const HeadingContainer = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 0px 36px;
-  margin: 34px 0px 46px;
-
-  /* width: 1440px; */
+  margin: 0px 0px 46px;
   height: 64px;
-
-  /* Grey / 100 */
 
   background: #f5f5f5;
 `;
