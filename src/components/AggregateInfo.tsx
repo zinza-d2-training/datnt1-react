@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Typography } from '@mui/material';
-import ic_register_people from 'assets/img/ic_register_people.png';
-import ic_injection from 'assets/img/ic_injection.png';
 import ic_injected_people from 'assets/img/ic_injected_people.png';
+import ic_injection from 'assets/img/ic_injection.png';
+import ic_register_people from 'assets/img/ic_register_people.png';
 
 const InfoContainer = styled.div`
   box-sizing: border-box;
@@ -24,7 +23,6 @@ const InfoItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-
   padding: 0px 16px;
   gap: 16px;
 
@@ -55,13 +53,11 @@ const InfoKey = styled(Typography)`
   min-height: 19px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
   display: flex;
   align-items: center;
-
   color: #000000;
 `;
 
@@ -70,7 +66,6 @@ const InfoValue = styled(Typography)`
   min-height: 33px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 28px;
   line-height: 33px;

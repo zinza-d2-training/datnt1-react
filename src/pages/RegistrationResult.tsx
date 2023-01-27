@@ -1,18 +1,15 @@
-import React from 'react';
+import styled from '@emotion/styled';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import styled from '@emotion/styled';
 
-import Footer from 'components/Footer';
-import Header from 'components/Header';
+import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
 import { registerResult } from 'dummy-data';
-import Divider from 'components/Divider';
 
 const StyledTableHead = styled(TableHead)(() => ({
   background: 'rgba(238, 238, 238, 0.4)',

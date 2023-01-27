@@ -4,7 +4,6 @@ import { Button, TextField, Typography } from '@mui/material';
 import StyledLink from 'components/StyledLink';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
 const SideRightContainer = styled.div`
@@ -29,7 +28,6 @@ const Header = styled.div`
 const HeaderText = styled(Typography)`
   max-width: 376px;
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 700;
   font-size: 33px;
   line-height: 123.5%;
@@ -62,11 +60,9 @@ const Label = styled.label`
   min-height: 24px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height, or 150% */
   color: rgba(0, 0, 0, 0.87);
 `;
 
@@ -100,7 +96,6 @@ const LoginBtn = styled(Button)`
   cursor: pointer;
   border-radius: 5px;
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
@@ -126,7 +121,6 @@ const SuggestTypography = styled(Typography)`
   width: 100%;
   min-height: 24px;
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 150%;

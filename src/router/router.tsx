@@ -1,18 +1,18 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+import LoginLayout from 'layout/LoginLayout';
+import MainLayout from 'layout/MainLayout';
+import Account from 'pages/Account';
+import AdminPlace from 'pages/AdminPlace';
 import ForgotPassword from 'pages/ForgotPassword';
 import Home from 'pages/Home';
-import Login from 'pages/Login';
-import Register from 'pages/Register';
-import LoginLayout from 'layout/LoginLayout';
 import InjectionRegistrationStep1 from 'pages/InjectionRegistrationStep1';
 import InjectionRegistrationStep2 from 'pages/InjectionRegistrationStep2';
 import InjectionRegistrationStep3 from 'pages/InjectionRegistrationStep3';
-import VaccinationCertificate from 'pages/VaccinationCertificate';
+import Login from 'pages/Login';
+import Register from 'pages/Register';
 import RegistrationResult from 'pages/RegistrationResult';
-import Account from 'pages/Account';
-import MainLayout from 'layout/MainLayout';
-import AdminPlace from 'pages/AdminPlace';
+import VaccinationCertificate from 'pages/VaccinationCertificate';
 
 const router = createBrowserRouter([
   {

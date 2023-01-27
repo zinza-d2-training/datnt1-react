@@ -1,12 +1,7 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, FormHelperText, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
-import * as yup from 'yup';
-import { Link } from 'react-router-dom';
+import { FormHelperText, TextField, Typography } from '@mui/material';
 import { registerFormInputs } from 'pages/Register';
+import { UseFormRegister } from 'react-hook-form';
 
 const InputContainer = styled.div`
   display: flex;
@@ -14,22 +9,16 @@ const InputContainer = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 5px;
-
   width: 100%;
-  /* height: 102px; */
-
   background: #ffffff;
 `;
 
 const Label = styled.label`
   min-height: 24px;
-
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height, or 150% */
   width: 100%;
   color: rgba(0, 0, 0, 0.87);
 `;
@@ -40,10 +29,7 @@ const Field = styled(TextField)`
   align-items: flex-start;
   padding: 0px;
   gap: 3px;
-
-  /* max-width: 400px; */
   width: 100%;
-  /* min-height: 73px; */
 `;
 
 const HelperText = styled(FormHelperText)`
@@ -55,9 +41,7 @@ const HelperText = styled(FormHelperText)`
   font-weight: 400;
   font-size: 12px;
   line-height: 20px;
-  /* position: absolute; */
   margin: 0px;
-  /* identical to box height, or 167% */
 
   color: #d32f2f;
 `;

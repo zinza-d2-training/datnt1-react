@@ -14,7 +14,7 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -139,22 +139,18 @@ const Label = styled.label`
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  /* identical to box height, or 150% */
 
   color: rgba(0, 0, 0, 0.87);
 `;
 
 const NoteTypo = styled(Typography)`
-  /* width: 43px; */
   height: 24px;
 
   font-family: 'Roboto';
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
-
   letter-spacing: -0.04px;
-
   color: #d32f2f;
 `;
 
@@ -205,13 +201,10 @@ const CancelSubmitButton = styled(Button)`
   max-width: 130px;
   height: 36px;
 
-  /* Indigo / 700 */
-
   border: 1px solid #303f9f;
   border-radius: 8px 8px 8px 0px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 16px;
   line-height: 150%;
@@ -228,12 +221,8 @@ const ContinueSubmitButton = styled(Button)`
   align-items: center;
   padding: 6px 32px;
   gap: 4px;
-
   max-width: 170px;
   height: 36px;
-
-  /* Indigo / 700 */
-
   background: #303f9f;
   border-radius: 8px 8px 8px 0px;
 
@@ -295,7 +284,6 @@ const InjectionRegistrationStep1 = () => {
     register,
     handleSubmit,
     watch,
-    control,
     setValue,
     getValues,
     formState: { errors, isValid }

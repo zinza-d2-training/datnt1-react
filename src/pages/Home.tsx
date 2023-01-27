@@ -1,4 +1,3 @@
-
 import AggregateInfo from 'components/AggregateInfo';
 import Footer from 'components/Footer';
 import Header from 'components/Header';

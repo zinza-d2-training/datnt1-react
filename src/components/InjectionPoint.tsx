@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { yupResolver } from '@hookform/resolvers/yup';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Button,
@@ -16,7 +17,6 @@ import {
   Typography
 } from '@mui/material';
 import React, { useEffect } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -70,13 +70,11 @@ const TitleTypo = styled(Typography)`
   height: 23px;
 
   font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 20px;
   line-height: 23px;
   display: flex;
   align-items: center;
-
   color: #000000;
 `;
 
@@ -222,12 +220,12 @@ const InjectionPoint = () => {
     resetField('ward');
     // Lấy provinceId hiện tại đang chọn
     const province: Province[] = provinces.filter((province) => {
-      return province.name == watch('province');
+      return province.name === watch('province');
     });
 
     //Lấy ra các quận thuộc province đang chọn
     const districtArr: District[] = districts.filter((district) => {
-      return district.provinceId == province[0]?.id;
+      return district.provinceId === province[0]?.id;
     });
     setDistrictsData(districtArr);
   }, [watch('province')]);
@@ -236,12 +234,12 @@ const InjectionPoint = () => {
     resetField('ward');
     // Lấy districtId hiện tại đang chọn
     const district: District[] = districts.filter((district) => {
-      return district.name == watch('district');
+      return district.name === watch('district');
     });
 
     //Lấy ra các quận thuộc district đang chọn
     const wardArr: Ward[] = wards.filter((ward) => {
-      return ward.districtId == district[0]?.id;
+      return ward.districtId === district[0]?.id;
     });
 
     setWardsData(wardArr);

@@ -1,7 +1,5 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import { Button, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Typography } from '@mui/material';
 import StyledLink from './StyledLink';
 
 const MenuUserContainer = styled.div`

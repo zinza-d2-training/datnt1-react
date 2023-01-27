@@ -11,10 +11,8 @@ const DialogContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 0px;
-
   width: 444px;
   min-height: 521px;
-
   background: #ffffff;
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
     0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
@@ -26,7 +24,6 @@ const DialogTitleContainer = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 0px;
-
   width: 100%;
   height: 64px;
 
@@ -194,9 +191,7 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
   const {
     register,
     handleSubmit,
-    watch,
-    control,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<updatedInjectionPointInputs>({
     resolver: yupResolver(UserInfoSchema)
   });

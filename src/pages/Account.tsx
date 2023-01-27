@@ -1,26 +1,16 @@
-import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Typography, Button, TextField, Select, MenuItem } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import CreateIcon from '@mui/icons-material/Create';
+import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import MenuUser from 'components/MenuUser';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
 import Divider from 'components/Divider';
-import {
-  provinces,
-  districts,
-  wards,
-  Province,
-  District,
-  Ward
-} from 'dummy-data';
+import MenuUser from 'components/MenuUser';
+import { districts, provinces, wards } from 'dummy-data';
 
 const ResultContainer = styled.div`
   display: flex;
