@@ -6,6 +6,10 @@ import React from 'react';
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
 import MenuItemContent from './MenuItemContent';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { RootState } from 'store/store';
+import { useNavigate } from 'react-router-dom';
+import useAccessToken from 'hooks/useAccessToken';
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -142,6 +146,18 @@ const Header = () => {
     setAnchorEl(null);
   };
 
+  const dispatch = useAppDispatch();
+  const selectUser = useAppSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+  const token = useAccessToken();
+
+  const handleLoginClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!token) {
+      navigate('login');
+    }
+  };
+
   return (
     <HeaderContainer>
       <Brand>
@@ -184,11 +200,11 @@ const Header = () => {
             <MenuItemTypography>Tài liệu</MenuItemTypography>
           </MenuRightButton>
         </StyledLink>
-        <StyledLink to="/login">
-          <MenuRightButton>
-            <MenuItemButton>Đăng nhập</MenuItemButton>
-          </MenuRightButton>
-        </StyledLink>
+        {/* <StyledLink to="/login"> */}
+        <MenuRightButton>
+          <MenuItemButton onClick={handleLoginClick}>Đăng nhập</MenuItemButton>
+        </MenuRightButton>
+        {/* </StyledLink> */}
       </MenuRight>
     </HeaderContainer>
   );
