@@ -51,8 +51,8 @@ export const getUserInfoAsync = createAsyncThunk(
   async (accessToken: string) => {
     try {
       const res = await publicRequest.get('auth/user-info', {
-        headers: { Authorization: `Bearer ${accessToken}` }
-        // withCredentials: true
+        headers: { Authorization: `Bearer ${accessToken}` },
+        withCredentials: true
       });
 
       return res.data;
