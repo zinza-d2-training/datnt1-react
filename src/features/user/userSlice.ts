@@ -52,6 +52,7 @@ export const getUserInfoAsync = createAsyncThunk(
     try {
       const res = await publicRequest.get('auth/user-info', {
         headers: { Authorization: `Bearer ${accessToken}` }
+        // withCredentials: true
       });
 
       return res.data;
@@ -93,6 +94,7 @@ export const userSlice = createSlice({
         state.status = 'succeeded';
         state.userInfo = action.payload;
         state.loading = false;
+        console.log(state.userInfo);
       });
   }
 });

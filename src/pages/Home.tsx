@@ -33,7 +33,9 @@ const Home = () => {
   const token = useAccessToken();
 
   useEffect(() => {
-    dispatch(getUserInfoAsync(token));
+    if (token) {
+      dispatch(getUserInfoAsync(token));
+    }
   }, []);
 
   return selectUser.loading ? (
