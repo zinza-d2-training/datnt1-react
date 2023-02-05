@@ -33,8 +33,8 @@ const Home = () => {
   const token = useAccessToken();
 
   useEffect(() => {
-    if (token) {
-      dispatch(getUserInfoAsync(token));
+    if (token && selectUser.userInfo.email === '') {
+      dispatch(getUserInfoAsync());
     }
   }, []);
 

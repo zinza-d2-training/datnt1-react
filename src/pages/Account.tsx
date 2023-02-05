@@ -311,7 +311,7 @@ const Account = () => {
                   return selected;
                 }}>
                 {provinces.map((province) => (
-                  <MenuItem key={province.id} value={province.name}>
+                  <MenuItem key={province.province_id} value={province.name}>
                     {province.name}
                   </MenuItem>
                 ))}
@@ -334,7 +334,7 @@ const Account = () => {
                   }
                 }}>
                 {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.name}>
+                  <MenuItem key={district.district_id} value={district.name}>
                     {district.name}
                   </MenuItem>
                 ))}
@@ -357,7 +357,7 @@ const Account = () => {
                   }
                 }}>
                 {wards.map((ward) => (
-                  <MenuItem key={ward.id} value={ward.name}>
+                  <MenuItem key={ward.ward_id} value={ward.name}>
                     {ward.name}
                   </MenuItem>
                 ))}

@@ -47,7 +47,7 @@ const HelperText = styled(FormHelperText)`
 `;
 
 export type registerInput =
-  | 'identity'
+  | 'identification_card'
   | 'email'
   | 'password'
   | 'fullname'

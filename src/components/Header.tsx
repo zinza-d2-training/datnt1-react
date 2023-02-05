@@ -2,14 +2,16 @@ import styled from '@emotion/styled';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Menu, Typography } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
 import MenuItemContent from './MenuItemContent';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { RootState } from 'store/store';
-import { useNavigate } from 'react-router-dom';
 import useAccessToken from 'hooks/useAccessToken';
+import { logoutAsync } from 'features/user/userSlice';
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -158,6 +160,14 @@ const Header = () => {
     }
   };
 
+  const handleLogoutClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (token) {
+      dispatch(logoutAsync());
+      navigate('login');
+    }
+  };
+
   return (
     <HeaderContainer>
       <Brand>
@@ -200,11 +210,19 @@ const Header = () => {
             <MenuItemTypography>Tài liệu</MenuItemTypography>
           </MenuRightButton>
         </StyledLink>
-        {/* <StyledLink to="/login"> */}
-        <MenuRightButton>
-          <MenuItemButton onClick={handleLoginClick}>Đăng nhập</MenuItemButton>
-        </MenuRightButton>
-        {/* </StyledLink> */}
+        {token ? (
+          <MenuRightButton>
+            <MenuItemButton onClick={handleLogoutClick}>
+              Đăng xuất
+            </MenuItemButton>
+          </MenuRightButton>
+        ) : (
+          <MenuRightButton>
+            <MenuItemButton onClick={handleLoginClick}>
+              Đăng nhập
+            </MenuItemButton>
+          </MenuRightButton>
+        )}
       </MenuRight>
     </HeaderContainer>
   );

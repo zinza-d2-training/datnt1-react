@@ -410,6 +410,9 @@ const InjectionRegistrationStep1 = () => {
                   render={({ field: { value, ...fieldProps } }) => ( */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    disablePast
+                    views={['year', 'month', 'day']}
+                    inputFormat="YYYY-MM-DD"
                     value={value}
                     {...register('estimatedDateInjection')}
                     onChange={(newValue) => {
@@ -432,8 +435,6 @@ const InjectionRegistrationStep1 = () => {
                     )}
                   />
                 </LocalizationProvider>
-                {/* )}
-                /> */}
               </InputComponent>
               <InputComponent>
                 <Label htmlFor="injectionSession">Buổi tiêm mong muốn</Label>

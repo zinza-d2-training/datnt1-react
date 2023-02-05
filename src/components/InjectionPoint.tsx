@@ -218,28 +218,28 @@ const InjectionPoint = () => {
   useEffect(() => {
     resetField('district');
     resetField('ward');
-    // Lấy provinceId hiện tại đang chọn
+    // Lấy province_id hiện tại đang chọn
     const province: Province[] = provinces.filter((province) => {
       return province.name === watch('province');
     });
 
     //Lấy ra các quận thuộc province đang chọn
     const districtArr: District[] = districts.filter((district) => {
-      return district.provinceId === province[0]?.id;
+      return district.province_id === province[0]?.province_id;
     });
     setDistrictsData(districtArr);
   }, [watch('province')]);
 
   useEffect(() => {
     resetField('ward');
-    // Lấy districtId hiện tại đang chọn
+    // Lấy district_id hiện tại đang chọn
     const district: District[] = districts.filter((district) => {
       return district.name === watch('district');
     });
 
     //Lấy ra các quận thuộc district đang chọn
     const wardArr: Ward[] = wards.filter((ward) => {
-      return ward.districtId === district[0]?.id;
+      return ward.district_id === district[0]?.district_id;
     });
 
     setWardsData(wardArr);
@@ -265,7 +265,7 @@ const InjectionPoint = () => {
                 return selected;
               }}>
               {provincesData.map((province) => (
-                <MenuItem key={province.id} value={province.name}>
+                <MenuItem key={province.province_id} value={province.name}>
                   {province.name}
                 </MenuItem>
               ))}
@@ -286,7 +286,7 @@ const InjectionPoint = () => {
                 }
               }}>
               {districtsData.map((district) => (
-                <MenuItem key={district.id} value={district.name}>
+                <MenuItem key={district.district_id} value={district.name}>
                   {district.name}
                 </MenuItem>
               ))}
@@ -307,7 +307,7 @@ const InjectionPoint = () => {
                 }
               }}>
               {wardsData.map((ward) => (
-                <MenuItem key={ward.id} value={ward.name}>
+                <MenuItem key={ward.ward_id} value={ward.name}>
                   {ward.name}
                 </MenuItem>
               ))}

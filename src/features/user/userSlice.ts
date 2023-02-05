@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { publicRequest } from 'callsApi';
+import { publicRequest, userRequest } from 'callsApi';
 import { RootState } from 'store';
 
 export interface LoginInfo {
@@ -39,25 +39,40 @@ const initialState: UserState = {
 
 export const loginAsync = createAsyncThunk(
   'user/login',
-  async (loginInfo: LoginInfo) => {
-    const res = await publicRequest.post('auth/login', loginInfo);
+  async (loginInfo: LoginInfo, { rejectWithValue }) => {
+    try {
+      const res = await publicRequest.post('auth/login', loginInfo);
 
-    return res.data;
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
 export const getUserInfoAsync = createAsyncThunk(
   'user/info',
-  async (accessToken: string) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await publicRequest.get('auth/user-info', {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        withCredentials: true
-      });
+      const res = await userRequest.get('auth/user-info');
 
       return res.data;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const logoutAsync = createAsyncThunk(
+  'user/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      localStorage.removeItem('accessToken');
+      const res = await publicRequest.get('auth/logout');
+
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -85,7 +100,9 @@ export const userSlice = createSlice({
       .addCase(loginAsync.rejected, (state) => {
         state.status = 'rejected';
         state.loading = false;
-      })
+      });
+
+    builder
       .addCase(getUserInfoAsync.pending, (state) => {
         state.status = 'pending';
         state.loading = true;
@@ -94,7 +111,25 @@ export const userSlice = createSlice({
         state.status = 'succeeded';
         state.userInfo = action.payload;
         state.loading = false;
-        console.log(state.userInfo);
+      })
+      .addCase(getUserInfoAsync.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.loading = false;
+      });
+
+    builder
+      .addCase(logoutAsync.pending, (state) => {
+        state.status = 'pending';
+        state.loading = true;
+      })
+      .addCase(logoutAsync.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.loading = false;
+        state.userInfo = initialState.userInfo;
+      })
+      .addCase(logoutAsync.rejected, (state) => {
+        state.status = 'rejected';
+        state.loading = false;
       });
   }
 });
