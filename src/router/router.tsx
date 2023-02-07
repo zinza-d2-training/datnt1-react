@@ -13,6 +13,7 @@ import Login from 'pages/Login';
 import Register from 'pages/Register';
 import RegistrationResult from 'pages/RegistrationResult';
 import VaccinationCertificate from 'pages/VaccinationCertificate';
+import ConfirmResetPassword from 'pages/ConfirmResetPassword';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />
+      },
+      {
+        path: '/confirm-reset-password',
+        element: <ConfirmResetPassword />
       }
     ]
   },
