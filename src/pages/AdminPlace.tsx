@@ -16,8 +16,8 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import AdminEditDialog from 'components/AdminEditDialog';
@@ -25,6 +25,12 @@ import Divider from 'components/Divider';
 import MenuAdmin from 'components/MenuAdmin';
 import TablePaginationActions from 'components/TablePaginationActions';
 import { rows } from 'dummy-data';
+import {
+  getVaccinationSiteAsync,
+  SearchFilterDefault,
+  VaccinationSiteInfo
+} from 'features/vaccination/vaccinationSiteSlice';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const SearchContainer = styled.div`
   box-sizing: border-box;
@@ -134,8 +140,8 @@ const StyledTableRow = styled(TableRow)(() => ({
   }
 }));
 
-interface SearchInputs {
-  injectionPoint?: string;
+export interface SearchByKeyInputs {
+  name?: string;
   address?: string;
 }
 
@@ -150,7 +156,20 @@ const AdminPlace = () => {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const [listSites, setListSites] = React.useState<string[]>([]);
+  const [chosenSite, setChosenSite] = React.useState<VaccinationSiteInfo>();
+
+  const dispatch = useAppDispatch();
+
+  const selectVaccinationSites = useAppSelector(
+    (state: RootState) => state.vaccinationSite.vaccinationSites
+  );
+
+  const handleClickOpen = (
+    event: React.MouseEvent<unknown>,
+    site: VaccinationSiteInfo
+  ) => {
+    setChosenSite(site);
     setOpen(true);
   };
 
@@ -158,12 +177,18 @@ const AdminPlace = () => {
     setOpen(false);
   };
 
+  const handleSearchClick: SubmitHandler<SearchByKeyInputs> = (
+    data: SearchByKeyInputs
+  ) => {
+    dispatch(getVaccinationSiteAsync(data));
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isValid }
-  } = useForm<SearchInputs>({
+  } = useForm<SearchByKeyInputs>({
     resolver: yupResolver(searchSchema)
   });
 
@@ -185,6 +210,12 @@ const AdminPlace = () => {
     setPage(0);
   };
 
+  useEffect(() => {
+    dispatch(getVaccinationSiteAsync(SearchFilterDefault));
+    const listSites = selectVaccinationSites.map((site) => site.name);
+    setListSites(listSites);
+  }, []);
+
   return (
     <div>
       <MenuAdmin adminTab={'injection-point'} />
@@ -193,9 +224,9 @@ const AdminPlace = () => {
         <SearchRow>
           <InputComnponent>
             <TextField
-              {...register('injectionPoint')}
+              {...register('name')}
               type="text"
-              id="injectionoPoint"
+              id="name"
               placeholder="Điểm tiêm"
               fullWidth
               required
@@ -211,7 +242,7 @@ const AdminPlace = () => {
               required
             />
           </InputComnponent>
-          <SearchButton>
+          <SearchButton onClick={handleSubmit(handleSearchClick)}>
             <SearchIcon />
             Tìm kiếm
           </SearchButton>
@@ -233,33 +264,40 @@ const AdminPlace = () => {
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? rows.slice(
+                ? selectVaccinationSites.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
-                : rows
-              ).map((row) => (
-                <StyledTableRow
-                  onClick={handleClickOpen}
-                  key={row.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell align="center">{row.id}</TableCell>
-                  <TableCell align="center">{row.name}</TableCell>
-                  <TableCell align="center">{row.detailAddress}</TableCell>
-                  <TableCell align="center">{row.leader}</TableCell>
-                  <TableCell align="center">
-                    {row.numberOfInjectionTables}
-                  </TableCell>
-                </StyledTableRow>
+                : selectVaccinationSites
+              ).map((site: VaccinationSiteInfo, index: number) => (
+                <>
+                  <StyledTableRow
+                    hover
+                    onClick={(e) => handleClickOpen(e, site)}
+                    key={index}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="center">{site.name}</TableCell>
+                    <TableCell align="center">{site.address}</TableCell>
+                    <TableCell align="center">{site.leader}</TableCell>
+                    <TableCell align="center">
+                      {site.number_of_tables}
+                    </TableCell>
+                  </StyledTableRow>
+                </>
               ))}
+              <Dialog open={open} onClose={handleClose}>
+                <AdminEditDialog
+                  handleClose={handleClose}
+                  site={chosenSite}
+                  listSites={listSites}
+                />
+              </Dialog>
               {emptyRows > 0 && (
                 <TableRow sx={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
-              <Dialog open={open} onClose={handleClose}>
-                <AdminEditDialog handleClose={handleClose} />
-              </Dialog>
             </TableBody>
             <TableFooter>
               <TableRow>

@@ -24,7 +24,6 @@ export const forgotPasswordAsync = createAsyncThunk(
       'forgot-password',
       email
     );
-    console.log(res.data);
 
     return res.data;
   }
@@ -44,8 +43,6 @@ export const forgotPasswordSlice = createSlice({
         state.status = 'succeeded';
         state.loading = false;
         state.message = action.payload;
-
-        console.log(state.message);
       })
       .addCase(forgotPasswordAsync.rejected, (state) => {
         state.status = 'failed';

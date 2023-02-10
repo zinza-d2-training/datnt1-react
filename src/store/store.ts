@@ -1,13 +1,15 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import counterReducer from 'features/counter/counterSlice';
 import registerReducer from 'features/user/registerSlice';
 import userReducer from 'features/user/userSlice';
+import vaccinationSiteReducer from 'features/vaccination/vaccinationSiteSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     user: userReducer,
-    register: registerReducer
+    register: registerReducer,
+    vaccinationSite: vaccinationSiteReducer
   }
 });
 

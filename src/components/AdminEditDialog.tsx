@@ -2,8 +2,12 @@ import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { injectionInforRows } from 'dummy-data';
-import { useForm } from 'react-hook-form';
+import {
+  updateVaccinationSiteByIdAsync,
+  VaccinationSiteInfo
+} from 'features/vaccination/vaccinationSiteSlice';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 import * as yup from 'yup';
 
 const DialogContainer = styled.div`
@@ -111,6 +115,12 @@ const ButtonGroup = styled.div`
 
   min-width: 217px;
   min-height: 36px;
+
+  & .css-c4uyv3-MuiButtonBase-root-MuiButton-root:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 const CancelButton = styled(Button)`
@@ -165,29 +175,33 @@ const ConfirmedButton = styled(Button)`
 
 interface AdminEditDialogProps {
   handleClose: () => void;
+  site: VaccinationSiteInfo | undefined;
+  listSites: string[];
 }
 
 interface updatedInjectionPointInputs {
-  injectionPointName: string;
+  name: string;
   address: string;
   leader: string;
-  numberOfTables: number;
+  number_of_tables: number;
 }
 
 const UserInfoSchema = yup.object().shape({
-  injectionPointName: yup
-    .string()
-    .required('Tên điểm tiem không được bỏ trống'),
+  name: yup.string().required('Tên điểm tiem không được bỏ trống'),
   address: yup.string().required('Địa chỉ không được bỏ trống'),
   leader: yup.string().required('Người đứng đầu cơ sở không được bỏ trống'),
-  numberOfTables: yup
+  number_of_tables: yup
     .number()
     .integer()
     .positive()
     .required('Số bàn tiêm không được bỏ trống')
 });
 
-const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
+const AdminEditDialog = ({
+  handleClose,
+  site,
+  listSites
+}: AdminEditDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -196,7 +210,21 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
     resolver: yupResolver(UserInfoSchema)
   });
 
-  const onSubmit = () => {
+  const dispatch = useAppDispatch();
+  const selectVaccinationSites = useAppSelector(
+    (state: RootState) => state.vaccinationSite.vaccinationSites
+  );
+
+  const onSubmit: SubmitHandler<updatedInjectionPointInputs> = (
+    data: updatedInjectionPointInputs
+  ) => {
+    console.log(data);
+    dispatch(
+      updateVaccinationSiteByIdAsync({
+        vaccination_site_id: site?.vaccination_site_id as number,
+        ...data
+      })
+    );
     handleClose();
   };
 
@@ -208,18 +236,16 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
       </DialogTitleContainer>
       <DialogContentContainer>
         <InputComponent>
-          <Label htmlFor="injectionPointName">Tên điểm tiêm</Label>
+          <Label htmlFor="name">Tên điểm tiêm</Label>
           <Select
-            {...register('injectionPointName')}
+            {...register('name')}
             fullWidth
             displayEmpty={true}
-            id="injectionPointName"
-            defaultValue={'Hà Nội'}>
-            {injectionInforRows.map((injectionPoint) => (
-              <MenuItem
-                key={injectionPoint.injectionNumber}
-                value={injectionPoint.injectionPointName}>
-                {injectionPoint.injectionPointName}
+            id="name"
+            defaultValue={site?.name}>
+            {listSites.map((site: string, index: number) => (
+              <MenuItem key={index} value={site}>
+                {site}
               </MenuItem>
             ))}
           </Select>
@@ -231,7 +257,7 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
             helperText={errors.address?.message}
             type="text"
             id="address"
-            defaultValue="Smart City" // value
+            defaultValue={site?.address}
             fullWidth
             required
             FormHelperTextProps={{
@@ -246,7 +272,7 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
             helperText={errors.leader?.message}
             type="text"
             id="leader"
-            defaultValue="Đặng Thai Mai" // value
+            defaultValue={site?.leader}
             fullWidth
             required
             FormHelperTextProps={{
@@ -255,13 +281,13 @@ const AdminEditDialog = ({ handleClose }: AdminEditDialogProps) => {
           />
         </InputComponent>
         <InputComponent>
-          <Label htmlFor="numberOfTables">Số bàn tiêm</Label>
+          <Label htmlFor="number_of_tables">Số bàn tiêm</Label>
           <Field
-            {...register('numberOfTables')}
-            helperText={errors.numberOfTables?.message}
+            {...register('number_of_tables')}
+            helperText={errors.number_of_tables?.message}
             type="text"
-            id="numberOfTables"
-            defaultValue="1" // value
+            id="number_of_tables"
+            defaultValue={site?.number_of_tables}
             fullWidth
             required
             FormHelperTextProps={{

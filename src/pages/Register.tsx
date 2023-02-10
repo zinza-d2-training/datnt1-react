@@ -213,7 +213,7 @@ const Register = () => {
     resetField('district');
     resetField('ward');
 
-    // Lấy province_id hiện tại đang chọn
+    // Lấy province hiện tại đang chọn
     const province: Province = provincesData.filter((province) => {
       return province.name === watch('province');
     })[0];
