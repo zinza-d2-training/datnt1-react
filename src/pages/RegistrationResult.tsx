@@ -9,7 +9,14 @@ import TableRow from '@mui/material/TableRow';
 
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
+import dayjs from 'dayjs';
 import { registerResult } from 'dummy-data';
+import {
+  getRegisterResultByUserId,
+  RegisterResult
+} from 'features/vaccination/injectionRegistrationSlice';
+import { useEffect } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const StyledTableHead = styled(TableHead)(() => ({
   background: 'rgba(238, 238, 238, 0.4)',
@@ -51,6 +58,15 @@ const FrameTableCell = styled.div`
 `;
 
 const RegistrationResult = () => {
+  const dispatch = useAppDispatch();
+  const selectRegisterResult = useAppSelector(
+    (state: RootState) => state.injectionRegistration.registerResult
+  );
+
+  useEffect(() => {
+    dispatch(getRegisterResultByUserId());
+  }, []);
+
   return (
     <div>
       <MenuUser userTab={'registration-result'} />
@@ -70,15 +86,17 @@ const RegistrationResult = () => {
             </TableRow>
           </StyledTableHead>
           <TableBody>
-            {registerResult.map((row) => (
-              <TableRow key={row.numericalOder}>
-                <TableCell align="center">{row.numericalOder}</TableCell>
-                <TableCell align="center">{row.fullname}</TableCell>
-                <TableCell align="center">{row.birthday}</TableCell>
-                <TableCell align="center">{row.gender}</TableCell>
-                <TableCell align="center">{row.identificationCode}</TableCell>
+            {selectRegisterResult.map((res: RegisterResult, index: number) => (
+              <TableRow key={index}>
+                <TableCell align="center">{index + 1}</TableCell>
+                <TableCell align="center">{res.fullname}</TableCell>
+                <TableCell align="center">
+                  {dayjs(res.birthday).format('DD/MM/YYYY')}
+                </TableCell>
+                <TableCell align="center">{res.gender}</TableCell>
+                <TableCell align="center">{res.identification_card}</TableCell>
                 <StyledTableCell align="center">
-                  <FrameTableCell>{row.status}</FrameTableCell>
+                  <FrameTableCell>{res.status}</FrameTableCell>
                 </StyledTableCell>
               </TableRow>
             ))}

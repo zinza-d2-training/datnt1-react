@@ -10,11 +10,15 @@ export interface LoginInfo {
 export interface UserInfo {
   role_id: number;
   identification_card: string;
+  health_insurance_number: string;
   email: string;
   fullname: string;
   birthday: string;
   gender: string;
   ward_id: number;
+  ward_name: string;
+  district_name: string;
+  province_name: string;
 }
 
 export interface UserState {
@@ -27,11 +31,15 @@ const initialState: UserState = {
   userInfo: {
     role_id: 1,
     identification_card: '',
+    health_insurance_number: '',
     email: '',
     fullname: '',
     birthday: '',
     gender: '',
-    ward_id: 0
+    ward_id: 0,
+    ward_name: '',
+    district_name: '',
+    province_name: ''
   },
   status: 'idle',
   loading: false

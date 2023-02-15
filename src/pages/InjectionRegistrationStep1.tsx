@@ -21,9 +21,12 @@ import * as yup from 'yup';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
-import { Dayjs } from 'dayjs';
-import { injectionSession, priorityGroup } from 'dummy-data';
-import React from 'react';
+import dayjs, { Dayjs } from 'dayjs';
+import { injectionSession } from 'dummy-data';
+import React, { useEffect } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import { publicRequest } from 'callsApi';
+import { addInjectionRegistrationAsync } from 'features/vaccination/injectionRegistrationSlice';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -252,33 +255,42 @@ const MenuProps = {
   }
 };
 
-interface InjectionRegisterFormInputs {
-  healthInsuranceNumber: number;
+export interface PriorityGroup {
+  priority_group_id: number;
+  description: string;
+}
+
+export interface InjectionRegisterFormInputs {
+  health_insurance_number: string;
   priorityGroup: string;
-  ocupation: string;
-  workUnit: string;
+  occupation: string;
+  work_unit: string;
   address: string;
-  estimatedDateInjection: Dayjs | null;
-  injectionSession: string;
+  expected_injection_date: Dayjs | null;
+  injection_session: string;
 }
 
 const InjectionRegisterSchema = yup.object().shape({
-  healthInsuranceNumber: yup
-    .string()
-    .required('Số thẻ BHYT không được bỏ trống')
-    .matches(/^[0-9]+$/, 'Số thẻ BHYT chỉ được chứa số '),
   priorityGroup: yup.string().required('Nhóm ưu tiên không được bỏ trống'),
-  ocupation: yup.string().required('Nghề nghiệp không được bỏ trống'),
-  workUnit: yup.string().required('Đơn vị công tác không được bỏ trống'),
-  address: yup.string().required('Địa chỉ hiện tại không được bỏ trống'),
-  estimatedDateInjection: yup
-    .string()
-    .required('Ngày tiêm dự kiến không được bỏ trống'),
-  injectionSession: yup.string().required('Buổi tiêm không được bỏ trống')
+  health_insurance_number: yup.lazy((value) => {
+    if (value === '') {
+      return yup.string();
+    }
+
+    return yup.string().matches(/^[0-9]+$/, 'Số thẻ BHYT chỉ được chứa số');
+  }),
+  occupation: yup.string(),
+  work_unit: yup.string(),
+  address: yup.string(),
+  expected_injection_date: yup.string(),
+  injection_session: yup.string()
 });
 
 const InjectionRegistrationStep1 = () => {
   const [value, setValues] = React.useState<Dayjs | null>(null);
+  const [listPriorityGroup, setListPriorityGroup] = React.useState<
+    PriorityGroup[]
+  >([]);
 
   const {
     register,
@@ -293,7 +305,37 @@ const InjectionRegistrationStep1 = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = (data: InjectionRegisterFormInputs) => {
+  const dispatch = useAppDispatch();
+  const selectInjectionRegistration = useAppSelector(
+    (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
+  );
+
+  useEffect(() => {
+    async function fetchPriorityGroupData() {
+      const res = await publicRequest.get('priority-group');
+      setListPriorityGroup(res.data);
+    }
+    fetchPriorityGroupData();
+  }, []);
+
+  const onSubmit = async (data: InjectionRegisterFormInputs) => {
+    const { priorityGroup, expected_injection_date, ...others } = data;
+    const priority_group_id = listPriorityGroup.filter(
+      (item) => item.description === priorityGroup
+    )[0].priority_group_id;
+    const formatedExpectedInjectionDate = expected_injection_date
+      ? dayjs(expected_injection_date).format('YYYY-MM-DD')
+      : undefined;
+
+    await dispatch(
+      addInjectionRegistrationAsync({
+        priority_group_id,
+        expected_injection_date: formatedExpectedInjectionDate
+          ? formatedExpectedInjectionDate
+          : '',
+        ...others
+      })
+    );
     navigate('/injection-registration/step2');
   };
 
@@ -307,7 +349,12 @@ const InjectionRegistrationStep1 = () => {
             <InfoTypo>1. Thông tin người đăng ký tiêm</InfoTypo>
             <FormFrame>
               <InputComponent>
-                <Label htmlFor="priorityGroup">Nhóm ưu tiên (*)</Label>
+                <Label htmlFor="priorityGroup">
+                  Nhóm ưu tiên{' '}
+                  <Typography component="span" sx={{ color: '#D32F2F' }}>
+                    (*)
+                  </Typography>
+                </Label>
                 <FormControl fullWidth>
                   <Select
                     {...register('priorityGroup')}
@@ -320,27 +367,29 @@ const InjectionRegistrationStep1 = () => {
                       return selected;
                     }}
                     MenuProps={MenuProps}>
-                    {priorityGroup.map((group) => (
-                      <MenuItem key={group.id} value={group.name}>
-                        {group.name}
-                      </MenuItem>
-                    ))}
+                    {listPriorityGroup.map(
+                      (group: PriorityGroup, index: number) => (
+                        <MenuItem key={index} value={group.description}>
+                          {group.description}
+                        </MenuItem>
+                      )
+                    )}
                   </Select>
-                  {errors.injectionSession && (
+                  {errors.priorityGroup && (
                     <FormHelperText
                       sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
-                      {errors.injectionSession.message}
+                      {errors.priorityGroup.message}
                     </FormHelperText>
                   )}
                 </FormControl>
               </InputComponent>
               <InputComponent>
-                <Label htmlFor="healthInsuranceNumber">Số thẻ BHYT</Label>
+                <Label htmlFor="health_insurance_number">Số thẻ BHYT</Label>
                 <TextField
-                  {...register('healthInsuranceNumber')}
-                  helperText={errors.healthInsuranceNumber?.message}
+                  {...register('health_insurance_number')}
+                  helperText={errors.health_insurance_number?.message}
                   type="text"
-                  id="healthInsuranceNumber"
+                  id="health_insurance_number"
                   placeholder="Số thẻ BHYT"
                   fullWidth
                   required
@@ -352,12 +401,12 @@ const InjectionRegistrationStep1 = () => {
             </FormFrame>
             <FormFrame>
               <InputComponent>
-                <Label htmlFor="ocupation">Nghề nghiệp</Label>
+                <Label htmlFor="occupation">Nghề nghiệp</Label>
                 <TextField
-                  {...register('ocupation')}
-                  helperText={errors.ocupation?.message}
+                  {...register('occupation')}
+                  helperText={errors.occupation?.message}
                   type="text"
-                  id="ocupation"
+                  id="occupation"
                   placeholder="Nghề nghiệp"
                   fullWidth
                   required
@@ -367,12 +416,12 @@ const InjectionRegistrationStep1 = () => {
                 />
               </InputComponent>
               <InputComponent>
-                <Label htmlFor="workUnit">Đơn vị công tác</Label>
+                <Label htmlFor="work_unit">Đơn vị công tác</Label>
                 <TextField
-                  {...register('workUnit')}
-                  helperText={errors.workUnit?.message}
+                  {...register('work_unit')}
+                  helperText={errors.work_unit?.message}
                   type="text"
-                  id="workUnit"
+                  id="work_unit"
                   placeholder="Đơn vị công tác"
                   fullWidth
                   required
@@ -400,30 +449,25 @@ const InjectionRegistrationStep1 = () => {
             <InfoTypo>2. Thông tin đăng ký tiêm chủng</InfoTypo>
             <FormFrame>
               <InputComponent>
-                <Label htmlFor="estimatedDateInjection">
+                <Label htmlFor="expected_injection_date">
                   Ngày muốn được tiêm (dự kiến)
                 </Label>
-                {/* <Controller
-                  control={control}
-                  {...register('estimatedDateInjection')}
-                  name="estimatedDateInjection"
-                  render={({ field: { value, ...fieldProps } }) => ( */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     disablePast
                     views={['year', 'month', 'day']}
-                    inputFormat="YYYY-MM-DD"
+                    inputFormat="DD/MM/YYYY"
                     value={value}
-                    {...register('estimatedDateInjection')}
+                    {...register('expected_injection_date')}
                     onChange={(newValue) => {
                       setValues(newValue);
-                      setValue('estimatedDateInjection', newValue);
+                      setValue('expected_injection_date', newValue);
                     }}
                     renderInput={(params) => (
                       <TextField
                         fullWidth
                         {...params}
-                        helperText={errors.estimatedDateInjection?.message}
+                        helperText={errors.expected_injection_date?.message}
                         inputProps={{
                           ...params.inputProps,
                           placeholder: 'Ngày/Tháng/Năm'
@@ -437,13 +481,13 @@ const InjectionRegistrationStep1 = () => {
                 </LocalizationProvider>
               </InputComponent>
               <InputComponent>
-                <Label htmlFor="injectionSession">Buổi tiêm mong muốn</Label>
+                <Label htmlFor="injection_session">Buổi tiêm mong muốn</Label>
                 <FormControl fullWidth>
                   <Select
-                    {...register('injectionSession')}
+                    {...register('injection_session')}
                     fullWidth
                     displayEmpty={true}
-                    id="injectionSession"
+                    id="injection_session"
                     renderValue={(selected: string) => {
                       if (!selected) {
                         return (
@@ -459,10 +503,10 @@ const InjectionRegistrationStep1 = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.injectionSession && (
+                  {errors.injection_session && (
                     <FormHelperText
                       sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
-                      {errors.injectionSession.message}
+                      {errors.injection_session.message}
                     </FormHelperText>
                   )}
                 </FormControl>

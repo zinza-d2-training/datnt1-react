@@ -3,13 +3,15 @@ import counterReducer from 'features/counter/counterSlice';
 import registerReducer from 'features/user/registerSlice';
 import userReducer from 'features/user/userSlice';
 import vaccinationSiteReducer from 'features/vaccination/vaccinationSiteSlice';
+import injectionRegistrationReducer from 'features/vaccination/injectionRegistrationSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     user: userReducer,
     register: registerReducer,
-    vaccinationSite: vaccinationSiteReducer
+    vaccinationSite: vaccinationSiteReducer,
+    injectionRegistration: injectionRegistrationReducer
   }
 });
 

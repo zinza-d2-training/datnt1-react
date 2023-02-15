@@ -14,6 +14,8 @@ import Register from 'pages/Register';
 import RegistrationResult from 'pages/RegistrationResult';
 import VaccinationCertificate from 'pages/VaccinationCertificate';
 import ConfirmResetPassword from 'pages/ConfirmResetPassword';
+import AdminRegistration from 'pages/AdminRegistration';
+import AdminDocument from 'pages/AdminDocument';
 
 const router = createBrowserRouter([
   {
@@ -76,11 +78,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/admin/registration',
-        element: <AdminPlace />
+        element: <AdminRegistration />
       },
       {
         path: '/admin/document',
-        element: <AdminPlace />
+        element: <AdminDocument />
       }
     ]
   }

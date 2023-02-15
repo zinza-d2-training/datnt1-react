@@ -57,6 +57,7 @@ export const getVaccinationSiteAsync = createAsyncThunk(
         const res = await publicRequest.get(
           `vaccination-site?province_id=${searchFilter.province_id}&district_id=${searchFilter.district_id}&ward_id=${searchFilter.ward_id}`
         );
+
         return res.data;
       } else if ('name' in searchFilter) {
         const res = await publicRequest.get(
@@ -65,6 +66,7 @@ export const getVaccinationSiteAsync = createAsyncThunk(
             data: searchFilter
           }
         );
+
         return res.data;
       }
     } catch (error: any) {

@@ -187,7 +187,7 @@ interface updatedInjectionPointInputs {
 }
 
 const UserInfoSchema = yup.object().shape({
-  name: yup.string().required('Tên điểm tiem không được bỏ trống'),
+  name: yup.string().required('Tên điểm tiêm không được bỏ trống'),
   address: yup.string().required('Địa chỉ không được bỏ trống'),
   leader: yup.string().required('Người đứng đầu cơ sở không được bỏ trống'),
   number_of_tables: yup
@@ -218,7 +218,6 @@ const AdminEditDialog = ({
   const onSubmit: SubmitHandler<updatedInjectionPointInputs> = (
     data: updatedInjectionPointInputs
   ) => {
-    console.log(data);
     dispatch(
       updateVaccinationSiteByIdAsync({
         vaccination_site_id: site?.vaccination_site_id as number,

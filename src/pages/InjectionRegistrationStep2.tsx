@@ -9,7 +9,7 @@ import {
   FormHelperText,
   Typography
 } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -19,6 +19,11 @@ import Vaccine from 'assets/img/vaccine2.png';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import {
+  addInjectionRegistrationAsync,
+  updateInjectionRegistrationByUserAsync
+} from 'features/vaccination/injectionRegistrationSlice';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -165,11 +170,11 @@ const ContinueSubmitButton = styled(Button)`
 `;
 
 interface PolicyInputs {
-  policy: boolean;
+  vaccination_agreement: boolean;
 }
 
 const PolicySchema = yup.object().shape({
-  policy: yup.boolean().oneOf([true], '(Tích vào ô để tiếp tục)')
+  vaccination_agreement: yup.boolean().oneOf([true], '(Tích vào ô để tiếp tục)')
 });
 
 const InjectionRegistrationStep2 = () => {
@@ -183,8 +188,21 @@ const InjectionRegistrationStep2 = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = () => {
-    if (isValid) {
+  const dispatch = useAppDispatch();
+  const selectInjectionRegistration = useAppSelector(
+    (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
+  );
+
+  const onSubmit: SubmitHandler<PolicyInputs> = async (data) => {
+    if (selectInjectionRegistration.priority_group_id) {
+      const injection_registration_id =
+        selectInjectionRegistration.injection_registration_id;
+      await dispatch(
+        updateInjectionRegistrationByUserAsync({
+          injection_registration_id,
+          ...data
+        })
+      );
       navigate('/injection-registration/step3');
     }
   };
@@ -231,12 +249,12 @@ const InjectionRegistrationStep2 = () => {
             và:{' '}
           </ResultConfirmTypo>
           <FormControlLabel
-            control={<Checkbox {...register('policy')} />}
+            control={<Checkbox {...register('vaccination_agreement')} />}
             label="Đồng ý tiêm chủng"
           />
-          {errors.policy && (
+          {errors.vaccination_agreement && (
             <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
-              {errors.policy.message}
+              {errors.vaccination_agreement.message}
             </FormHelperText>
           )}
         </ResultConfirm>
