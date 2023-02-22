@@ -22,6 +22,7 @@ import {
   RegisterResult
 } from 'features/vaccination/injectionRegistrationSlice';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const ResultContainer = styled.div`
@@ -293,6 +294,8 @@ const VaccinationCertificate = () => {
   const dispatch = useAppDispatch();
   const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
 
+  const navigate = useNavigate();
+
   const selectRegisterResult = useAppSelector(
     (state: RootState) => state.injectionRegistration.registerResult
   );
@@ -302,14 +305,15 @@ const VaccinationCertificate = () => {
   }, []);
 
   useEffect(() => {
-    let sum = 0;
-    selectRegisterResult.forEach((result) => {
+    const injectionShots = selectRegisterResult.reduce((total, result) => {
       if (result.status === Status.INJECTED) {
-        sum += 1;
+        return (total += 1);
       }
-    });
 
-    setInjectionShots(sum);
+      return total;
+    }, 0);
+
+    setInjectionShots(injectionShots);
   }, [selectRegisterResult]);
 
   return (
@@ -401,7 +405,12 @@ const VaccinationCertificate = () => {
             </StyledTable>
           </TableContainer>
           <SubmitContainer>
-            <RegisterButton>Đăng ký mũi tiêm tiếp theo</RegisterButton>
+            <RegisterButton
+              onClick={() => {
+                navigate('/injection-registration/step1');
+              }}>
+              Đăng ký mũi tiêm tiếp theo
+            </RegisterButton>
           </SubmitContainer>
         </CertificateContainer>
         {injectionShots > 0 ? (

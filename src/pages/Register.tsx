@@ -17,8 +17,13 @@ import { publicRequest } from 'callsApi';
 import InputComponent from 'components/InputComponent';
 import dayjs, { Dayjs } from 'dayjs';
 import { District, Province, Ward } from 'dummy-data';
+import {
+  getDistrictsByProvinceIdAsync,
+  getProvincesAsync,
+  getWardsByDistrictIdAsync
+} from 'features/administrative_unit/administrativeSlice';
 import { registerAsync } from 'features/user/registerSlice';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 import * as yup from 'yup';
@@ -175,10 +180,6 @@ const registerSchema = yup.object().shape({
 });
 
 const Register = () => {
-  const [provincesData, setProvincesData] = React.useState<Province[]>([]);
-  const [districtsData, setDistrictsData] = React.useState<District[]>([]);
-  const [wardsData, setWardsData] = React.useState<Ward[]>([]);
-
   const [value, setValues] = React.useState<Dayjs | null>(null);
 
   const dispatch = useAppDispatch();
@@ -194,14 +195,41 @@ const Register = () => {
 
   const selectRegister = useAppSelector((state: RootState) => state.register);
 
+  const selectProvinces = useAppSelector(
+    (state: RootState) => state.administrativeUnit.provinces
+  );
+
+  const selectDistricts = useAppSelector(
+    (state: RootState) => state.administrativeUnit.districts
+  );
+
+  const selectWards = useAppSelector(
+    (state: RootState) => state.administrativeUnit.wards
+  );
+
+  const currentProvince = useMemo(() => {
+    return selectProvinces?.find(
+      (province) => province.name === watch('province')
+    );
+  }, [watch('province')]);
+
+  const currentDistrict = useMemo(() => {
+    return selectDistricts?.find(
+      (district) => district.name === watch('district')
+    );
+  }, [watch('district')]);
+
+  const currentWard = useMemo(() => {
+    return selectWards?.find((ward) => ward.name === watch('ward'));
+  }, [watch('ward')]);
+
   useEffect(() => {
+    resetField('province');
+
     async function fetchProvincesData() {
       // You can await here
       try {
-        const response = await publicRequest.get(
-          'administrative-unit/provinces'
-        );
-        setProvincesData(response.data);
+        await dispatch(getProvincesAsync());
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -213,19 +241,12 @@ const Register = () => {
     resetField('district');
     resetField('ward');
 
-    // Lấy province hiện tại đang chọn
-    const province: Province = provincesData.filter((province) => {
-      return province.name === watch('province');
-    })[0];
-
     // Lấy ra các quận thuộc province đang chọn
     async function fetchDistrictsData() {
       try {
-        const response = await publicRequest.get(
-          `administrative-unit/districts/${province?.province_id}`
+        await dispatch(
+          getDistrictsByProvinceIdAsync(currentProvince as Province)
         );
-
-        setDistrictsData(response.data);
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -238,19 +259,11 @@ const Register = () => {
 
   useEffect(() => {
     resetField('ward');
-    // Lấy district_id hiện tại đang chọn
-    const district: District = districtsData.filter((district) => {
-      return district.name === watch('district');
-    })[0];
 
     //Lấy ra các quận thuộc district đang chọn
     async function fetchWardsData() {
       try {
-        const response = await publicRequest.get(
-          `administrative-unit/wards/${district?.district_id}`
-        );
-
-        setWardsData(response.data);
+        await dispatch(getWardsByDistrictIdAsync(currentDistrict as District));
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -266,7 +279,7 @@ const Register = () => {
     if (isValid) {
       let { district, province, ward, birthday, ...registerInfo } = data;
 
-      const ward_id = wardsData.filter((item) => item.name === ward)[0].ward_id;
+      const ward_id = currentWard?.ward_id as number;
       const formatedBirthday = dayjs(birthday).format('YYYY-MM-DD');
 
       dispatch(
@@ -285,7 +298,6 @@ const Register = () => {
           label="Số CMND/CCCD"
           placeholder="Số CMND/CCCD"
           id="identification_card"
-          // helperText="Số CMND/CCCD không được bỏ trống "
           helperText={errors.identification_card?.message}
           register={register}
         />
@@ -398,7 +410,7 @@ const Register = () => {
               return selected;
             }}
             {...register('province')}>
-            {provincesData.map((province: Province) => (
+            {selectProvinces.map((province: Province) => (
               <MenuItem key={province.province_id} value={province.name}>
                 {province.name}
               </MenuItem>
@@ -432,7 +444,7 @@ const Register = () => {
               return selected;
             }}
             {...register('district')}>
-            {districtsData.map((district: District) => (
+            {selectDistricts.map((district: District) => (
               <MenuItem key={district.district_id} value={district.name}>
                 {district.name}
               </MenuItem>
@@ -466,7 +478,7 @@ const Register = () => {
               return selected;
             }}
             {...register('ward')}>
-            {wardsData.map((ward: Ward) => (
+            {selectWards.map((ward: Ward) => (
               <MenuItem key={ward.ward_id} value={ward.name}>
                 {ward.name}
               </MenuItem>

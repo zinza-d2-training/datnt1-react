@@ -37,7 +37,8 @@ const StyledTableCell = styled(TableCell)(() => ({
   padding: 'auto',
   margin: 'auto',
   border: 'none',
-  height: '100%'
+  height: '100%',
+  borderBottom: '1px solid rgba(224, 224, 224, 1)'
 }));
 
 const FrameTableCell = styled.div`
@@ -89,14 +90,14 @@ const RegistrationResult = () => {
             {selectRegisterResult.map((res: RegisterResult, index: number) => (
               <TableRow key={index}>
                 <TableCell align="center">{index + 1}</TableCell>
-                <TableCell align="center">{res.fullname}</TableCell>
+                <TableCell align="center">{res?.fullname}</TableCell>
                 <TableCell align="center">
-                  {dayjs(res.birthday).format('DD/MM/YYYY')}
+                  {dayjs(res?.birthday).format('DD/MM/YYYY')}
                 </TableCell>
-                <TableCell align="center">{res.gender}</TableCell>
-                <TableCell align="center">{res.identification_card}</TableCell>
+                <TableCell align="center">{res?.gender}</TableCell>
+                <TableCell align="center">{res?.identification_card}</TableCell>
                 <StyledTableCell align="center">
-                  <FrameTableCell>{res.status}</FrameTableCell>
+                  <FrameTableCell>{res?.status}</FrameTableCell>
                 </StyledTableCell>
               </TableRow>
             ))}

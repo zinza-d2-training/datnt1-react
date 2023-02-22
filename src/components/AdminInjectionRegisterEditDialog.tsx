@@ -272,7 +272,6 @@ const AdminInjectionRegisterEditDialog = ({
     const vaccination_site_id = selectVaccinationSites.find(
       (site) => site.name === vaccination_site
     )?.vaccination_site_id;
-    console.log(formatedDate);
 
     dispatch(
       updateInjectionRegistrationByAdminAsync({

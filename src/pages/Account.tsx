@@ -1,16 +1,34 @@
 import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CreateIcon from '@mui/icons-material/Create';
-import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  FormHelperText,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
-import { districts, provinces, wards } from 'dummy-data';
+import dayjs, { Dayjs } from 'dayjs';
+import {
+  District,
+  getDistrictsByProvinceIdAsync,
+  getProvincesAsync,
+  getWardsByDistrictIdAsync,
+  Province
+} from 'features/administrative_unit/administrativeSlice';
+import { updateUserAsync } from 'features/user/userSlice';
+import React, { useEffect, useMemo, useState } from 'react';
+import { SubmitHandler } from 'react-hook-form/dist/types/form';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -165,9 +183,9 @@ const PlaceholderTypo = styled(Typography)`
 `;
 
 interface UserInfoInputs {
-  identificationCode: string;
+  identification_card: string;
   fullname: string;
-  birthday: string;
+  birthday: Dayjs | null;
   gender: string;
   province: string;
   district?: string;
@@ -177,19 +195,21 @@ interface UserInfoInputs {
 }
 
 const UserInfoSchema = yup.object().shape({
-  identificationCode: yup
+  identification_card: yup
     .string()
-    .required('Số CMND/CCCD/Mã định danh không được bỏ trống'),
+    .required('Số CMND/CCCD/Mã định danh không được bỏ trống')
+    .matches(/^[0-9]+$/, 'Số CMND chỉ được chứa số ')
+    .length(12, 'Số CMND phải chứa 12 số'),
   fullname: yup.string().required('Họ và tên không được bỏ trống'),
   birthday: yup.string().required('Ngày sinh không được bỏ trống'),
   gender: yup.string().required('Giới tính không được bỏ trống'),
   province: yup.string().required('Tỉnh/Thành phố không được bỏ trống'),
   district: yup.string().required('Quận/Huyện không được bỏ trống'),
   ward: yup.string().required('Xã/Phường không được bỏ trống'),
-  password: yup.string().required('Mật khẩu mới không được bỏ trống'),
+  password: yup.string(),
   confirmedPassword: yup
     .string()
-    .required('Xác nhận lại mật khẩu không được bỏ trống')
+    .oneOf([yup.ref('password'), null], 'Passwords must match')
 });
 
 const Account = () => {
@@ -197,34 +217,166 @@ const Account = () => {
     register,
     handleSubmit,
     watch,
-    control,
+    resetField,
+    setValue,
     formState: { errors, isValid }
   } = useForm<UserInfoInputs>({
     resolver: yupResolver(UserInfoSchema)
   });
 
+  const [editInfo, setEditInfo] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
+
+  const [value, setValues] = React.useState<Dayjs | null>(
+    dayjs(selectUser?.birthday)
+  );
+
+  const selectProvinces = useAppSelector(
+    (state: RootState) => state.administrativeUnit.provinces
+  );
+
+  const selectDistricts = useAppSelector(
+    (state: RootState) => state.administrativeUnit.districts
+  );
+
+  const selectWards = useAppSelector(
+    (state: RootState) => state.administrativeUnit.wards
+  );
+
+  const currentProvince = useMemo(() => {
+    return selectProvinces?.find(
+      (province) => province.name === watch('province')
+    );
+  }, [watch('province')]);
+
+  const currentDistrict = useMemo(() => {
+    return selectDistricts?.find(
+      (district) => district.name === watch('district')
+    );
+  }, [watch('district')]);
+
+  const currentWard = useMemo(() => {
+    return selectWards?.find((ward) => ward.name === watch('ward'));
+  }, [watch('ward')]);
+
+  useEffect(() => {
+    // resetField('province');
+    setValue('identification_card', selectUser.identification_card);
+    setValue('fullname', selectUser.fullname);
+    setValue('birthday', selectUser.birthday);
+    setValue('gender', selectUser.gender);
+    setValue('province', selectUser.province_name);
+    setValue('district', selectUser.district_name);
+    setValue('ward', selectUser.ward_name);
+
+    async function fetchProvincesData() {
+      // You can await here
+      try {
+        await dispatch(getProvincesAsync());
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    fetchProvincesData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchDistrictsData() {
+      try {
+        await dispatch(
+          getDistrictsByProvinceIdAsync(currentProvince as Province)
+        );
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    if (editInfo) {
+      resetField('district');
+      resetField('ward');
+    }
+
+    if (watch('province') && currentProvince) {
+      fetchDistrictsData();
+    }
+  }, [watch('province')]);
+
+  useEffect(() => {
+    async function fetchWardsData() {
+      try {
+        await dispatch(getWardsByDistrictIdAsync(currentDistrict as District));
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    if (editInfo) {
+      resetField('ward');
+    }
+
+    if (watch('district') && currentDistrict) {
+      fetchWardsData();
+    }
+  }, [watch('district')]);
+
+  const handleUserInfoSaveClick: SubmitHandler<UserInfoInputs> = (data) => {
+    const updateData = {
+      identification_card: data.identification_card,
+      fullname: data.fullname,
+      birthday: data.birthday,
+      gender: data.gender,
+      ward_id: currentWard?.ward_id.toString()
+    };
+
+    dispatch(updateUserAsync(updateData));
+
+    setEditInfo((prev) => !prev);
+  };
+
+  const handleEditInfoClick = () => {
+    setEditInfo((prev) => !prev);
+  };
+
+  const handleEditPasswordClick = () => {
+    setEditPassword((prev) => !prev);
+  };
+
+  const handlePasswordSaveClick: SubmitHandler<UserInfoInputs> = (data) => {
+    const updateData = {
+      password: data.password
+    };
+
+    dispatch(updateUserAsync(updateData));
+
+    setEditPassword((prev) => !prev);
+  };
+
   return (
     <div>
       <MenuUser userTab={'account'} />
       <Divider />
-
       <ResultContainer>
         <SectionInfo>
           <SectionHeader>
             <SectionHeaderTypo>Thông tin cá nhân</SectionHeaderTypo>
-            <CreateIcon />
+            <CreateIcon onClick={handleEditInfoClick} />
           </SectionHeader>
           <SectionContentRow>
             <InputComponent>
-              <Label htmlFor="identificationCode">
+              <Label htmlFor="identification_card">
                 Số CMND/CCCD/Mã định danh
               </Label>
               <Field
-                {...register('identificationCode')}
-                helperText={errors.identificationCode?.message}
+                disabled={!editInfo}
+                {...register('identification_card')}
+                helperText={errors.identification_card?.message}
+                id="identification_card"
+                defaultValue={selectUser.identification_card}
                 type="text"
-                id="identificationCode"
-                defaultValue="030012345678" // value
                 fullWidth
                 required
                 FormHelperTextProps={{
@@ -243,7 +395,8 @@ const Account = () => {
                 helperText={errors.fullname?.message}
                 type="text"
                 id="fullname"
-                defaultValue="Nguyễn Văn A" // value
+                defaultValue={selectUser.fullname}
+                disabled={!editInfo}
                 fullWidth
                 required
                 FormHelperTextProps={{
@@ -253,22 +406,34 @@ const Account = () => {
             </InputComponent>
             <InputComponent>
               <Label htmlFor="birthday">Ngày sinh</Label>
-              <Controller
-                control={control}
-                {...register('birthday')}
-                name="birthday"
-                render={({ field: { value, ...fieldProps } }) => (
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      {...fieldProps}
-                      value={value}
-                      renderInput={(params) => (
-                        <TextField fullWidth {...params} />
-                      )}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  disableFuture
+                  inputFormat="DD/MM/YYYY"
+                  views={['year', 'month', 'day']}
+                  {...register('birthday')}
+                  value={value}
+                  onChange={(newValue) => {
+                    setValues(newValue);
+                    setValue('birthday', newValue);
+                  }}
+                  disabled={!editInfo}
+                  renderInput={(params) => (
+                    <TextField
+                      fullWidth
+                      {...params}
+                      helperText={errors.birthday?.message}
+                      inputProps={{
+                        ...params.inputProps,
+                        placeholder: 'Ngày/Tháng/Năm'
+                      }}
+                      FormHelperTextProps={{
+                        sx: { color: '#d32f2f', margin: '3px 0px 0px' }
+                      }}
                     />
-                  </LocalizationProvider>
-                )}
-              />
+                  )}
+                />
+              </LocalizationProvider>
             </InputComponent>
             <InputComponent>
               <Label htmlFor="gender">Giới tính</Label>
@@ -276,7 +441,8 @@ const Account = () => {
                 fullWidth
                 displayEmpty={true}
                 id="gender"
-                defaultValue={'Nam'}
+                defaultValue={selectUser.gender}
+                disabled={!editInfo}
                 renderValue={(selected: any) => {
                   if (!selected) {
                     return (
@@ -302,15 +468,15 @@ const Account = () => {
                 fullWidth
                 displayEmpty={true}
                 id="province"
-                defaultValue={'Hà Nội'}
+                defaultValue={selectUser.province_name}
+                disabled={!editInfo}
                 renderValue={(selected: string) => {
                   if (!selected) {
-                    return;
-                    <PlaceholderTypo>Tỉnh/Thành phố</PlaceholderTypo>;
+                    return <PlaceholderTypo>Tỉnh/Thành phố</PlaceholderTypo>;
                   }
                   return selected;
                 }}>
-                {provinces.map((province) => (
+                {selectProvinces.map((province) => (
                   <MenuItem key={province.province_id} value={province.name}>
                     {province.name}
                   </MenuItem>
@@ -320,12 +486,15 @@ const Account = () => {
             <InputComponent>
               <Label htmlFor="district">Quận/Huyện</Label>
               <Select
-                // disabled={watch('province') ? false : true}
+                // disabled={!editInfo && watch('province') ? false : true}
                 {...register('district')}
                 fullWidth
                 displayEmpty={true}
                 id="district"
-                defaultValue={'Quận Đống Đa'}
+                defaultValue={selectUser.district_name}
+                disabled={
+                  !editInfo || (editInfo && (watch('province') ? false : true))
+                }
                 renderValue={(selected: string) => {
                   if (!watch('district')) {
                     return <PlaceholderTypo>Quận/Huyện</PlaceholderTypo>;
@@ -333,12 +502,18 @@ const Account = () => {
                     return selected;
                   }
                 }}>
-                {districts.map((district) => (
+                {selectDistricts.map((district) => (
                   <MenuItem key={district.district_id} value={district.name}>
                     {district.name}
                   </MenuItem>
                 ))}
               </Select>
+              {errors.district && (
+                <FormHelperText
+                  sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                  {errors.district.message}
+                </FormHelperText>
+              )}
             </InputComponent>
             <InputComponent>
               <Label htmlFor="ward">Xã/Phường</Label>
@@ -348,7 +523,10 @@ const Account = () => {
                 fullWidth
                 displayEmpty={true}
                 id="ward"
-                defaultValue={'Phường Văn Chương'}
+                defaultValue={selectUser.ward_name}
+                disabled={
+                  !editInfo || (editInfo && (watch('district') ? false : true))
+                }
                 renderValue={(selected: string) => {
                   if (!watch('ward')) {
                     return <PlaceholderTypo>Xã/Phường</PlaceholderTypo>;
@@ -356,30 +534,47 @@ const Account = () => {
                     return selected;
                   }
                 }}>
-                {wards.map((ward) => (
+                {selectWards.map((ward) => (
                   <MenuItem key={ward.ward_id} value={ward.name}>
                     {ward.name}
                   </MenuItem>
                 ))}
               </Select>
+              {errors.ward && (
+                <FormHelperText
+                  sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+                  {errors.ward.message}
+                </FormHelperText>
+              )}
             </InputComponent>
           </SectionContentRow>
           <SectionContentRow>
-            <CancelButton>Hủy Bỏ</CancelButton>
-            <SavedButton>Lưu</SavedButton>
+            <CancelButton
+              disabled={!editInfo}
+              onClick={() => {
+                setEditInfo(false);
+              }}>
+              Hủy Bỏ
+            </CancelButton>
+            <SavedButton
+              disabled={!editInfo}
+              onClick={handleSubmit(handleUserInfoSaveClick)}>
+              Lưu
+            </SavedButton>
           </SectionContentRow>
         </SectionInfo>
         <SectionInfo>
           <SectionHeader>
             <SectionHeaderTypo>Mật khẩu</SectionHeaderTypo>
-            <CreateIcon />
+            <CreateIcon onClick={handleEditPasswordClick} />
           </SectionHeader>
           <SectionContentRow>
             <InputComponent>
               <Label htmlFor="password">Mật khẩu mới</Label>
               <Field
-                // {...register('password')}
-                // helperText={errors.password?.message}
+                {...register('password')}
+                helperText={errors.password?.message}
+                disabled={!editPassword}
                 type="password"
                 id="password"
                 defaultValue="" // value
@@ -397,6 +592,7 @@ const Account = () => {
               <Field
                 {...register('confirmedPassword')}
                 helperText={errors.confirmedPassword?.message}
+                disabled={!editPassword}
                 type="password"
                 id="confirmedPassword"
                 defaultValue="" // value
@@ -409,8 +605,18 @@ const Account = () => {
             </InputComponent>
           </SectionContentRow>
           <SectionContentRow>
-            <CancelButton>Hủy Bỏ</CancelButton>
-            <SavedButton>Lưu</SavedButton>
+            <CancelButton
+              disabled={!editPassword}
+              onClick={() => {
+                setEditPassword(false);
+              }}>
+              Hủy Bỏ
+            </CancelButton>
+            <SavedButton
+              disabled={!editPassword}
+              onClick={handleSubmit(handlePasswordSaveClick)}>
+              Lưu
+            </SavedButton>
           </SectionContentRow>
         </SectionInfo>
       </ResultContainer>

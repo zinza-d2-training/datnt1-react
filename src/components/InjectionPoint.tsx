@@ -16,20 +16,25 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { publicRequest } from 'callsApi';
 import TablePaginationActions from 'components/TablePaginationActions';
 import { District, Province, rows, Ward } from 'dummy-data';
-import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import {
+  getDistrictsByProvinceIdAsync,
+  getProvincesAsync,
+  getWardsByDistrictIdAsync
+} from 'features/administrative_unit/administrativeSlice';
 import {
   getVaccinationSiteAsync,
   SearchFilterDefault,
   VaccinationSiteInfo,
   VaccinationSiteSearchFilter
 } from 'features/vaccination/vaccinationSiteSlice';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import StyledTablePagination from './StyledTablePagination';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -178,10 +183,6 @@ interface SearchInputs {
 const searchSchema = yup.object().shape({});
 
 const InjectionPoint = () => {
-  const [provincesData, setProvincesData] = React.useState<Province[]>([]);
-  const [districtsData, setDistrictsData] = React.useState<District[]>([]);
-  const [wardsData, setWardsData] = React.useState<Ward[]>([]);
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -195,9 +196,15 @@ const InjectionPoint = () => {
     resolver: yupResolver(searchSchema)
   });
 
+  const selectVaccinationSites = useAppSelector(
+    (state: RootState) => state.vaccinationSite.vaccinationSites
+  );
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - selectVaccinationSites.length)
+      : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -214,9 +221,42 @@ const InjectionPoint = () => {
   };
 
   const dispatch = useAppDispatch();
-  const selectVaccinationSites = useAppSelector(
-    (state: RootState) => state.vaccinationSite.vaccinationSites
+
+  const selectProvinces = useAppSelector(
+    (state: RootState) => state.administrativeUnit.provinces
   );
+
+  const selectDistricts = useAppSelector(
+    (state: RootState) => state.administrativeUnit.districts
+  );
+
+  const selectWards = useAppSelector(
+    (state: RootState) => state.administrativeUnit.wards
+  );
+
+  const currentProvince = useMemo(() => {
+    return selectProvinces?.find(
+      (province) => province.name === watch('province')
+    );
+  }, [watch('province')]);
+
+  const currentDistrict = useMemo(() => {
+    return selectDistricts?.find(
+      (district) => district.name === watch('district')
+    );
+  }, [watch('district')]);
+
+  const currentWard = useMemo(() => {
+    return selectWards?.find((ward) => ward.name === watch('ward'));
+  }, [watch('ward')]);
+
+  const searchFilter = useMemo(() => {
+    return {
+      province_id: currentProvince?.province_id,
+      district_id: currentDistrict?.district_id,
+      ward_id: currentWard?.ward_id
+    };
+  }, [watch('province'), watch('district'), watch('ward')]);
 
   useEffect(() => {
     resetField('province');
@@ -224,10 +264,7 @@ const InjectionPoint = () => {
     async function fetchProvincesData() {
       // You can await here
       try {
-        const response = await publicRequest.get(
-          'administrative-unit/provinces'
-        );
-        setProvincesData(response.data);
+        await dispatch(getProvincesAsync());
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -237,44 +274,16 @@ const InjectionPoint = () => {
     dispatch(getVaccinationSiteAsync(SearchFilterDefault));
   }, []);
 
-  const getCurrentProvince = () => {
-    const province: Province = provincesData?.filter((province) => {
-      return province.name === watch('province');
-    })[0];
-
-    return province;
-  };
-
-  const getCurrentDistrict = () => {
-    const district: District = districtsData?.filter((district) => {
-      return district.name === watch('district');
-    })[0];
-
-    return district;
-  };
-  const getCurrentWard = () => {
-    const ward: Ward = wardsData?.filter((ward) => {
-      return ward.name === watch('ward');
-    })[0];
-
-    return ward;
-  };
-
   useEffect(() => {
     resetField('district');
     resetField('ward');
 
-    // Lấy province hiện tại đang chọn
-    const province: Province = getCurrentProvince();
-
     // Lấy ra các quận thuộc province đang chọn
     async function fetchDistrictsData() {
       try {
-        const response = await publicRequest.get(
-          `administrative-unit/districts/${province?.province_id}`
+        await dispatch(
+          getDistrictsByProvinceIdAsync(currentProvince as Province)
         );
-
-        setDistrictsData(response.data);
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -287,17 +296,11 @@ const InjectionPoint = () => {
 
   useEffect(() => {
     resetField('ward');
-    // Lấy district_id hiện tại đang chọn
-    const district: District = getCurrentDistrict();
 
     //Lấy ra các quận thuộc district đang chọn
     async function fetchWardsData() {
       try {
-        const response = await publicRequest.get(
-          `administrative-unit/wards/${district?.district_id}`
-        );
-
-        setWardsData(response.data);
+        await dispatch(getWardsByDistrictIdAsync(currentDistrict as District));
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -309,12 +312,6 @@ const InjectionPoint = () => {
   }, [watch('district')]);
 
   const handleClick: SubmitHandler<SearchInputs> = () => {
-    const searchFilter: VaccinationSiteSearchFilter = {
-      province_id: getCurrentProvince()?.province_id,
-      district_id: getCurrentDistrict()?.district_id,
-      ward_id: getCurrentWard()?.ward_id
-    };
-
     dispatch(getVaccinationSiteAsync(searchFilter));
   };
 
@@ -337,7 +334,7 @@ const InjectionPoint = () => {
                 }
                 return selected;
               }}>
-              {provincesData.map((province) => (
+              {selectProvinces.map((province) => (
                 <MenuItem key={province.province_id} value={province.name}>
                   {province.name}
                 </MenuItem>
@@ -358,7 +355,7 @@ const InjectionPoint = () => {
                   return selected;
                 }
               }}>
-              {districtsData.map((district) => (
+              {selectDistricts.map((district) => (
                 <MenuItem key={district.district_id} value={district.name}>
                   {district.name}
                 </MenuItem>
@@ -379,7 +376,7 @@ const InjectionPoint = () => {
                   return selected;
                 }
               }}>
-              {wardsData.map((ward) => (
+              {selectWards.map((ward) => (
                 <MenuItem key={ward.ward_id} value={ward.name}>
                   {ward.name}
                 </MenuItem>
@@ -410,6 +407,7 @@ const InjectionPoint = () => {
                 <TableCell align="center">Số bàn tiêm</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {(rowsPerPage > 0
                 ? selectVaccinationSites?.slice(
@@ -432,18 +430,22 @@ const InjectionPoint = () => {
                   <TableCell align="center">{site.number_of_tables}</TableCell>
                 </StyledTableRow>
               ))}
-              {emptyRows > 0 && (
-                <TableRow sx={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
+            {emptyRows > 0 && (
+              <TableRow sx={{ height: 53 * emptyRows }}>
+                <TableCell
+                  // sx={{ borderBottom: 'none' }}
+                  colSpan={Object.keys(selectVaccinationSites[0] || {})?.length}
+                />
+              </TableRow>
+            )}
+
             <TableFooter>
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                  colSpan={8}
-                  count={rows.length}
+                  colSpan={Object.keys(selectVaccinationSites[0] || {})?.length}
+                  count={selectVaccinationSites?.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   labelRowsPerPage="Số bản ghi:"
@@ -451,6 +453,7 @@ const InjectionPoint = () => {
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   ActionsComponent={TablePaginationActions}
                 />
+                {/* <StyledTablePagination list={selectVaccinationSites} /> */}
               </TableRow>
             </TableFooter>
           </Table>

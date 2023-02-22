@@ -24,6 +24,7 @@ import {
   addInjectionRegistrationAsync,
   updateInjectionRegistrationByUserAsync
 } from 'features/vaccination/injectionRegistrationSlice';
+import { log } from 'console';
 
 const ResultContainer = styled.div`
   display: flex;

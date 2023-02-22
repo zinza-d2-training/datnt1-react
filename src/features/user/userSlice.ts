@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { publicRequest, userRequest } from 'callsApi';
+import { Dayjs } from 'dayjs';
 import { RootState } from 'store';
 
 export interface LoginInfo {
@@ -13,12 +14,22 @@ export interface UserInfo {
   health_insurance_number: string;
   email: string;
   fullname: string;
-  birthday: string;
+  birthday: Dayjs | null;
   gender: string;
   ward_id: number;
   ward_name: string;
   district_name: string;
   province_name: string;
+}
+
+export interface UpdateUser {
+  identification_card?: string;
+  health_insurance_number?: string;
+  fullname?: string;
+  birthday?: Dayjs | null;
+  gender?: string;
+  ward_id?: number | string;
+  password?: string;
 }
 
 export interface UserState {
@@ -34,7 +45,7 @@ const initialState: UserState = {
     health_insurance_number: '',
     email: '',
     fullname: '',
-    birthday: '',
+    birthday: null,
     gender: '',
     ward_id: 0,
     ward_name: '',
@@ -77,6 +88,19 @@ export const logoutAsync = createAsyncThunk(
     try {
       localStorage.removeItem('accessToken');
       const res = await publicRequest.get('auth/logout');
+
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateUserAsync = createAsyncThunk(
+  'user/update',
+  async (updateUser: UpdateUser, { rejectWithValue }) => {
+    try {
+      const res = await userRequest.put('users', updateUser);
 
       return res.data;
     } catch (error: any) {
@@ -136,6 +160,21 @@ export const userSlice = createSlice({
         state.userInfo = initialState.userInfo;
       })
       .addCase(logoutAsync.rejected, (state) => {
+        state.status = 'rejected';
+        state.loading = false;
+      });
+
+    builder
+      .addCase(updateUserAsync.pending, (state) => {
+        state.status = 'pending';
+        state.loading = true;
+      })
+      .addCase(updateUserAsync.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.loading = false;
+        state.userInfo = initialState.userInfo;
+      })
+      .addCase(updateUserAsync.rejected, (state) => {
         state.status = 'rejected';
         state.loading = false;
       });

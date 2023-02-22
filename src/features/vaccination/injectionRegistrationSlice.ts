@@ -106,8 +106,8 @@ export const addInjectionRegistrationAsync = createAsyncThunk(
 export const updateInjectionRegistrationByUserAsync = createAsyncThunk(
   'user/update-injection-registration',
   async (data: UpdateInjectionRegistrationByUser) => {
-    const res = await userRequest.put<UpdateInjectionRegistrationByUser>(
-      `injection-registration/user/${data.injection_registration_id}`,
+    const res = await userRequest.put<InjectionRegistrationInfo>(
+      `injection-registration/${data.injection_registration_id}/by-user`,
       data
     );
 
@@ -141,7 +141,7 @@ export const updateInjectionRegistrationByAdminAsync = createAsyncThunk(
   'admin/update-injection-registration',
   async (data: UpdateInjectionRegistrationByAdmin) => {
     const res = await userRequest.put<RegisterInfo[]>(
-      `injection-registration/admin/${data.injection_registration_id}`,
+      `injection-registration/${data.injection_registration_id}`,
       data
     );
 
@@ -213,6 +213,24 @@ export const injectionRegistrationSlice = createSlice({
         }
       )
       .addCase(updateInjectionRegistrationByAdminAsync.rejected, (state) => {
+        state.status = 'failed';
+        state.loading = false;
+      });
+
+    builder
+      .addCase(updateInjectionRegistrationByUserAsync.pending, (state) => {
+        state.status = 'pending';
+        state.loading = true;
+      })
+      .addCase(
+        updateInjectionRegistrationByUserAsync.fulfilled,
+        (state, action) => {
+          state.status = 'succeeded';
+          state.loading = false;
+          state.injectionRegistrationInfo = action.payload;
+        }
+      )
+      .addCase(updateInjectionRegistrationByUserAsync.rejected, (state) => {
         state.status = 'failed';
         state.loading = false;
       });

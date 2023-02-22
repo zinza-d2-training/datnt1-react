@@ -4,6 +4,8 @@ import registerReducer from 'features/user/registerSlice';
 import userReducer from 'features/user/userSlice';
 import vaccinationSiteReducer from 'features/vaccination/vaccinationSiteSlice';
 import injectionRegistrationReducer from 'features/vaccination/injectionRegistrationSlice';
+import administrativeUnitReducer from 'features/administrative_unit/administrativeSlice';
+import documentReducer from 'features/document/documentSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +13,9 @@ export const store = configureStore({
     user: userReducer,
     register: registerReducer,
     vaccinationSite: vaccinationSiteReducer,
-    injectionRegistration: injectionRegistrationReducer
+    injectionRegistration: injectionRegistrationReducer,
+    administrativeUnit: administrativeUnitReducer,
+    document: documentReducer
   }
 });
 

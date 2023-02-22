@@ -320,9 +320,9 @@ const InjectionRegistrationStep1 = () => {
 
   const onSubmit = async (data: InjectionRegisterFormInputs) => {
     const { priorityGroup, expected_injection_date, ...others } = data;
-    const priority_group_id = listPriorityGroup.filter(
+    const priority_group_id = listPriorityGroup.find(
       (item) => item.description === priorityGroup
-    )[0].priority_group_id;
+    )?.priority_group_id as number;
     const formatedExpectedInjectionDate = expected_injection_date
       ? dayjs(expected_injection_date).format('YYYY-MM-DD')
       : undefined;
