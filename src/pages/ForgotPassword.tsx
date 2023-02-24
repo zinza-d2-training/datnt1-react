@@ -161,7 +161,6 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid }
   } = useForm<EmailFormInputs>({
     resolver: yupResolver(emailSchema)

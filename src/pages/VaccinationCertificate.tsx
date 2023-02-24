@@ -16,7 +16,6 @@ import QRCodeImg from 'assets/img/qr-code.png';
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
 import dayjs from 'dayjs';
-import { injectionInforRows } from 'dummy-data';
 import {
   getRegisterResultByUserId,
   RegisterResult
@@ -36,7 +35,7 @@ const ResultContainer = styled.div`
 `;
 
 const CertificateContainer = styled.div`
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,11 +182,6 @@ const CardContainer = styled.div<CardContainerProps>`
   box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.175);
   border-radius: 8px 8px 8px 0px;
 `;
-
-// const Container = styled.div((props) => ({
-//   display: 'flex',
-//   flexDirection: props.column && 'column'
-// }));
 
 const Logo = styled.img`
   width: 100px;

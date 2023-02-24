@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Button, Typography } from '@mui/material';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
@@ -208,11 +210,23 @@ const InjectionRegistrationStep3 = () => {
     (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
   );
 
+  const exportPDF = () => {
+    const inputFile: HTMLElement | null = document.getElementById('pdf');
+    if (inputFile) {
+      html2canvas(inputFile).then((canvas: HTMLCanvasElement) => {
+        const imgData = canvas.toDataURL('image/png');
+        const PdfFile = new jsPDF();
+        PdfFile.addImage(imgData, 'JEPG', 5, 40, 200, 60);
+        PdfFile.save('Thông tin đăng ký tiêm chủng.pdf');
+      });
+    }
+  };
+
   return (
     <div>
       <Heading />
       <Stepper step={3} />
-      <ResultContainer>
+      <ResultContainer id="pdf">
         <ResultTypo>
           Đăng ký tiêm chủng COVID-19 thành công. Mã đặt tiêm của bạn là{' '}
           <Typography component="span">
@@ -293,12 +307,10 @@ const InjectionRegistrationStep3 = () => {
             Trang Chủ
           </BackSubmitButton>
         </StyledLink>
-        <StyledLink to="/">
-          <ContinueSubmitButton>
-            Xuất thông tin
-            <ArrowForwardIcon />
-          </ContinueSubmitButton>
-        </StyledLink>
+        <ContinueSubmitButton onClick={exportPDF}>
+          Xuất thông tin
+          <ArrowForwardIcon />
+        </ContinueSubmitButton>
       </SubmitContainer>
     </div>
   );

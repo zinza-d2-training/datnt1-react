@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { publicRequest, userRequest } from 'callsApi';
+import { publicRequest } from 'callsApi';
 import { RootState } from 'store';
 
 export interface LoginInfo {

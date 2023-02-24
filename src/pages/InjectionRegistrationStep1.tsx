@@ -295,10 +295,8 @@ const InjectionRegistrationStep1 = () => {
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
-    getValues,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<InjectionRegisterFormInputs>({
     resolver: yupResolver(InjectionRegisterSchema)
   });
@@ -306,9 +304,6 @@ const InjectionRegistrationStep1 = () => {
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
-  const selectInjectionRegistration = useAppSelector(
-    (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
-  );
 
   useEffect(() => {
     async function fetchPriorityGroupData() {

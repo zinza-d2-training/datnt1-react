@@ -20,23 +20,17 @@ import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import AdminEditDialog from 'components/AdminEditDialog';
+import AdminInjectionRegisterEditDialog from 'components/AdminInjectionRegisterEditDialog';
 import Divider from 'components/Divider';
 import MenuAdmin from 'components/MenuAdmin';
 import TablePaginationActions from 'components/TablePaginationActions';
-import { rows } from 'dummy-data';
-import {
-  getVaccinationSiteAsync,
-  VaccinationSiteInfo
-} from 'features/vaccination/vaccinationSiteSlice';
-import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import dayjs from 'dayjs';
 import {
   getAllRegisterInfo,
   RegisterInfo,
   SearchFilterDefault
 } from 'features/vaccination/injectionRegistrationSlice';
-import AdminInjectionRegisterEditDialog from 'components/AdminInjectionRegisterEditDialog';
-import dayjs from 'dayjs';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const SearchContainer = styled.div`
   box-sizing: border-box;
@@ -70,7 +64,7 @@ const SearchRow = styled.div`
   }
 `;
 
-const InputComnponent = styled.div`
+const InputComponent = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 0px;
@@ -97,17 +91,6 @@ const InputComnponent = styled.div`
     padding: 0px 8px;
     height: 40px;
   }
-`;
-
-const PlaceholderTypo = styled(Typography)`
-  height: 23px;
-
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 23px;
-
-  color: rgba(0, 0, 0, 0.6);
 `;
 
 const SearchButton = styled(Button)`
@@ -162,7 +145,6 @@ const AdminRegistration = () => {
 
   const [open, setOpen] = React.useState(false);
 
-  // const [listSites, setListSites] = React.useState<string[]>([]);
   const [chosenRegister, setChosenRegister] = React.useState<RegisterInfo>();
 
   const dispatch = useAppDispatch();
@@ -170,12 +152,7 @@ const AdminRegistration = () => {
     (state: RootState) => state.injectionRegistration.registerInfo
   );
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isValid }
-  } = useForm<SearchByKeyInputs>({
+  const { register, handleSubmit } = useForm<SearchByKeyInputs>({
     resolver: yupResolver(searchSchema)
   });
 
@@ -219,8 +196,6 @@ const AdminRegistration = () => {
 
   useEffect(() => {
     dispatch(getAllRegisterInfo(SearchFilterDefault));
-    // const listSites = selectVaccinationSites.map((site) => site.name);
-    // setListSites(listSites);
   }, []);
 
   return (
@@ -229,7 +204,7 @@ const AdminRegistration = () => {
       <Divider />
       <SearchContainer>
         <SearchRow>
-          <InputComnponent>
+          <InputComponent>
             <TextField
               {...register('fullname')}
               type="text"
@@ -238,8 +213,8 @@ const AdminRegistration = () => {
               fullWidth
               required
             />
-          </InputComnponent>
-          <InputComnponent>
+          </InputComponent>
+          <InputComponent>
             <TextField
               {...register('identification_card')}
               type="text"
@@ -248,7 +223,7 @@ const AdminRegistration = () => {
               fullWidth
               required
             />
-          </InputComnponent>
+          </InputComponent>
           <SearchButton onClick={handleSubmit(handleSearchClick)}>
             <SearchIcon />
             Tìm kiếm

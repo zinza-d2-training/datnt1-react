@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { publicRequest, userRequest } from 'callsApi';
+import { publicRequest } from 'callsApi';
 import { RootState } from 'store';
 
 interface RegisterInfo {
@@ -68,7 +68,11 @@ export const registerSlice = createSlice({
   name: 'register',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = 'idle';
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerAsync.pending, (state) => {
@@ -87,6 +91,8 @@ export const registerSlice = createSlice({
       });
   }
 });
+
+export const { resetStatus } = registerSlice.actions;
 
 export const selectRegister = (state: RootState) => state.register;
 

@@ -7,7 +7,7 @@ import {
   VaccinationSiteInfo
 } from 'features/vaccination/vaccinationSiteSlice';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+import { useAppDispatch } from 'store/index';
 import * as yup from 'yup';
 
 const DialogContainer = styled.div`
@@ -211,9 +211,6 @@ const AdminEditDialog = ({
   });
 
   const dispatch = useAppDispatch();
-  const selectVaccinationSites = useAppSelector(
-    (state: RootState) => state.vaccinationSite.vaccinationSites
-  );
 
   const onSubmit: SubmitHandler<updatedInjectionPointInputs> = (
     data: updatedInjectionPointInputs

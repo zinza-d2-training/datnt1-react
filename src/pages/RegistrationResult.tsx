@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
 import dayjs from 'dayjs';
-import { registerResult } from 'dummy-data';
 import {
   getRegisterResultByUserId,
   RegisterResult
@@ -27,18 +26,6 @@ const StyledTable = styled(Table)(() => ({
   border: '1px solid #EEEEEE',
   borderRadius: '0',
   padding: '0px 36px'
-}));
-
-const StyledTableCell = styled(TableCell)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 'auto',
-  margin: 'auto',
-  border: 'none',
-  height: '100%',
-  borderBottom: '1px solid rgba(224, 224, 224, 1)'
 }));
 
 const FrameTableCell = styled.div`
@@ -96,9 +83,9 @@ const RegistrationResult = () => {
                 </TableCell>
                 <TableCell align="center">{res?.gender}</TableCell>
                 <TableCell align="center">{res?.identification_card}</TableCell>
-                <StyledTableCell align="center">
+                <TableCell align="center">
                   <FrameTableCell>{res?.status}</FrameTableCell>
-                </StyledTableCell>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

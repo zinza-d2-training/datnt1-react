@@ -21,7 +21,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import TablePaginationActions from 'components/TablePaginationActions';
-import { District, Province, rows, Ward } from 'dummy-data';
+import { District, Province } from 'dummy-data';
 import {
   getDistrictsByProvinceIdAsync,
   getProvincesAsync,
@@ -30,11 +30,9 @@ import {
 import {
   getVaccinationSiteAsync,
   SearchFilterDefault,
-  VaccinationSiteInfo,
-  VaccinationSiteSearchFilter
+  VaccinationSiteInfo
 } from 'features/vaccination/vaccinationSiteSlice';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
-import StyledTablePagination from './StyledTablePagination';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -186,13 +184,7 @@ const InjectionPoint = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    resetField,
-    formState: { errors, isValid }
-  } = useForm<SearchInputs>({
+  const { register, handleSubmit, watch, resetField } = useForm<SearchInputs>({
     resolver: yupResolver(searchSchema)
   });
 
@@ -434,7 +426,6 @@ const InjectionPoint = () => {
             {emptyRows > 0 && (
               <TableRow sx={{ height: 53 * emptyRows }}>
                 <TableCell
-                  // sx={{ borderBottom: 'none' }}
                   colSpan={Object.keys(selectVaccinationSites[0] || {})?.length}
                 />
               </TableRow>

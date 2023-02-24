@@ -24,7 +24,6 @@ import AdminEditDialog from 'components/AdminEditDialog';
 import Divider from 'components/Divider';
 import MenuAdmin from 'components/MenuAdmin';
 import TablePaginationActions from 'components/TablePaginationActions';
-import { rows } from 'dummy-data';
 import {
   getVaccinationSiteAsync,
   SearchFilterDefault,
@@ -64,7 +63,7 @@ const SearchRow = styled.div`
   }
 `;
 
-const InputComnponent = styled.div`
+const InputComponent = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 0px;
@@ -183,12 +182,7 @@ const AdminPlace = () => {
     dispatch(getVaccinationSiteAsync(data));
   };
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isValid }
-  } = useForm<SearchByKeyInputs>({
+  const { register, handleSubmit } = useForm<SearchByKeyInputs>({
     resolver: yupResolver(searchSchema)
   });
 
@@ -224,7 +218,7 @@ const AdminPlace = () => {
       <Divider />
       <SearchContainer>
         <SearchRow>
-          <InputComnponent>
+          <InputComponent>
             <TextField
               {...register('name')}
               type="text"
@@ -233,8 +227,8 @@ const AdminPlace = () => {
               fullWidth
               required
             />
-          </InputComnponent>
-          <InputComnponent>
+          </InputComponent>
+          <InputComponent>
             <TextField
               {...register('address')}
               type="text"
@@ -243,7 +237,7 @@ const AdminPlace = () => {
               fullWidth
               required
             />
-          </InputComnponent>
+          </InputComponent>
           <SearchButton onClick={handleSubmit(handleSearchClick)}>
             <SearchIcon />
             Tìm kiếm

@@ -24,8 +24,6 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  // display: 'flex',
-  // justifyContent: 'center',
   '&:nth-of-type(odd)': {
     backgroundColor: '#f8f8f8'
   },

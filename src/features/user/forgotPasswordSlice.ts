@@ -1,5 +1,5 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { publicRequest } from 'callsApi';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserEmail {
   email: string;

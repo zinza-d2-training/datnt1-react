@@ -4,11 +4,10 @@ import Alert from '@mui/material/Alert';
 import { publicRequest } from 'callsApi';
 import queryString from 'query-string';
 import { useEffect, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const ConfirmResetPassword = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFail, setIsFail] = useState(false);
   const [open, setOpen] = useState(true);

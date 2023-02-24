@@ -3,15 +3,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Menu, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
-import MenuItemContent from './MenuItemContent';
+import { logoutAsync } from 'features/user/userSlice';
+import useAccessToken from 'hooks/useAccessToken';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { RootState } from 'store/store';
-import useAccessToken from 'hooks/useAccessToken';
-import { logoutAsync } from 'features/user/userSlice';
+import MenuItemContent from './MenuItemContent';
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -73,7 +72,6 @@ const MenuRight = styled.div`
   padding: 0px;
   gap: 24px;
 
-  max-width: 600px;
   min-height: 50px;
 
   & .MuiList-root {
@@ -117,7 +115,7 @@ const MenuItemButton = styled(Button)`
   padding: 8px 22px;
   gap: 4px;
 
-  width: 140px;
+  min-width: 140px;
   height: 40px;
 
   background: #ffffff;
@@ -205,17 +203,24 @@ const Header = () => {
           }}>
           <MenuItemContent handleClose={handleClose} />
         </Menu>
-        <StyledLink to="/admin/injection-point">
+        <StyledLink to="/admin/document">
           <MenuRightButton>
             <MenuItemTypography>Tài liệu</MenuItemTypography>
           </MenuRightButton>
         </StyledLink>
         {token ? (
-          <MenuRightButton>
-            <MenuItemButton onClick={handleLogoutClick}>
-              Đăng xuất
-            </MenuItemButton>
-          </MenuRightButton>
+          <>
+            <MenuRightButton>
+              <MenuItemButton onClick={() => navigate('user/account')}>
+                {selectUser.userInfo.fullname}
+              </MenuItemButton>
+            </MenuRightButton>
+            <MenuRightButton>
+              <MenuItemButton onClick={handleLogoutClick}>
+                Đăng xuất
+              </MenuItemButton>
+            </MenuRightButton>
+          </>
         ) : (
           <MenuRightButton>
             <MenuItemButton onClick={handleLoginClick}>

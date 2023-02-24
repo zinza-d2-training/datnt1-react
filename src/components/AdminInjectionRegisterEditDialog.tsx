@@ -10,13 +10,11 @@ import { userRequest } from 'callsApi';
 import dayjs, { Dayjs } from 'dayjs';
 import {
   RegisterInfo,
-  UpdateInjectionRegistrationByAdmin,
   updateInjectionRegistrationByAdminAsync
 } from 'features/vaccination/injectionRegistrationSlice';
 import {
   getVaccinationSiteAsync,
   SearchFilterDefault,
-  updateVaccinationSiteByIdAsync,
   VaccinationSiteInfo
 } from 'features/vaccination/vaccinationSiteSlice';
 import React, { useEffect } from 'react';
@@ -104,8 +102,6 @@ const Label = styled.label`
   line-height: 24px;
   color: rgba(0, 0, 0, 0.87);
 `;
-
-const Field = styled(TextField)``;
 
 const DialogActions = styled.div`
   display: flex;

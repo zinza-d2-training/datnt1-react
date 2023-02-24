@@ -58,7 +58,7 @@ const MenuUser = ({ userTab }: MenuUserProps) => {
     <MenuUserContainer>
       {userTabs.map((tab) =>
         tab.tab === userTab ? (
-          <PresentItem>
+          <PresentItem key={tab.tab}>
             <PresentItemTypo>{tab.content}</PresentItemTypo>
           </PresentItem>
         ) : (

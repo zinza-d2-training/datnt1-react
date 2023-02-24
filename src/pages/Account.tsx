@@ -219,7 +219,7 @@ const Account = () => {
     watch,
     resetField,
     setValue,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<UserInfoInputs>({
     resolver: yupResolver(UserInfoSchema)
   });
@@ -263,7 +263,6 @@ const Account = () => {
   }, [watch('ward')]);
 
   useEffect(() => {
-    // resetField('province');
     setValue('identification_card', selectUser.identification_card);
     setValue('fullname', selectUser.fullname);
     setValue('birthday', selectUser.birthday);
@@ -486,7 +485,6 @@ const Account = () => {
             <InputComponent>
               <Label htmlFor="district">Quận/Huyện</Label>
               <Select
-                // disabled={!editInfo && watch('province') ? false : true}
                 {...register('district')}
                 fullWidth
                 displayEmpty={true}
@@ -518,7 +516,6 @@ const Account = () => {
             <InputComponent>
               <Label htmlFor="ward">Xã/Phường</Label>
               <Select
-                // disabled={watch('district') ? false : true}
                 {...register('ward')}
                 fullWidth
                 displayEmpty={true}
@@ -577,7 +574,7 @@ const Account = () => {
                 disabled={!editPassword}
                 type="password"
                 id="password"
-                defaultValue="" // value
+                defaultValue=""
                 fullWidth
                 required
                 FormHelperTextProps={{
@@ -595,7 +592,7 @@ const Account = () => {
                 disabled={!editPassword}
                 type="password"
                 id="confirmedPassword"
-                defaultValue="" // value
+                defaultValue=""
                 fullWidth
                 required
                 FormHelperTextProps={{

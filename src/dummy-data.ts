@@ -277,7 +277,7 @@ export const injectionInforRows = injectionInfo.map(
   (injection: InjectionInfo) => {
     const injectionPoint = InjectionPoints.filter(
       (injectionPoint: InjectionPoint) => {
-        return injection.injectionPointId == injectionPoint.id;
+        return injection.injectionPointId === injectionPoint.id;
       }
     );
 

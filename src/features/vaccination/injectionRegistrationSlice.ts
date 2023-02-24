@@ -1,5 +1,5 @@
-import { publicRequest, userRequest } from 'callsApi';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { userRequest } from 'callsApi';
 import { SearchByKeyInputs } from 'pages/AdminRegistration';
 
 export interface InjectionRegistrationInfo {

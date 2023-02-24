@@ -9,7 +9,7 @@ import {
   FormHelperText,
   Typography
 } from '@mui/material';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -19,12 +19,8 @@ import Vaccine from 'assets/img/vaccine2.png';
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
+import { updateInjectionRegistrationByUserAsync } from 'features/vaccination/injectionRegistrationSlice';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
-import {
-  addInjectionRegistrationAsync,
-  updateInjectionRegistrationByUserAsync
-} from 'features/vaccination/injectionRegistrationSlice';
-import { log } from 'console';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -182,7 +178,7 @@ const InjectionRegistrationStep2 = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<PolicyInputs>({
     resolver: yupResolver(PolicySchema)
   });

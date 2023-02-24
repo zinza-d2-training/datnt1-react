@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import { RootState, useAppDispatch, useAppSelector } from 'store';
-import { loginAsync, LoginInfo } from 'features/user/userSlice';
 import FormHelperText from '@mui/material/FormHelperText';
+import { loginAsync, LoginInfo } from 'features/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { RootState, useAppDispatch, useAppSelector } from 'store';
 
 const SideRightContainer = styled.div`
   display: flex;
@@ -189,14 +189,13 @@ const Login = () => {
   useEffect(() => {
     setDisabled(false);
     if (!isValid) setDisabled(true);
-  });
+  }, [isValid]);
 
   useEffect(() => {
     setDisabled(false);
   }, []);
 
   const onSubmit: SubmitHandler<LoginFormInputs> = (data: LoginInfo) => {
-    // login
     dispatch(loginAsync(data));
   };
 

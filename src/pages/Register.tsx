@@ -13,7 +13,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { publicRequest } from 'callsApi';
 import InputComponent from 'components/InputComponent';
 import dayjs, { Dayjs } from 'dayjs';
 import { District, Province, Ward } from 'dummy-data';
@@ -22,9 +21,10 @@ import {
   getProvincesAsync,
   getWardsByDistrictIdAsync
 } from 'features/administrative_unit/administrativeSlice';
-import { registerAsync } from 'features/user/registerSlice';
+import { registerAsync, resetStatus } from 'features/user/registerSlice';
 import React, { useEffect, useMemo } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 import * as yup from 'yup';
 
@@ -182,6 +182,7 @@ const registerSchema = yup.object().shape({
 const Register = () => {
   const [value, setValues] = React.useState<Dayjs | null>(null);
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const {
@@ -274,7 +275,14 @@ const Register = () => {
     }
   }, [watch('district')]);
 
-  const onSubmit: SubmitHandler<registerFormInputs> = (data) => {
+  useEffect(() => {
+    if (selectRegister.status === 'succeeded') {
+      navigate('/login');
+      dispatch(resetStatus());
+    }
+  }, [selectRegister]);
+
+  const onSubmit: SubmitHandler<registerFormInputs> = async (data) => {
     // register
     if (isValid) {
       let { district, province, ward, birthday, ...registerInfo } = data;
@@ -282,7 +290,7 @@ const Register = () => {
       const ward_id = currentWard?.ward_id as number;
       const formatedBirthday = dayjs(birthday).format('YYYY-MM-DD');
 
-      dispatch(
+      await dispatch(
         registerAsync({ ...registerInfo, birthday: formatedBirthday, ward_id })
       );
     }
