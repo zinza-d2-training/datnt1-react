@@ -20,15 +20,16 @@ import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-import AdminEditDialog from 'components/AdminEditDialog';
+import AdminInjectionRegisterEditDialog from 'components/AdminInjectionRegisterEditDialog';
 import Divider from 'components/Divider';
 import MenuAdmin from 'components/MenuAdmin';
 import TablePaginationActions from 'components/TablePaginationActions';
+import dayjs from 'dayjs';
 import {
-  getVaccinationSiteAsync,
-  SearchFilterDefault,
-  VaccinationSiteInfo
-} from 'features/vaccination/vaccinationSiteSlice';
+  getAllRegisterInfo,
+  RegisterInfo,
+  SearchFilterDefault
+} from 'features/vaccination/injectionRegistrationSlice';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const SearchContainer = styled.div`
@@ -92,17 +93,6 @@ const InputComponent = styled.div`
   }
 `;
 
-const PlaceholderTypo = styled(Typography)`
-  height: 23px;
-
-  font-family: 'Roboto';
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 23px;
-
-  color: rgba(0, 0, 0, 0.6);
-`;
-
 const SearchButton = styled(Button)`
   display: flex;
   flex-direction: row;
@@ -140,35 +130,37 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 export interface SearchByKeyInputs {
-  name?: string;
-  address?: string;
+  fullname?: string;
+  identification_card?: string;
 }
 
 const searchSchema = yup.object().shape({
-  injectionPoint: yup.string(),
-  address: yup.string()
+  fullname: yup.string(),
+  identification_card: yup.string()
 });
 
-const AdminPlace = () => {
+const AdminRegistration = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [open, setOpen] = React.useState(false);
 
-  const [listSites, setListSites] = React.useState<string[]>([]);
-  const [chosenSite, setChosenSite] = React.useState<VaccinationSiteInfo>();
+  const [chosenRegister, setChosenRegister] = React.useState<RegisterInfo>();
 
   const dispatch = useAppDispatch();
-
-  const selectVaccinationSites = useAppSelector(
-    (state: RootState) => state.vaccinationSite.vaccinationSites
+  const selectRegisterInfo = useAppSelector(
+    (state: RootState) => state.injectionRegistration.registerInfo
   );
+
+  const { register, handleSubmit } = useForm<SearchByKeyInputs>({
+    resolver: yupResolver(searchSchema)
+  });
 
   const handleClickOpen = (
     event: React.MouseEvent<unknown>,
-    site: VaccinationSiteInfo
+    register: RegisterInfo
   ) => {
-    setChosenSite(site);
+    setChosenRegister(register);
     setOpen(true);
   };
 
@@ -179,17 +171,13 @@ const AdminPlace = () => {
   const handleSearchClick: SubmitHandler<SearchByKeyInputs> = (
     data: SearchByKeyInputs
   ) => {
-    dispatch(getVaccinationSiteAsync(data));
+    dispatch(getAllRegisterInfo(data));
   };
-
-  const { register, handleSubmit } = useForm<SearchByKeyInputs>({
-    resolver: yupResolver(searchSchema)
-  });
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - selectVaccinationSites.length)
+      ? Math.max(0, (1 + page) * rowsPerPage - selectRegisterInfo.length)
       : 0;
 
   const handleChangePage = (
@@ -207,33 +195,31 @@ const AdminPlace = () => {
   };
 
   useEffect(() => {
-    dispatch(getVaccinationSiteAsync(SearchFilterDefault));
-    const listSites = selectVaccinationSites.map((site) => site.name);
-    setListSites(listSites);
+    dispatch(getAllRegisterInfo(SearchFilterDefault));
   }, []);
 
   return (
     <div>
-      <MenuAdmin adminTab={'injection-point'} />
+      <MenuAdmin adminTab={'registration'} />
       <Divider />
       <SearchContainer>
         <SearchRow>
           <InputComponent>
             <TextField
-              {...register('name')}
+              {...register('fullname')}
               type="text"
-              id="name"
-              placeholder="Điểm tiêm"
+              id="fullname"
+              placeholder="Họ và tên"
               fullWidth
               required
             />
           </InputComponent>
           <InputComponent>
             <TextField
-              {...register('address')}
+              {...register('identification_card')}
               type="text"
-              id="address"
-              placeholder="Địa chỉ"
+              id="identification_card"
+              placeholder="Số CMND/CCCD"
               fullWidth
               required
             />
@@ -250,48 +236,57 @@ const AdminPlace = () => {
             <TableHead>
               <TableRow>
                 <TableCell align="center">STT</TableCell>
-                <TableCell align="center">Tên điểm tiêm</TableCell>
-                <TableCell align="center">Địa chỉ</TableCell>
-                <TableCell align="center">
-                  Người đứng đầu cơ sở tiêm chủng
-                </TableCell>
-                <TableCell align="center">Số bàn tiêm</TableCell>
+                <TableCell align="center">Họ và tên</TableCell>
+                <TableCell align="center">Số CMND/CCCD</TableCell>
+                <TableCell align="center">Ngày tiêm dự kiến</TableCell>
+                <TableCell align="center">Loại Vaccine</TableCell>
+                <TableCell align="center">Số lô</TableCell>
+                <TableCell align="center">Điểm Tiêm</TableCell>
+                <TableCell align="center">Trạng Thái</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? selectVaccinationSites.slice(
+                ? selectRegisterInfo?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
-                : selectVaccinationSites
-              ).map((site: VaccinationSiteInfo, index: number) => (
-                <>
-                  <StyledTableRow
-                    hover
-                    onClick={(e) => handleClickOpen(e, site)}
-                    key={index}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                    <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="center">{site.name}</TableCell>
-                    <TableCell align="center">{site.address}</TableCell>
-                    <TableCell align="center">{site.leader}</TableCell>
-                    <TableCell align="center">
-                      {site.number_of_tables}
-                    </TableCell>
-                  </StyledTableRow>
-                </>
+                : selectRegisterInfo
+              ).map((register: RegisterInfo, index: number) => (
+                <StyledTableRow
+                  hover
+                  onClick={(e) => handleClickOpen(e, register)}
+                  key={index}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="center">{register.fullname}</TableCell>
+                  <TableCell align="center">
+                    {register.identification_card}
+                  </TableCell>
+                  <TableCell align="center">
+                    {register.expected_injection_date
+                      ? dayjs(register.expected_injection_date).format(
+                          'DD/MM/YYYY'
+                        )
+                      : null}
+                  </TableCell>
+                  <TableCell align="center">{register.vaccine_name}</TableCell>
+                  <TableCell align="center">{register.lot_number}</TableCell>
+                  <TableCell align="center">
+                    {register.vaccination_site_name}
+                  </TableCell>
+                  <TableCell align="center">{register.status}</TableCell>
+                </StyledTableRow>
               ))}
               <Dialog open={open} onClose={handleClose}>
-                <AdminEditDialog
+                <AdminInjectionRegisterEditDialog
                   handleClose={handleClose}
-                  site={chosenSite}
-                  listSites={listSites}
+                  registerInfo={chosenRegister}
                 />
               </Dialog>
               {emptyRows > 0 && (
                 <TableRow sx={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={10} />
                 </TableRow>
               )}
             </TableBody>
@@ -300,7 +295,7 @@ const AdminPlace = () => {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                   colSpan={8}
-                  count={selectVaccinationSites.length}
+                  count={selectRegisterInfo.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   labelRowsPerPage="Số bản ghi:"
@@ -317,4 +312,4 @@ const AdminPlace = () => {
   );
 };
 
-export default AdminPlace;
+export default AdminRegistration;

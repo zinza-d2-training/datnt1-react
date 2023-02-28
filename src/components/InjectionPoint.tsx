@@ -16,20 +16,23 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useMemo } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import TablePaginationActions from 'components/TablePaginationActions';
+import { District, Province } from 'dummy-data';
 import {
-  District,
-  districts,
-  Province,
-  provinces,
-  rows,
-  Ward,
-  wards
-} from 'dummy-data';
+  getDistrictsByProvinceIdAsync,
+  getProvincesAsync,
+  getWardsByDistrictIdAsync
+} from 'features/administrative_unit/administrativeSlice';
+import {
+  getVaccinationSiteAsync,
+  SearchFilterDefault,
+  VaccinationSiteInfo
+} from 'features/vaccination/vaccinationSiteSlice';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -170,36 +173,30 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 interface SearchInputs {
-  province: string;
+  province?: string;
   district?: string;
   ward?: string;
 }
 
-const searchSchema = yup.object().shape({
-  province: yup.string().required('Tên thành phố không được bỏ trống')
-});
+const searchSchema = yup.object().shape({});
 
 const InjectionPoint = () => {
-  const [provincesData, setProvincesData] = React.useState(provinces);
-  const [districtsData, setDistrictsData] = React.useState(districts);
-  const [wardsData, setWardsData] = React.useState(wards);
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    resetField,
-    formState: { errors, isValid }
-  } = useForm<SearchInputs>({
+  const { register, handleSubmit, watch, resetField } = useForm<SearchInputs>({
     resolver: yupResolver(searchSchema)
   });
 
+  const selectVaccinationSites = useAppSelector(
+    (state: RootState) => state.vaccinationSite.vaccinationSites
+  );
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - selectVaccinationSites.length)
+      : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -215,35 +212,100 @@ const InjectionPoint = () => {
     setPage(0);
   };
 
+  const dispatch = useAppDispatch();
+
+  const selectProvinces = useAppSelector(
+    (state: RootState) => state.administrativeUnit.provinces
+  );
+
+  const selectDistricts = useAppSelector(
+    (state: RootState) => state.administrativeUnit.districts
+  );
+
+  const selectWards = useAppSelector(
+    (state: RootState) => state.administrativeUnit.wards
+  );
+
+  const currentProvince = useMemo(() => {
+    return selectProvinces?.find(
+      (province) => province.name === watch('province')
+    );
+  }, [watch('province')]);
+
+  const currentDistrict = useMemo(() => {
+    return selectDistricts?.find(
+      (district) => district.name === watch('district')
+    );
+  }, [watch('district')]);
+
+  const currentWard = useMemo(() => {
+    return selectWards?.find((ward) => ward.name === watch('ward'));
+  }, [watch('ward')]);
+
+  const searchFilter = useMemo(() => {
+    return {
+      province_id: currentProvince?.province_id,
+      district_id: currentDistrict?.district_id,
+      ward_id: currentWard?.ward_id
+    };
+  }, [watch('province'), watch('district'), watch('ward')]);
+
+  useEffect(() => {
+    resetField('province');
+
+    async function fetchProvincesData() {
+      // You can await here
+      try {
+        await dispatch(getProvincesAsync());
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+    fetchProvincesData();
+
+    dispatch(getVaccinationSiteAsync(SearchFilterDefault));
+  }, []);
+
   useEffect(() => {
     resetField('district');
     resetField('ward');
-    // Lấy provinceId hiện tại đang chọn
-    const province: Province[] = provinces.filter((province) => {
-      return province.name === watch('province');
-    });
 
-    //Lấy ra các quận thuộc province đang chọn
-    const districtArr: District[] = districts.filter((district) => {
-      return district.provinceId === province[0]?.id;
-    });
-    setDistrictsData(districtArr);
+    // Lấy ra các quận thuộc province đang chọn
+    async function fetchDistrictsData() {
+      try {
+        await dispatch(
+          getDistrictsByProvinceIdAsync(currentProvince as Province)
+        );
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    if (watch('province')) {
+      fetchDistrictsData();
+    }
   }, [watch('province')]);
 
   useEffect(() => {
     resetField('ward');
-    // Lấy districtId hiện tại đang chọn
-    const district: District[] = districts.filter((district) => {
-      return district.name === watch('district');
-    });
 
     //Lấy ra các quận thuộc district đang chọn
-    const wardArr: Ward[] = wards.filter((ward) => {
-      return ward.districtId === district[0]?.id;
-    });
+    async function fetchWardsData() {
+      try {
+        await dispatch(getWardsByDistrictIdAsync(currentDistrict as District));
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
 
-    setWardsData(wardArr);
+    if (watch('district')) {
+      fetchWardsData();
+    }
   }, [watch('district')]);
+
+  const handleClick: SubmitHandler<SearchInputs> = () => {
+    dispatch(getVaccinationSiteAsync(searchFilter));
+  };
 
   return (
     <Wrapper>
@@ -264,8 +326,8 @@ const InjectionPoint = () => {
                 }
                 return selected;
               }}>
-              {provincesData.map((province) => (
-                <MenuItem key={province.id} value={province.name}>
+              {selectProvinces.map((province) => (
+                <MenuItem key={province.province_id} value={province.name}>
                   {province.name}
                 </MenuItem>
               ))}
@@ -285,8 +347,8 @@ const InjectionPoint = () => {
                   return selected;
                 }
               }}>
-              {districtsData.map((district) => (
-                <MenuItem key={district.id} value={district.name}>
+              {selectDistricts.map((district) => (
+                <MenuItem key={district.district_id} value={district.name}>
                   {district.name}
                 </MenuItem>
               ))}
@@ -306,14 +368,14 @@ const InjectionPoint = () => {
                   return selected;
                 }
               }}>
-              {wardsData.map((ward) => (
-                <MenuItem key={ward.id} value={ward.name}>
+              {selectWards.map((ward) => (
+                <MenuItem key={ward.ward_id} value={ward.name}>
                   {ward.name}
                 </MenuItem>
               ))}
             </Select>
           </InputComnponent>
-          <SearchButton>
+          <SearchButton onClick={handleSubmit(handleClick)}>
             <SearchIcon />
             Tìm kiếm
           </SearchButton>
@@ -337,41 +399,44 @@ const InjectionPoint = () => {
                 <TableCell align="center">Số bàn tiêm</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {(rowsPerPage > 0
-                ? rows.slice(
+                ? selectVaccinationSites?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
-                : rows
-              ).map((row) => (
+                : selectVaccinationSites
+              )?.map((site: VaccinationSiteInfo, index: number) => (
                 <StyledTableRow
-                  key={row.id}
+                  hover
+                  key={site.vaccination_site_id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell align="center">{row.id}</TableCell>
-                  <TableCell align="center">{row.name}</TableCell>
-                  <TableCell align="center">{row.detailAddress}</TableCell>
-                  <TableCell align="center">{row.ward[0].name}</TableCell>
-                  <TableCell align="center">{row.district[0].name}</TableCell>
-                  <TableCell align="center">{row.province[0].name}</TableCell>
-                  <TableCell align="center">{row.leader}</TableCell>
-                  <TableCell align="center">
-                    {row.numberOfInjectionTables}
-                  </TableCell>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="center">{site.name}</TableCell>
+                  <TableCell align="center">{site.address}</TableCell>
+                  <TableCell align="center">{site.ward_name}</TableCell>
+                  <TableCell align="center">{site.district_name}</TableCell>
+                  <TableCell align="center">{site.province_name}</TableCell>
+                  <TableCell align="center">{site.leader}</TableCell>
+                  <TableCell align="center">{site.number_of_tables}</TableCell>
                 </StyledTableRow>
               ))}
-              {emptyRows > 0 && (
-                <TableRow sx={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
+            {emptyRows > 0 && (
+              <TableRow sx={{ height: 53 * emptyRows }}>
+                <TableCell
+                  colSpan={Object.keys(selectVaccinationSites[0] || {})?.length}
+                />
+              </TableRow>
+            )}
+
             <TableFooter>
               <TableRow>
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                  colSpan={8}
-                  count={rows.length}
+                  colSpan={Object.keys(selectVaccinationSites[0] || {})?.length}
+                  count={selectVaccinationSites?.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   labelRowsPerPage="Số bản ghi:"
@@ -379,6 +444,7 @@ const InjectionPoint = () => {
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   ActionsComponent={TablePaginationActions}
                 />
+                {/* <StyledTablePagination list={selectVaccinationSites} /> */}
               </TableRow>
             </TableFooter>
           </Table>

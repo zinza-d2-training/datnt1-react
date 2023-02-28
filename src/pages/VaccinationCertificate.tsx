@@ -15,7 +15,14 @@ import LogoCard from 'assets/img/Logo.png';
 import QRCodeImg from 'assets/img/qr-code.png';
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
-import { injectionInforRows } from 'dummy-data';
+import dayjs from 'dayjs';
+import {
+  getRegisterResultByUserId,
+  RegisterResult
+} from 'features/vaccination/injectionRegistrationSlice';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -28,7 +35,7 @@ const ResultContainer = styled.div`
 `;
 
 const CertificateContainer = styled.div`
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -160,7 +167,7 @@ const RegisterButton = styled(Button)`
   }
 `;
 
-const CardContainer = styled.div`
+const CardContainer = styled.div<CardContainerProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,8 +177,8 @@ const CardContainer = styled.div`
 
   width: 340px;
   min-height: 668px;
+  background: ${(props) => (props.injectionShots > 1 ? '#43a047' : '#ffe082')};
 
-  background: #43a047;
   box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.175);
   border-radius: 8px 8px 8px 0px;
 `;
@@ -266,7 +273,43 @@ const StyledTableHead = styled(TableHead)(() => ({
   borderBottom: '2px solid #EEEEEE'
 }));
 
+export enum Status {
+  SUCCESS = 'Đăng ký thành công',
+  PENDING = 'Đăng ký chưa hoàn thành',
+  INJECTED = 'Đã tiêm'
+}
+
+type CardContainerProps = {
+  injectionShots: number;
+};
+
 const VaccinationCertificate = () => {
+  const [injectionShots, setInjectionShots] = useState<number>(0);
+  const dispatch = useAppDispatch();
+  const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
+
+  const navigate = useNavigate();
+
+  const selectRegisterResult = useAppSelector(
+    (state: RootState) => state.injectionRegistration.registerResult
+  );
+
+  useEffect(() => {
+    dispatch(getRegisterResultByUserId());
+  }, []);
+
+  useEffect(() => {
+    const injectionShots = selectRegisterResult.reduce((total, result) => {
+      if (result.status === Status.INJECTED) {
+        return (total += 1);
+      }
+
+      return total;
+    }, 0);
+
+    setInjectionShots(injectionShots);
+  }, [selectRegisterResult]);
+
   return (
     <div>
       <MenuUser userTab={'vaccination-certificate'} />
@@ -279,26 +322,32 @@ const VaccinationCertificate = () => {
           <CertificateFrame>
             <CertificateItem>
               <CertificateItemKey>Họ và tên</CertificateItemKey>
-              <CertificateItemValue>Nguyễn Văn A</CertificateItemValue>
+              <CertificateItemValue>{selectUser.fullname}</CertificateItemValue>
             </CertificateItem>
             <CertificateItem>
               <CertificateItemKey>Ngày sinh</CertificateItemKey>
-              <CertificateItemValue>16/10/1994</CertificateItemValue>
+              <CertificateItemValue>
+                {dayjs(selectUser.birthday).format('DD/MM/YYYY')}
+              </CertificateItemValue>
             </CertificateItem>
             <CertificateItem>
               <CertificateItemKey>Số CMND/CCCD</CertificateItemKey>
-              <CertificateItemValue>030012345678</CertificateItemValue>
+              <CertificateItemValue>
+                {selectUser.identification_card}
+              </CertificateItemValue>
             </CertificateItem>
             <CertificateItem>
               <CertificateItemKey>Số thẻ BHYT</CertificateItemKey>
-              <CertificateItemValue>030094005102</CertificateItemValue>
+              <CertificateItemValue>
+                {selectUser.health_insurance_number}
+              </CertificateItemValue>
             </CertificateItem>
           </CertificateFrame>
           <CertificateFrame>
             <CertificateItem>
               <CertificateItemKey>Địa chỉ</CertificateItemKey>
               <CertificateItemValue>
-                Phường Giang Biên - Quận Long Biên - Thành phố Hà Nội
+                {`${selectUser.ward_name} - ${selectUser.district_name} - ${selectUser.province_name}`}
               </CertificateItemValue>
             </CertificateItem>
           </CertificateFrame>
@@ -306,7 +355,9 @@ const VaccinationCertificate = () => {
             <CertificateItem>
               <CertificateItemKey>Kết luận</CertificateItemKey>
               <CertificateItemValue>
-                Đã được tiêm phòng vắc xin phòng bệnh Covid-19
+                {injectionShots > 0
+                  ? 'Đã được tiêm phòng vắc xin phòng bệnh Covid-19'
+                  : 'Chưa được tiêm phòng vắc xin phòng bệnh Covid-19'}
               </CertificateItemValue>
             </CertificateItem>
           </CertificateFrame>
@@ -324,52 +375,72 @@ const VaccinationCertificate = () => {
                 </TableRow>
               </StyledTableHead>
               <TableBody>
-                {injectionInforRows.map((row) => (
-                  <TableRow key={row.injectionNumber}>
-                    <TableCell align="center">{row.injectionNumber}</TableCell>
-                    <TableCell align="center">{row.injectionTime}</TableCell>
-                    <TableCell align="center">{row.vaccineName}</TableCell>
-                    <TableCell align="center">{row.lotNumber}</TableCell>
-                    <TableCell align="center">
-                      {row.injectionPointName}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {selectRegisterResult.map(
+                  (res: RegisterResult, index: number) =>
+                    res.status === Status.INJECTED && (
+                      <TableRow key={index}>
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
+                          {
+                            dayjs(res.expected_injection_date).format(
+                              'DD/MM/YYYY'
+                            ) as string
+                          }
+                        </TableCell>
+                        <TableCell align="center">{res.vaccine_name}</TableCell>
+                        <TableCell align="center">{res.lot_number}</TableCell>
+                        <TableCell align="center">
+                          {res.vaccination_site_name}
+                        </TableCell>
+                      </TableRow>
+                    )
+                )}
               </TableBody>
             </StyledTable>
           </TableContainer>
           <SubmitContainer>
-            <RegisterButton>Đăng ký mũi tiêm tiếp theo</RegisterButton>
+            <RegisterButton
+              onClick={() => {
+                navigate('/injection-registration/step1');
+              }}>
+              Đăng ký mũi tiêm tiếp theo
+            </RegisterButton>
           </SubmitContainer>
         </CertificateContainer>
-        <CardContainer>
-          <Logo src={LogoCard} />
-          <CardTypo>ĐÃ TIÊM 2 MŨI VẮC XIN</CardTypo>
-          <QRCode src={QRCodeImg} />
-          <CardInfo>
-            <CardInfoItem>
-              <PersonIcon />
-              <CardInfoItemDetail>
-                <CardInfoItemKey>Họ và tên</CardInfoItemKey>
-                <CardInfoItemValue>Nguyễn Văn A</CardInfoItemValue>
-              </CardInfoItemDetail>
-            </CardInfoItem>
-            <CardInfoItem>
-              <DateRangeIcon />
-              <CardInfoItemDetail>
-                <CardInfoItemKey>Ngày sinh</CardInfoItemKey>
-                <CardInfoItemValue>16/10/1994</CardInfoItemValue>
-              </CardInfoItemDetail>
-            </CardInfoItem>
-            <CardInfoItem>
-              <FeaturedVideoIcon />
-              <CardInfoItemDetail>
-                <CardInfoItemKey>Số CMND/CCCD</CardInfoItemKey>
-                <CardInfoItemValue>030012345678</CardInfoItemValue>
-              </CardInfoItemDetail>
-            </CardInfoItem>
-          </CardInfo>
-        </CardContainer>
+        {injectionShots > 0 ? (
+          <CardContainer injectionShots={injectionShots}>
+            <Logo src={LogoCard} />
+            <CardTypo>ĐÃ TIÊM {injectionShots} MŨI VẮC XIN</CardTypo>
+            <QRCode src={QRCodeImg} />
+            <CardInfo>
+              <CardInfoItem>
+                <PersonIcon />
+                <CardInfoItemDetail>
+                  <CardInfoItemKey>Họ và tên</CardInfoItemKey>
+                  <CardInfoItemValue>{selectUser.fullname}</CardInfoItemValue>
+                </CardInfoItemDetail>
+              </CardInfoItem>
+              <CardInfoItem>
+                <DateRangeIcon />
+                <CardInfoItemDetail>
+                  <CardInfoItemKey>Ngày sinh</CardInfoItemKey>
+                  <CardInfoItemValue>
+                    {dayjs(selectUser.birthday).format('DD/MM/YYYY')}
+                  </CardInfoItemValue>
+                </CardInfoItemDetail>
+              </CardInfoItem>
+              <CardInfoItem>
+                <FeaturedVideoIcon />
+                <CardInfoItemDetail>
+                  <CardInfoItemKey>Số CMND/CCCD</CardInfoItemKey>
+                  <CardInfoItemValue>
+                    {selectUser.identification_card}
+                  </CardInfoItemValue>
+                </CardInfoItemDetail>
+              </CardInfoItem>
+            </CardInfo>
+          </CardContainer>
+        ) : null}
       </ResultContainer>
     </div>
   );

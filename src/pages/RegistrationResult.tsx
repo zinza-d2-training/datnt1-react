@@ -9,7 +9,17 @@ import TableRow from '@mui/material/TableRow';
 
 import Divider from 'components/Divider';
 import MenuUser from 'components/MenuUser';
-import { registerResult } from 'dummy-data';
+import dayjs from 'dayjs';
+import {
+  getRegisterResultByUserId,
+  RegisterResult
+} from 'features/vaccination/injectionRegistrationSlice';
+import { useEffect } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
+
+const RegistrationResultContainer = styled.div`
+  margin-bottom: 300px;
+`;
 
 const StyledTableHead = styled(TableHead)(() => ({
   background: 'rgba(238, 238, 238, 0.4)',
@@ -20,17 +30,6 @@ const StyledTable = styled(Table)(() => ({
   border: '1px solid #EEEEEE',
   borderRadius: '0',
   padding: '0px 36px'
-}));
-
-const StyledTableCell = styled(TableCell)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: 'auto',
-  margin: 'auto',
-  border: 'none',
-  height: '100%'
 }));
 
 const FrameTableCell = styled.div`
@@ -51,8 +50,17 @@ const FrameTableCell = styled.div`
 `;
 
 const RegistrationResult = () => {
+  const dispatch = useAppDispatch();
+  const selectRegisterResult = useAppSelector(
+    (state: RootState) => state.injectionRegistration.registerResult
+  );
+
+  useEffect(() => {
+    dispatch(getRegisterResultByUserId());
+  }, []);
+
   return (
-    <div>
+    <RegistrationResultContainer>
       <MenuUser userTab={'registration-result'} />
       <Divider />
       <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
@@ -70,22 +78,24 @@ const RegistrationResult = () => {
             </TableRow>
           </StyledTableHead>
           <TableBody>
-            {registerResult.map((row) => (
-              <TableRow key={row.numericalOder}>
-                <TableCell align="center">{row.numericalOder}</TableCell>
-                <TableCell align="center">{row.fullname}</TableCell>
-                <TableCell align="center">{row.birthday}</TableCell>
-                <TableCell align="center">{row.gender}</TableCell>
-                <TableCell align="center">{row.identificationCode}</TableCell>
-                <StyledTableCell align="center">
-                  <FrameTableCell>{row.status}</FrameTableCell>
-                </StyledTableCell>
+            {selectRegisterResult.map((res: RegisterResult, index: number) => (
+              <TableRow key={index}>
+                <TableCell align="center">{index + 1}</TableCell>
+                <TableCell align="center">{res?.fullname}</TableCell>
+                <TableCell align="center">
+                  {dayjs(res?.birthday).format('DD/MM/YYYY')}
+                </TableCell>
+                <TableCell align="center">{res?.gender}</TableCell>
+                <TableCell align="center">{res?.identification_card}</TableCell>
+                <TableCell align="center">
+                  <FrameTableCell>{res?.status}</FrameTableCell>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </StyledTable>
       </TableContainer>
-    </div>
+    </RegistrationResultContainer>
   );
 };
 

@@ -2,9 +2,14 @@ import styled from '@emotion/styled';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Menu, Typography } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import LogoIcon from 'assets/img/Logo.png';
 import StyledLink from 'components/StyledLink';
+import { logoutAsync } from 'features/user/userSlice';
+import useAccessToken from 'hooks/useAccessToken';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { persistor, RootState } from 'store/store';
 import MenuItemContent from './MenuItemContent';
 
 const HeaderContainer = styled.div`
@@ -67,12 +72,19 @@ const MenuRight = styled.div`
   padding: 0px;
   gap: 24px;
 
-  max-width: 600px;
   min-height: 50px;
 
   & .MuiList-root {
     padding: 0px;
   }
+`;
+
+const MenuRightButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  gap: 24px;
 `;
 
 const MenuRightButton = styled(Button)`
@@ -111,7 +123,7 @@ const MenuItemButton = styled(Button)`
   padding: 8px 22px;
   gap: 4px;
 
-  width: 140px;
+  min-width: 140px;
   height: 40px;
 
   background: #ffffff;
@@ -140,6 +152,27 @@ const Header = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const dispatch = useAppDispatch();
+  const selectUser = useAppSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+  const token = useAccessToken();
+
+  const handleLoginClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!token) {
+      navigate('login');
+    }
+  };
+
+  const handleLogoutClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (token) {
+      dispatch(logoutAsync());
+      navigate('login');
+      persistor.purge();
+    }
   };
 
   return (
@@ -179,16 +212,31 @@ const Header = () => {
           }}>
           <MenuItemContent handleClose={handleClose} />
         </Menu>
-        <StyledLink to="/admin/injection-point">
+        <StyledLink to="/admin/document">
           <MenuRightButton>
             <MenuItemTypography>Tài liệu</MenuItemTypography>
           </MenuRightButton>
         </StyledLink>
-        <StyledLink to="/login">
+        {token ? (
+          <MenuRightButtonContainer>
+            <MenuRightButton>
+              <MenuItemButton onClick={() => navigate('user/account')}>
+                {selectUser.userInfo.fullname}
+              </MenuItemButton>
+            </MenuRightButton>
+            <MenuRightButton>
+              <MenuItemButton onClick={handleLogoutClick}>
+                Đăng xuất
+              </MenuItemButton>
+            </MenuRightButton>
+          </MenuRightButtonContainer>
+        ) : (
           <MenuRightButton>
-            <MenuItemButton>Đăng nhập</MenuItemButton>
+            <MenuItemButton onClick={handleLoginClick}>
+              Đăng nhập
+            </MenuItemButton>
           </MenuRightButton>
-        </StyledLink>
+        )}
       </MenuRight>
     </HeaderContainer>
   );

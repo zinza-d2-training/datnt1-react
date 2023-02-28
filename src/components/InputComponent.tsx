@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { FormHelperText, TextField, Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { registerFormInputs } from 'pages/Register';
 import { UseFormRegister } from 'react-hook-form';
 
@@ -32,22 +32,8 @@ const Field = styled(TextField)`
   width: 100%;
 `;
 
-const HelperText = styled(FormHelperText)`
-  max-width: 400px;
-  min-height: 20px;
-
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 20px;
-  margin: 0px;
-
-  color: #d32f2f;
-`;
-
 export type registerInput =
-  | 'identity'
+  | 'identification_card'
   | 'email'
   | 'password'
   | 'fullname'

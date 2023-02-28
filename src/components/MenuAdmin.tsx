@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import { Typography } from '@mui/material';
+import { useAppSelector } from 'store/hooks';
+import { RootState } from 'store/store';
 import StyledLink from './StyledLink';
 
 const MenuAdminContainer = styled.div`
@@ -54,6 +56,10 @@ const adminTabs = [
 ];
 
 const MenuAdmin = ({ adminTab }: MenuAdminProps) => {
+  const selectUserRole = useAppSelector(
+    (state: RootState) => state.user.userInfo.role_id
+  );
+
   return (
     <MenuAdminContainer>
       {adminTabs.map((tab) =>
@@ -61,13 +67,13 @@ const MenuAdmin = ({ adminTab }: MenuAdminProps) => {
           <PresentItem>
             <PresentItemTypo>{tab.content}</PresentItemTypo>
           </PresentItem>
-        ) : (
+        ) : selectUserRole === 2 ? (
           <StyledLink to={`/admin/${tab.tab}`}>
             <MenuAdminItem>
               <MenuAdminItemTypo>{tab.content}</MenuAdminItemTypo>
             </MenuAdminItem>
           </StyledLink>
-        )
+        ) : null
       )}
     </MenuAdminContainer>
   );

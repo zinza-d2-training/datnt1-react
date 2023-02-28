@@ -6,6 +6,11 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import FormHelperText from '@mui/material/FormHelperText';
+import { loginAsync, LoginInfo } from 'features/user/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { RootState, useAppDispatch, useAppSelector } from 'store';
+
 const SideRightContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -107,6 +112,13 @@ const LoginBtn = styled(Button)`
   text-transform: none;
 `;
 
+const HelperText = styled(FormHelperText)`
+  color: #d32f2f;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+`;
+
 const RegisterBtn = styled(Button)`
   max-width: 376px;
   min-height: 50px;
@@ -153,11 +165,18 @@ const loginSchema = yup.object().shape({
     .required('Mật khẩu không được bỏ trống')
     .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
     .trim()
-  // .matches(/^(?!.* )(?=.*\d)(?=.*[A-Z])$/, 'Mật khẩu không hợp lệ')
+    .matches(/^\S*$/, 'Mật khẩu không được có khoảng trắng')
 });
 
 const Login = () => {
   const [disabled, setDisabled] = useState(false);
+  const dispatch = useAppDispatch();
+  const selectUser = useAppSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+
+  if (localStorage.getItem('accessToken')) {
+    navigate('/');
+  }
 
   const {
     register,
@@ -170,14 +189,14 @@ const Login = () => {
   useEffect(() => {
     setDisabled(false);
     if (!isValid) setDisabled(true);
-  });
+  }, [isValid]);
 
   useEffect(() => {
     setDisabled(false);
   }, []);
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    // login
+  const onSubmit: SubmitHandler<LoginFormInputs> = (data: LoginInfo) => {
+    dispatch(loginAsync(data));
   };
 
   return (
@@ -225,9 +244,12 @@ const Login = () => {
         <LoginBtn
           fullWidth
           onClick={handleSubmit(onSubmit)}
-          disabled={disabled}>
+          disabled={disabled || selectUser.loading}>
           Đăng nhập
         </LoginBtn>
+        {selectUser.status === 'rejected' && (
+          <HelperText>Sai tên đăng nhập hoặc mật khẩu</HelperText>
+        )}
       </Form>
       <SuggestTypography>
         Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký !

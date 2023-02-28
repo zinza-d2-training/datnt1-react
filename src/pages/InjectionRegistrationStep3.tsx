@@ -2,10 +2,14 @@ import styled from '@emotion/styled';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Button, Typography } from '@mui/material';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 import Heading from 'components/Heading';
 import Stepper from 'components/Stepper';
 import StyledLink from 'components/StyledLink';
+import dayjs from 'dayjs';
+import { RootState, useAppSelector } from 'store/index';
 
 const ResultContainer = styled.div`
   display: flex;
@@ -200,15 +204,35 @@ const ContinueSubmitButton = styled(Button)`
   }
 `;
 
-const InjectionRegistrationStep2 = () => {
+const InjectionRegistrationStep3 = () => {
+  const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
+  const selectInjectionRegistrationInfo = useAppSelector(
+    (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
+  );
+
+  const exportPDF = () => {
+    const inputFile: HTMLElement | null = document.getElementById('pdf');
+    if (inputFile) {
+      html2canvas(inputFile).then((canvas: HTMLCanvasElement) => {
+        const imgData = canvas.toDataURL('image/png');
+        const PdfFile = new jsPDF();
+        PdfFile.addImage(imgData, 'JEPG', 5, 40, 200, 60);
+        PdfFile.save('Thông tin đăng ký tiêm chủng.pdf');
+      });
+    }
+  };
+
   return (
     <div>
       <Heading />
       <Stepper step={3} />
-      <ResultContainer>
+      <ResultContainer id="pdf">
         <ResultTypo>
           Đăng ký tiêm chủng COVID-19 thành công. Mã đặt tiêm của bạn là{' '}
-          <Typography component="span">0120211103501237</Typography>.
+          <Typography component="span">
+            {selectInjectionRegistrationInfo.injection_register_code}
+          </Typography>
+          .
         </ResultTypo>
         <ResultThanksTypo>
           Cảm ơn quý khách đã đăng ký tiêm chủng vắc xin COVID-19. Hiện tại Bộ y
@@ -232,25 +256,29 @@ const InjectionRegistrationStep2 = () => {
         <ResultFrame>
           <ResultFrameItem>
             <FrameItemKey>Họ và tên</FrameItemKey>
-            <FrameItemValue>Nguyễn Văn A</FrameItemValue>
+            <FrameItemValue>{selectUser.fullname}</FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey>Ngày sinh</FrameItemKey>
-            <FrameItemValue>16/10/1 994</FrameItemValue>
+            <FrameItemValue>
+              {dayjs(selectUser.birthday).format('DD/MM/YYYY')}
+            </FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey>Giới tính</FrameItemKey>
-            <FrameItemValue>Nam</FrameItemValue>
+            <FrameItemValue>{selectUser.gender}</FrameItemValue>
           </ResultFrameItem>
         </ResultFrame>
         <ResultFrame>
           <ResultFrameItem>
             <FrameItemKey>Số CMND/CCCD/Mã định danh công dân</FrameItemKey>
-            <FrameItemValue>030012345678</FrameItemValue>
+            <FrameItemValue>{selectUser.identification_card}</FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey>Số thẻ BHYT</FrameItemKey>
-            <FrameItemValue></FrameItemValue>
+            <FrameItemValue>
+              {selectUser.health_insurance_number}
+            </FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey></FrameItemKey>
@@ -260,15 +288,15 @@ const InjectionRegistrationStep2 = () => {
         <ResultFrame>
           <ResultFrameItem>
             <FrameItemKey>Tỉnh/Thành phố</FrameItemKey>
-            <FrameItemValue>Thành phố Hà Nội </FrameItemValue>
+            <FrameItemValue>{selectUser.province_name} </FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey>Quận/Huyện</FrameItemKey>
-            <FrameItemValue>Quận Long Biên</FrameItemValue>
+            <FrameItemValue>{selectUser.district_name}</FrameItemValue>
           </ResultFrameItem>
           <ResultFrameItem>
             <FrameItemKey>Xã/Phường</FrameItemKey>
-            <FrameItemValue>Phường Giang Biên</FrameItemValue>
+            <FrameItemValue>{selectUser.ward_name}</FrameItemValue>
           </ResultFrameItem>
         </ResultFrame>
       </ResultContainer>
@@ -279,15 +307,13 @@ const InjectionRegistrationStep2 = () => {
             Trang Chủ
           </BackSubmitButton>
         </StyledLink>
-        <StyledLink to="/">
-          <ContinueSubmitButton>
-            Xuất thông tin
-            <ArrowForwardIcon />
-          </ContinueSubmitButton>
-        </StyledLink>
+        <ContinueSubmitButton onClick={exportPDF}>
+          Xuất thông tin
+          <ArrowForwardIcon />
+        </ContinueSubmitButton>
       </SubmitContainer>
     </div>
   );
 };
 
-export default InjectionRegistrationStep2;
+export default InjectionRegistrationStep3;

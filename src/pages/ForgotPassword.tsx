@@ -2,9 +2,12 @@ import styled from '@emotion/styled';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
 import StyledLink from 'components/StyledLink';
+import { forgotPasswordAsync } from 'features/user/forgotPasswordSlice';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form/dist/types';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from 'store/index';
 import * as yup from 'yup';
 
 const SideRightContainer = styled.div`
@@ -79,6 +82,12 @@ const DialogActions = styled.div`
 
   width: 100%;
   height: 60px;
+
+  & .css-1x9d9yr-MuiButtonBase-root-MuiButton-root:hover {
+    background-color: #1e2f97 !important;
+    border-color: #1e2f97 !important;
+    color: #ffffff;
+  }
 `;
 
 const ButtonBack = styled(Button)`
@@ -138,7 +147,7 @@ const ButtonSendTypography = styled(Typography)`
   color: #ffffff;
 `;
 
-type EmailValues = {
+type EmailFormInputs = {
   email: string;
 };
 
@@ -152,16 +161,20 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid }
-  } = useForm<EmailValues>({
+  } = useForm<EmailFormInputs>({
     resolver: yupResolver(emailSchema)
   });
 
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick: SubmitHandler<EmailFormInputs> = (
+    data: EmailFormInputs
+  ) => {
     seIsRequest(true);
+    dispatch(forgotPasswordAsync(data));
     setTimeout(() => {
       navigate('/login');
       seIsRequest(false);
@@ -200,7 +213,9 @@ const ForgotPassword = () => {
             <ButtonBackTypography>QUAY LẠI</ButtonBackTypography>
           </StyledLink>
         </ButtonBack>
-        <ButtonSend onClick={handleClick} disabled={!isValid || isRequest}>
+        <ButtonSend
+          onClick={handleSubmit(handleClick)}
+          disabled={!isValid || isRequest}>
           <ButtonSendTypography>GỬI</ButtonSendTypography>
         </ButtonSend>
       </DialogActions>

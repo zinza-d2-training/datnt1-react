@@ -9,19 +9,23 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import FormHelperText from '@mui/material/FormHelperText';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import InputComponent from 'components/InputComponent';
+import dayjs, { Dayjs } from 'dayjs';
+import { District, Province, Ward } from 'dummy-data';
 import {
-  District,
-  districts,
-  Province,
-  provinces,
-  Ward,
-  wards
-} from 'dummy-data';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+  getDistrictsByProvinceIdAsync,
+  getProvincesAsync,
+  getWardsByDistrictIdAsync
+} from 'features/administrative_unit/administrativeSlice';
+import { registerAsync, resetStatus } from 'features/user/registerSlice';
+import React, { useEffect, useMemo } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 import * as yup from 'yup';
 
 const RegisterContainer = styled.div`
@@ -124,23 +128,40 @@ const ButtonContinueTypo = styled(Button)`
 `;
 
 export interface registerFormInputs {
-  identity: string;
+  identification_card: string;
   email: string;
   password: string;
   fullname: string;
-  birthday: string;
+  birthday: Dayjs | null;
   gender: string;
   province: string;
   district: string;
   ward: string;
 }
 
+yup.addMethod(
+  yup.mixed,
+  'length',
+  function (lengthOpt1: number, lengthOpt2: number, msg: string) {
+    return this.test({
+      name: 'length',
+      message: msg,
+      test: (value) => {
+        return (
+          (value && value.toString().length === lengthOpt1) ||
+          (value && value.toString().length === lengthOpt2)
+        );
+      }
+    });
+  }
+);
+
 const registerSchema = yup.object().shape({
-  identity: yup
+  identification_card: yup
     .string()
     .required('Số CMND không được bỏ trống')
     .matches(/^[0-9]+$/, 'Số CMND chỉ được chứa số ')
-    .min(12, 'Số CMND không hợp lệ'),
+    .length(12, 'Số CMND phải chứa 12 số'),
   email: yup
     .string()
     .email('Email không hợp lệ')
@@ -159,15 +180,120 @@ const registerSchema = yup.object().shape({
 });
 
 const Register = () => {
+  const [value, setValues] = React.useState<Dayjs | null>(null);
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const {
     register,
     handleSubmit,
-    control,
+    setValue,
+    resetField,
+    watch,
     formState: { errors, isValid }
   } = useForm<registerFormInputs>({ resolver: yupResolver(registerSchema) });
 
-  const onSubmit: SubmitHandler<registerFormInputs> = (data) => {
+  const selectRegister = useAppSelector((state: RootState) => state.register);
+
+  const selectProvinces = useAppSelector(
+    (state: RootState) => state.administrativeUnit.provinces
+  );
+
+  const selectDistricts = useAppSelector(
+    (state: RootState) => state.administrativeUnit.districts
+  );
+
+  const selectWards = useAppSelector(
+    (state: RootState) => state.administrativeUnit.wards
+  );
+
+  const currentProvince = useMemo(() => {
+    return selectProvinces?.find(
+      (province) => province.name === watch('province')
+    );
+  }, [watch('province')]);
+
+  const currentDistrict = useMemo(() => {
+    return selectDistricts?.find(
+      (district) => district.name === watch('district')
+    );
+  }, [watch('district')]);
+
+  const currentWard = useMemo(() => {
+    return selectWards?.find((ward) => ward.name === watch('ward'));
+  }, [watch('ward')]);
+
+  useEffect(() => {
+    resetField('province');
+
+    async function fetchProvincesData() {
+      // You can await here
+      try {
+        await dispatch(getProvincesAsync());
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+    fetchProvincesData();
+  }, []);
+
+  useEffect(() => {
+    resetField('district');
+    resetField('ward');
+
+    // Lấy ra các quận thuộc province đang chọn
+    async function fetchDistrictsData() {
+      try {
+        await dispatch(
+          getDistrictsByProvinceIdAsync(currentProvince as Province)
+        );
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    if (watch('province')) {
+      fetchDistrictsData();
+    }
+  }, [watch('province')]);
+
+  useEffect(() => {
+    resetField('ward');
+
+    //Lấy ra các quận thuộc district đang chọn
+    async function fetchWardsData() {
+      try {
+        await dispatch(getWardsByDistrictIdAsync(currentDistrict as District));
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    }
+
+    if (watch('district')) {
+      fetchWardsData();
+    }
+  }, [watch('district')]);
+
+  useEffect(() => {
+    if (selectRegister.status === 'succeeded') {
+      navigate('/login');
+      dispatch(resetStatus());
+    }
+  }, [selectRegister]);
+
+  const onSubmit: SubmitHandler<registerFormInputs> = async (data) => {
     // register
+    if (isValid) {
+      let { district, province, ward, birthday, ...registerInfo } = data;
+
+      const ward_id = currentWard?.ward_id as number;
+      const formatedBirthday = dayjs(birthday).format('YYYY-MM-DD');
+
+      await dispatch(
+        registerAsync({ ...registerInfo, birthday: formatedBirthday, ward_id })
+      );
+    }
   };
 
   return (
@@ -179,16 +305,19 @@ const Register = () => {
         <InputComponent
           label="Số CMND/CCCD"
           placeholder="Số CMND/CCCD"
-          id="identity"
-          // helperText="Số CMND/CCCD không được bỏ trống "
-          helperText={errors.identity?.message}
+          id="identification_card"
+          helperText={errors.identification_card?.message}
           register={register}
         />
         <InputComponent
           label="Email"
           placeholder="Email"
           id="email"
-          helperText={errors.email?.message}
+          helperText={
+            (selectRegister.status === 'rejected'
+              ? 'Email đã tồn tại!'
+              : undefined) || errors.email?.message
+          }
           register={register}
         />
         <InputComponent
@@ -206,28 +335,34 @@ const Register = () => {
           helperText={errors.fullname?.message}
           register={register}
         />
-        <Controller
-          control={control}
-          {...register('birthday')}
-          name="birthday"
-          render={({ field: { value, ...fieldProps } }) => (
-            <>
-              <Label htmlFor="birthday">
-                Ngày sinh{' '}
-                <Typography component="span" sx={{ color: '#D32F2F' }}>
-                  (*)
-                </Typography>
-              </Label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  {...fieldProps}
-                  value={value}
-                  renderInput={(params) => <TextField fullWidth {...params} />}
-                />
-              </LocalizationProvider>
-            </>
-          )}
-        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            disableFuture
+            openTo="year"
+            views={['year', 'month', 'day']}
+            inputFormat="DD/MM/YYYY"
+            value={value}
+            {...register('birthday')}
+            onChange={(newValue) => {
+              setValues(newValue);
+              setValue('birthday', newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                fullWidth
+                {...params}
+                helperText={!value && errors.birthday?.message}
+                inputProps={{
+                  ...params.inputProps,
+                  placeholder: 'Ngày/Tháng/Năm'
+                }}
+                FormHelperTextProps={{
+                  sx: { color: '#d32f2f', margin: '3px 0px 0px' }
+                }}
+              />
+            )}
+          />
+        </LocalizationProvider>
         <FormControl fullWidth>
           <Label htmlFor="gender">
             Giới tính{' '}
@@ -256,6 +391,11 @@ const Register = () => {
             <MenuItem value={'Nữ'}>Nữ</MenuItem>
             <MenuItem value={'Khác'}>Khác</MenuItem>
           </Select>
+          {errors.gender && (
+            <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+              {errors.gender.message}
+            </FormHelperText>
+          )}
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="province">
@@ -278,12 +418,17 @@ const Register = () => {
               return selected;
             }}
             {...register('province')}>
-            {provinces.map((province: Province) => (
-              <MenuItem key={province.id} value={province.name}>
+            {selectProvinces.map((province: Province) => (
+              <MenuItem key={province.province_id} value={province.name}>
                 {province.name}
               </MenuItem>
             ))}
           </Select>
+          {errors.province && (
+            <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+              {errors.province.message}
+            </FormHelperText>
+          )}
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="district">
@@ -293,10 +438,11 @@ const Register = () => {
             </Typography>
           </Label>
           <Select
+            disabled={watch('province') ? false : true}
             displayEmpty={true}
             id="district"
             renderValue={(selected: any) => {
-              if (!selected) {
+              if (!watch('district')) {
                 return (
                   <Typography component="span" sx={{ color: '#c5c5c5' }}>
                     Quận/Huyện
@@ -306,12 +452,17 @@ const Register = () => {
               return selected;
             }}
             {...register('district')}>
-            {districts.map((district: District) => (
-              <MenuItem key={district.id} value={district.name}>
+            {selectDistricts.map((district: District) => (
+              <MenuItem key={district.district_id} value={district.name}>
                 {district.name}
               </MenuItem>
             ))}
           </Select>
+          {errors.district && (
+            <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+              {errors.district.message}
+            </FormHelperText>
+          )}
         </FormControl>
         <FormControl fullWidth>
           <Label htmlFor="ward">
@@ -321,10 +472,11 @@ const Register = () => {
             </Typography>
           </Label>
           <Select
+            disabled={watch('district') ? false : true}
             displayEmpty={true}
             id="ward"
             renderValue={(selected: any) => {
-              if (!selected) {
+              if (!watch('ward')) {
                 return (
                   <Typography component="span" sx={{ color: '#c5c5c5' }}>
                     Xã/Phường
@@ -334,12 +486,17 @@ const Register = () => {
               return selected;
             }}
             {...register('ward')}>
-            {wards.map((ward: Ward) => (
-              <MenuItem key={ward.id} value={ward.name}>
+            {selectWards.map((ward: Ward) => (
+              <MenuItem key={ward.ward_id} value={ward.name}>
                 {ward.name}
               </MenuItem>
             ))}
           </Select>
+          {errors.ward && (
+            <FormHelperText sx={{ color: '#d32f2f', margin: '3px 0px 0px' }}>
+              {errors.ward.message}
+            </FormHelperText>
+          )}
         </FormControl>
       </Form>
       <DialogActions>
