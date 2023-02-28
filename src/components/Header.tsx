@@ -9,7 +9,7 @@ import StyledLink from 'components/StyledLink';
 import { logoutAsync } from 'features/user/userSlice';
 import useAccessToken from 'hooks/useAccessToken';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { RootState } from 'store/store';
+import { persistor, RootState } from 'store/store';
 import MenuItemContent from './MenuItemContent';
 
 const HeaderContainer = styled.div`
@@ -77,6 +77,14 @@ const MenuRight = styled.div`
   & .MuiList-root {
     padding: 0px;
   }
+`;
+
+const MenuRightButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  gap: 24px;
 `;
 
 const MenuRightButton = styled(Button)`
@@ -163,6 +171,7 @@ const Header = () => {
     if (token) {
       dispatch(logoutAsync());
       navigate('login');
+      persistor.purge();
     }
   };
 
@@ -209,7 +218,7 @@ const Header = () => {
           </MenuRightButton>
         </StyledLink>
         {token ? (
-          <>
+          <MenuRightButtonContainer>
             <MenuRightButton>
               <MenuItemButton onClick={() => navigate('user/account')}>
                 {selectUser.userInfo.fullname}
@@ -220,7 +229,7 @@ const Header = () => {
                 Đăng xuất
               </MenuItemButton>
             </MenuRightButton>
-          </>
+          </MenuRightButtonContainer>
         ) : (
           <MenuRightButton>
             <MenuItemButton onClick={handleLoginClick}>

@@ -17,6 +17,10 @@ import {
 import { useEffect } from 'react';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 
+const RegistrationResultContainer = styled.div`
+  margin-bottom: 300px;
+`;
+
 const StyledTableHead = styled(TableHead)(() => ({
   background: 'rgba(238, 238, 238, 0.4)',
   borderBottom: '2px solid #EEEEEE'
@@ -56,7 +60,7 @@ const RegistrationResult = () => {
   }, []);
 
   return (
-    <div>
+    <RegistrationResultContainer>
       <MenuUser userTab={'registration-result'} />
       <Divider />
       <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
@@ -91,7 +95,7 @@ const RegistrationResult = () => {
           </TableBody>
         </StyledTable>
       </TableContainer>
-    </div>
+    </RegistrationResultContainer>
   );
 };
 

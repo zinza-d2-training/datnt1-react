@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import AdminPrivateRoute from 'components/AdminPrivateRoute';
 import PrivateRoute from 'components/PrivateRoute';
@@ -18,6 +18,7 @@ import Login from 'pages/Login';
 import Register from 'pages/Register';
 import RegistrationResult from 'pages/RegistrationResult';
 import VaccinationCertificate from 'pages/VaccinationCertificate';
+import PageNotFound from 'components/PageNotFound';
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
       {
         path: '/admin/document',
         element: <AdminDocument />
+      },
+      {
+        path: '*',
+        element: <PageNotFound />
       }
     ]
   }

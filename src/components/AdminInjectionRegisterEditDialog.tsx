@@ -205,8 +205,9 @@ const status = ['Đăng ký chưa hoàn thành', 'Đăng ký thành công', 'Đ�
 
 const UserInfoSchema = yup.object().shape({
   expected_injection_date: yup
-    .string()
-    .required('Ngày tiêm không được bỏ trống'),
+    .date()
+    .required('Ngày tiêm không được bỏ trống')
+    .typeError('Ngày nhập vào không hợp lệ'),
   vaccine: yup.string().required('Loại vaccine không được bỏ trống'),
   vaccination_site: yup.string().required('Địa điểm tiêm không được bỏ trống'),
   status: yup.string().required('Trạng thái không được bỏ trống')
@@ -217,7 +218,9 @@ const AdminInjectionRegisterEditDialog = ({
   registerInfo
 }: AdminInjectionRegisterEditDialogProps) => {
   const [value, setValues] = React.useState<Dayjs | null>(
-    dayjs(registerInfo?.expected_injection_date)
+    registerInfo?.expected_injection_date
+      ? dayjs(registerInfo?.expected_injection_date)
+      : null
   );
   const [listVaccine, setListVaccine] = React.useState<Vaccine[]>([]);
 
@@ -293,7 +296,6 @@ const AdminInjectionRegisterEditDialog = ({
           <Label htmlFor="expected_injection_date">Ngày tiêm dự kiến</Label>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              disablePast
               views={['year', 'month', 'day']}
               inputFormat="DD/MM/YYYY"
               value={value}

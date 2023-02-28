@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { publicRequest, userRequest } from 'callsApi';
 import { Dayjs } from 'dayjs';
-import { RootState } from 'store';
+import { persistor, RootState } from 'store';
 
 export interface LoginInfo {
   email: string;
@@ -169,10 +169,10 @@ export const userSlice = createSlice({
         state.status = 'pending';
         state.loading = true;
       })
-      .addCase(updateUserAsync.fulfilled, (state) => {
+      .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.loading = false;
-        state.userInfo = initialState.userInfo;
+        state.userInfo = action.payload;
       })
       .addCase(updateUserAsync.rejected, (state) => {
         state.status = 'rejected';

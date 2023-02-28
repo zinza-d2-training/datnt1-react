@@ -27,6 +27,11 @@ import React, { useEffect } from 'react';
 import { RootState, useAppDispatch, useAppSelector } from 'store/index';
 import { publicRequest } from 'callsApi';
 import { addInjectionRegistrationAsync } from 'features/vaccination/injectionRegistrationSlice';
+import {
+  getPriorityGroupsAsync,
+  PriorityGroup
+} from 'features/priority_group/priorityGroupSlice';
+import { updateUserAsync } from 'features/user/userSlice';
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
@@ -255,11 +260,6 @@ const MenuProps = {
   }
 };
 
-export interface PriorityGroup {
-  priority_group_id: number;
-  description: string;
-}
-
 export interface InjectionRegisterFormInputs {
   health_insurance_number: string;
   priorityGroup: string;
@@ -287,10 +287,21 @@ const InjectionRegisterSchema = yup.object().shape({
 });
 
 const InjectionRegistrationStep1 = () => {
-  const [value, setValues] = React.useState<Dayjs | null>(null);
-  const [listPriorityGroup, setListPriorityGroup] = React.useState<
-    PriorityGroup[]
-  >([]);
+  const selectInjectionRegistrationInfo = useAppSelector(
+    (state: RootState) => state.injectionRegistration.injectionRegistrationInfo
+  );
+
+  const [value, setValues] = React.useState<Dayjs | null>(
+    selectInjectionRegistrationInfo?.expected_injection_date
+      ? dayjs(selectInjectionRegistrationInfo?.expected_injection_date)
+      : null
+  );
+
+  const selectPriorityGroups = useAppSelector(
+    (state: RootState) => state.priorityGroup.priorityGroups
+  );
+
+  const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
 
   const {
     register,
@@ -306,16 +317,20 @@ const InjectionRegistrationStep1 = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    async function fetchPriorityGroupData() {
-      const res = await publicRequest.get('priority-group');
-      setListPriorityGroup(res.data);
-    }
-    fetchPriorityGroupData();
+    dispatch(getPriorityGroupsAsync());
   }, []);
 
   const onSubmit = async (data: InjectionRegisterFormInputs) => {
+    selectInjectionRegistrationInfo?.expected_injection_date
+      ? setValue(
+          'expected_injection_date',
+          dayjs(selectInjectionRegistrationInfo?.expected_injection_date)
+        )
+      : setValue('expected_injection_date', null);
+
     const { priorityGroup, expected_injection_date, ...others } = data;
-    const priority_group_id = listPriorityGroup.find(
+
+    const priority_group_id = selectPriorityGroups.find(
       (item) => item.description === priorityGroup
     )?.priority_group_id as number;
     const formatedExpectedInjectionDate = expected_injection_date
@@ -331,6 +346,13 @@ const InjectionRegistrationStep1 = () => {
         ...others
       })
     );
+
+    await dispatch(
+      updateUserAsync({
+        health_insurance_number: data.health_insurance_number
+      })
+    );
+
     navigate('/injection-registration/step2');
   };
 
@@ -361,8 +383,16 @@ const InjectionRegistrationStep1 = () => {
                       }
                       return selected;
                     }}
+                    defaultValue={
+                      selectInjectionRegistrationInfo?.priority_group_id
+                        ? selectPriorityGroups[
+                            (selectInjectionRegistrationInfo?.priority_group_id as number) -
+                              1
+                          ]?.description
+                        : undefined
+                    }
                     MenuProps={MenuProps}>
-                    {listPriorityGroup.map(
+                    {selectPriorityGroups.map(
                       (group: PriorityGroup, index: number) => (
                         <MenuItem key={index} value={group.description}>
                           {group.description}
@@ -391,6 +421,7 @@ const InjectionRegistrationStep1 = () => {
                   FormHelperTextProps={{
                     sx: { color: '#d32f2f', margin: '3px 0px 0px' }
                   }}
+                  defaultValue={selectUser?.health_insurance_number}
                 />
               </InputComponent>
             </FormFrame>
@@ -408,6 +439,7 @@ const InjectionRegistrationStep1 = () => {
                   FormHelperTextProps={{
                     sx: { color: '#d32f2f', margin: '3px 0px 0px' }
                   }}
+                  defaultValue={selectInjectionRegistrationInfo?.occupation}
                 />
               </InputComponent>
               <InputComponent>
@@ -423,6 +455,7 @@ const InjectionRegistrationStep1 = () => {
                   FormHelperTextProps={{
                     sx: { color: '#d32f2f', margin: '3px 0px 0px' }
                   }}
+                  defaultValue={selectInjectionRegistrationInfo?.work_unit}
                 />
               </InputComponent>
               <InputComponent>
@@ -438,6 +471,7 @@ const InjectionRegistrationStep1 = () => {
                   FormHelperTextProps={{
                     sx: { color: '#d32f2f', margin: '3px 0px 0px' }
                   }}
+                  defaultValue={selectInjectionRegistrationInfo?.address}
                 />
               </InputComponent>
             </FormFrame>
@@ -470,6 +504,9 @@ const InjectionRegistrationStep1 = () => {
                         FormHelperTextProps={{
                           sx: { color: '#d32f2f', margin: '3px 0px 0px' }
                         }}
+                        defaultValue={
+                          selectInjectionRegistrationInfo?.expected_injection_date
+                        }
                       />
                     )}
                   />
@@ -491,6 +528,9 @@ const InjectionRegistrationStep1 = () => {
                       }
                       return selected;
                     }}
+                    defaultValue={
+                      selectInjectionRegistrationInfo?.injection_session
+                    }
                     MenuProps={MenuProps}>
                     {injectionSession.map((session) => (
                       <MenuItem key={session.id} value={session.name}>
@@ -553,10 +593,7 @@ const InjectionRegistrationStep1 = () => {
               Hủy bỏ
             </CancelSubmitButton>
           </StyledLink>
-          <ContinueSubmitButton
-            onClick={handleSubmit(onSubmit)}
-            // disabled={!isValid}
-          >
+          <ContinueSubmitButton onClick={handleSubmit(onSubmit)}>
             Tiếp tục
             <ArrowForwardIcon />
           </ContinueSubmitButton>

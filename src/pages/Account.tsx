@@ -201,7 +201,12 @@ const UserInfoSchema = yup.object().shape({
     .matches(/^[0-9]+$/, 'Số CMND chỉ được chứa số ')
     .length(12, 'Số CMND phải chứa 12 số'),
   fullname: yup.string().required('Họ và tên không được bỏ trống'),
-  birthday: yup.string().required('Ngày sinh không được bỏ trống'),
+  birthday: yup
+    .date()
+    .max(new Date(), 'Ngày nhập vào không hợp lệ')
+    .required('Ngày sinh không được bỏ trống')
+    .typeError('Ngày nhập vào không hợp lệ'),
+
   gender: yup.string().required('Giới tính không được bỏ trống'),
   province: yup.string().required('Tỉnh/Thành phố không được bỏ trống'),
   district: yup.string().required('Quận/Huyện không được bỏ trống'),
@@ -231,7 +236,7 @@ const Account = () => {
   const selectUser = useAppSelector((state: RootState) => state.user.userInfo);
 
   const [value, setValues] = React.useState<Dayjs | null>(
-    dayjs(selectUser?.birthday)
+    selectUser?.birthday ? dayjs(selectUser?.birthday) : null
   );
 
   const selectProvinces = useAppSelector(
